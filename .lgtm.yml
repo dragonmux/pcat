@@ -11,5 +11,5 @@ extraction:
         - cd build
         - ninja
 
- queries:
-   - include: "*"
+queries:
+  - include: "*"
