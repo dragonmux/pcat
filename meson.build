@@ -14,7 +14,7 @@ project(
 cxx = meson.get_compiler('cpp')
 
 pcatSrcs = [
-	'src/pcat.cxx'
+	'src/pcat.cxx', 'src/args.cxx', 'src/args/types.cxx', 'src/args/tokenizer.cxx'
 ]
 
 executable(
