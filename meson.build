@@ -3,7 +3,7 @@ project(
 	['cpp'],
 	default_options: [
 		'buildtype=release',
-		'cpp_std=c++14',
+		'cpp_std=c++17',
 		'warning_level=3'
 	],
 	license: 'GPL3+',
