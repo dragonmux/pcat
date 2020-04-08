@@ -12,6 +12,7 @@ project(
 )
 
 cxx = meson.get_compiler('cpp')
+substrate = include_directories('substrate')
 
 pcatSrcs = [
 	'src/pcat.cxx', 'src/args.cxx', 'src/args/types.cxx', 'src/args/tokenizer.cxx'
@@ -19,5 +20,7 @@ pcatSrcs = [
 
 executable(
 	'pcat',
-	pcatSrcs
+	pcatSrcs,
+	include_directories: substrate,
+	install: true
 )
