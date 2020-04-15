@@ -2,15 +2,18 @@
 #include <cstring>
 #include <memory>
 #include <array>
+#include <string_view>
 #include <crunch++.h>
 #include <substrate/fd>
+#include <substrate/utility>
 #include "testFD.hxx"
 
 using substrate::fd_t;
+using std::literals::string_view_literals::operator ""sv;
 
 constexpr static std::array<char, 4> testArray{'t', 'E', 'S', 't'};
 constexpr static char testChar{'.'};
-static std::string testString{"fileDescriptor"};
+constexpr static auto testString{"fileDescriptor"sv};
 
 constexpr static auto u8{uint8_t(0x5A)};
 constexpr static auto i8{int8_t(0xA5)};
@@ -42,19 +45,15 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	std::unique_ptr<char []> toUnique(const std::string &value)
+	inline auto toUnique(const std::string_view &value)
 	{
-		std::unique_ptr<char []> result{new char[value.size()]};
+		auto result{substrate::make_unique<char []>(value.size())};
 		memcpy(result.get(), value.data(), value.size());
 		return result;
 	}
 
-	std::unique_ptr<char> toUnique(const char value)
-	{
-		std::unique_ptr<char> result{new char};
-		*result = value;
-		return result;
-	}
+	inline auto toUnique(const char value)
+		{ return substrate::make_unique<char>(value); }
 
 	void testWrite(testsuit &suite)
 	{
@@ -100,9 +99,9 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	void readUnique(testsuit &suite, const fd_t &file, const std::string &expected)
+	void readUnique(testsuit &suite, const fd_t &file, const std::string_view &expected)
 	{
-		std::unique_ptr<char []> result{new char[expected.size()]};
+		const auto result{substrate::make_unique<char []>(expected.size())};
 		suite.assertNotNull(result);
 		suite.assertTrue(file.read(result, expected.size()));
 		suite.assertEqual(result.get(), expected.data(), expected.size());
@@ -111,7 +110,7 @@ namespace fd
 
 	void readUnique(testsuit &suite, const fd_t &file, const char expected)
 	{
-		std::unique_ptr<char> result{new char};
+		const auto result{substrate::make_unique<char>()};
 		suite.assertNotNull(result);
 		suite.assertTrue(file.read(result));
 		suite.assertEqual(*result, expected);
