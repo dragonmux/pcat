@@ -1,4 +1,5 @@
 #include <substrate/console>
+#include <substrate/utility>
 #include "utils/span.hxx"
 #include "args.hxx"
 #include "args/tokenizer.hxx"
@@ -96,9 +97,9 @@ void dumpAST(argsTree_t *node, const size_t indent) noexcept
 
 bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, argsTree_t &ast);
 
-std::unique_ptr<argNode_t> parseTree(tokenizer_t &lexer, const span_t<const option_t> &options)
+auto parseTree(tokenizer_t &lexer, const span_t<const option_t> &options)
 {
-	auto tree = std::make_unique<argsTree_t>();
+	auto tree{substrate::make_unique<argsTree_t>()};
 	if (parseArgument(lexer, options, *tree))
 		return tree;
 	throw std::exception{};
@@ -112,9 +113,9 @@ std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const span_t<const optio
 		case argType_t::tree:
 			return parseTree(lexer, options);
 		case argType_t::help:
-			return std::make_unique<argHelp_t>();
+			return substrate::make_unique<argHelp_t>();
 		case argType_t::version:
-			return std::make_unique<argVersion_t>();
+			return substrate::make_unique<argVersion_t>();
 		default:
 			throw std::exception{};
 	}
@@ -122,7 +123,7 @@ std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const span_t<const optio
 
 bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, argsTree_t &ast)
 {
-	const token_t &token = lexer.token();
+	const auto &token{lexer.token()};
 	if (token.type() == tokenType_t::space)
 		lexer.next();
 	else if (token.type() != tokenType_t::arg)
@@ -138,7 +139,7 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 		return needASTDump = true;
 	else if (token.type() != tokenType_t::equals)
 	{
-		if (!ast.add(std::make_unique<argUnrecognised_t>(argument)))
+		if (!ast.add(substrate::make_unique<argUnrecognised_t>(argument)))
 			return false;
 	}
 	else
@@ -146,14 +147,11 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 		lexer.next();
 		if (token.type() == tokenType_t::space)
 		{
-			if (!ast.add(std::make_unique<argUnrecognised_t>(argument)))
+			if (!ast.add(substrate::make_unique<argUnrecognised_t>(argument)))
 				return false;
 		}
-		else
-		{
-			if (!ast.add(std::make_unique<argUnrecognised_t>(argument, token.value())))
-				return false;
-		}
+		else if (!ast.add(substrate::make_unique<argUnrecognised_t>(argument, token.value())))
+			return false;
 	}
 	return true;
 }
@@ -164,16 +162,16 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 // the arguments for further use by the caller
 bool parseArguments(const size_t argCount, const char *const *const argList,
 	const option_t *const optionsBegin,
-	const option_t *const optionsEnd)
+	const option_t *const optionsEnd) try
 {
 	if (argCount < 2 || !argList)
 		return false;
 	// Skip the first argument (that's the name of the program) and start
 	// tokenizing directly at the second.
 	tokenizer_t lexer{argCount - 1, argList + 1};
-	const token_t &token = lexer.token();
+	const auto &token{lexer.token()};
 	const span_t options{optionsBegin, optionsEnd};
-	args = std::make_unique<argsTree_t>();
+	args = substrate::make_unique<argsTree_t>();
 	needASTDump = false;
 
 	while (token.valid())
@@ -191,3 +189,5 @@ bool parseArguments(const size_t argCount, const char *const *const argList,
 		dumpAST();
 	return true;
 }
+catch (std::exception &)
+	{ return false; }
