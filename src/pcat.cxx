@@ -39,18 +39,12 @@ namespace pcat
 
 	static const auto options{substrate::make_array<args::option_t>({ // NOLINT(cert-err58-cpp)
 		{"--version"s, argType_t::version},
-		{"--help"s, argType_t::help}
+		{"--help"s, argType_t::help},
+		{"--output"s, argType_t::outputFile},
+		{"-o"s, argType_t::outputFile}
 	})};
 
 	constexpr static size_t pageSize = 4_KiB;
-
-	inline int32_t printVersion() noexcept
-	{
-		console.info("pcat v"sv, pcat::versionInfo::version, " ("sv, pcat::versionInfo::compiler,
-			' ', pcat::versionInfo::compilerVersion, ' ', pcat::versionInfo::system, '-',
-			pcat::versionInfo::arch, ')');
-		return 0;
-	}
 }
 
 int main(int argCount, char **argList)
@@ -62,6 +56,6 @@ int main(int argCount, char **argList)
 		return 1;
 	}
 	if (args->find(argType_t::version))
-		return pcat::printVersion();
+		return pcat::versionInfo::printVersion();
 	return 0;
 }

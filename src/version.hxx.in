@@ -4,6 +4,8 @@
 #define VERSION__HXX
 
 #include <string_view>
+#include <substrate/console>
+
 using std::literals::string_view_literals::operator ""sv;
 
 namespace pcat::versionInfo
@@ -13,6 +15,13 @@ namespace pcat::versionInfo
 	constexpr static auto compilerVersion{"@COMPILER_VERSION@"sv};
 	constexpr static auto system{"@TARGET_SYS@"sv};
 	constexpr static auto arch{"@TARGET_ARCH@"sv};
+
+	inline int32_t printVersion() noexcept
+	{
+		substrate::console.info("pcat v"sv, version, " ("sv, compiler, ' ',
+			compilerVersion, ' ', system, '-', arch, ')');
+		return 0;
+	}
 }
 
 #endif /*VERSION__HXX*/
