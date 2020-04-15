@@ -105,6 +105,20 @@ auto parseTree(tokenizer_t &lexer, const span_t<const option_t> &options)
 	throw std::exception{};
 }
 
+auto parseOutputFile(tokenizer_t &lexer)
+{
+	const auto &token{lexer.token()};
+	if (token.type() == tokenType_t::unknown)
+	{
+		console.error("Output file option given but failed to specify output file name"sv); // NOLINT(readability-magic-numbers)
+		throw std::exception{};
+	}
+	lexer.next();
+	const auto fileName{token.value()};
+	lexer.next();
+	return substrate::make_unique<argOutputFile_t>(fileName);
+}
+
 std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const span_t<const option_t> &options, const option_t &option)
 {
 	lexer.next();
@@ -116,6 +130,8 @@ std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const span_t<const optio
 			return substrate::make_unique<argHelp_t>();
 		case argType_t::version:
 			return substrate::make_unique<argVersion_t>();
+		case argType_t::outputFile:
+			return parseOutputFile(lexer);
 		default:
 			throw std::exception{};
 	}

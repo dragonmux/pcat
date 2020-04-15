@@ -64,6 +64,17 @@ namespace pcat::args
 		[[nodiscard]] auto parameter() const noexcept { return parameter_; }
 	};
 
+	struct argOutputFile_t final : argNode_t
+	{
+	private:
+		std::string_view fileName_;
+
+	public:
+		constexpr argOutputFile_t(const std::string_view fileName) :
+			argNode_t{argType_t::outputFile}, fileName_{fileName} { }
+		[[nodiscard]] auto fileName() const noexcept { return fileName_; }
+	};
+
 	template<argType_t argType> struct argOfType_t final : argNode_t
 	{
 	public:
