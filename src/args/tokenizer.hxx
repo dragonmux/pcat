@@ -26,9 +26,9 @@ namespace pcat::args::tokenizer
 		token_t(const tokenType_t type, std::string_view &&value) noexcept :
 			_type{type}, _value{value} { }
 
-		bool valid() const noexcept { return _type != tokenType_t::unknown; }
-		tokenType_t type() const noexcept { return _type; }
-		std::string_view value() const noexcept { return _value; }
+		[[nodiscard]] bool valid() const noexcept { return _type != tokenType_t::unknown; }
+		[[nodiscard]] tokenType_t type() const noexcept { return _type; }
+		[[nodiscard]] std::string_view value() const noexcept { return _value; }
 	};
 
 	struct tokenizer_t final
@@ -50,7 +50,7 @@ namespace pcat::args::tokenizer
 			currentArg{}, arg{}, offset{}, length{}, _token{}, count{argsCount}, args{argsList}
 			{ nextArg(); next(); }
 
-		const token_t &token() const noexcept { return _token; }
+		[[nodiscard]] const token_t &token() const noexcept { return _token; }
 		token_t &token() noexcept { return _token; }
 
 		token_t &next() noexcept
