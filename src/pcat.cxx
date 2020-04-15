@@ -4,6 +4,7 @@
 #include <string_view>
 #include <array>
 #include <vector>
+#include <numeric>
 #include <substrate/fd>
 #include <substrate/mmap>
 #include <substrate/utility>
@@ -60,6 +61,17 @@ namespace pcat
 			result &= checkFile(file.argument());
 		}
 		return result && !inputFiles.empty();
+	}
+
+	std::size_t totalSize() noexcept
+	{
+		return std::accumulate(inputFiles.begin(), inputFiles.end(), 0,
+			[](const std::size_t count, const fd_t &file) noexcept -> std::size_t
+			{
+				const auto length = file.length();
+				return length > 0 ? count + length : count;
+			}
+		);
 	}
 }
 
