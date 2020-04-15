@@ -3,11 +3,16 @@
 #include <type_traits>
 #include <utility>
 #include <string>
+#include <string_view>
 #include <substrate/fd>
 #include <substrate/mmap>
 #include <substrate/units>
 #include <substrate/console>
+#include <version.hxx>
 #include "args.hxx"
+
+using std::literals::string_view_literals::operator ""sv;
+using substrate::console;
 
 namespace substrate
 {
@@ -38,15 +43,25 @@ namespace pcat
 	})};
 
 	constexpr static size_t pageSize = 4_KiB;
+
+	inline int32_t printVersion() noexcept
+	{
+		console.info("pcat v"sv, pcat::versionInfo::version, " ("sv, pcat::versionInfo::compiler,
+			' ', pcat::versionInfo::compilerVersion, ' ', pcat::versionInfo::system, '-',
+			pcat::versionInfo::arch, ')');
+		return 0;
+	}
 }
 
 int main(int argCount, char **argList)
 {
-	substrate::console = {stdout, stderr};
+	console = {stdout, stderr};
 	if (!parseArguments(argCount, argList, pcat::options))
 	{
-		puts("Failed to parse arguments");
+		console.error("Failed to parse arguments"sv);
 		return 1;
 	}
+	if (args->find(argType_t::version))
+		return pcat::printVersion();
 	return 0;
 }
