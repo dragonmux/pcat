@@ -58,5 +58,6 @@ int main(int argCount, char **argList)
 	}
 	if (args->find(argType_t::version))
 		return pcat::versionInfo::printVersion();
+	dumpAST();
 	return 0;
 }

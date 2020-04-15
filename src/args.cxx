@@ -11,7 +11,6 @@ using namespace pcat::args::tokenizer;
 using std::literals::string_view_literals::operator ""sv;
 
 std::unique_ptr<argsTree_t> args{};
-bool needASTDump = false;
 
 const char *typeToName(const tokenType_t type)
 {
@@ -157,9 +156,7 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 			return ast.add(makeNode(lexer, options, option));
 	}
 	lexer.next();
-	if (argument == "--dump-ast"sv) // NOLINT(readability-magic-numbers)
-		return needASTDump = true;
-	else if (token.type() != tokenType_t::equals)
+	if (token.type() != tokenType_t::equals)
 	{
 		if (!ast.add(substrate::make_unique<argUnrecognised_t>(argument)))
 			return false;
@@ -194,7 +191,6 @@ bool parseArguments(const size_t argCount, const char *const *const argList,
 	const auto &token{lexer.token()};
 	const span_t options{optionsBegin, optionsEnd};
 	args = substrate::make_unique<argsTree_t>();
-	needASTDump = false;
 
 	while (token.valid())
 	{
@@ -206,9 +202,6 @@ bool parseArguments(const size_t argCount, const char *const *const argList,
 			return false;
 		}
 	}
-
-	if (needASTDump)
-		dumpAST();
 	return true;
 }
 catch (std::exception &)
