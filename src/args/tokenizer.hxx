@@ -17,18 +17,18 @@ namespace pcat::args::tokenizer
 	struct token_t final
 	{
 	private:
-		tokenType_t _type;
-		std::string_view _value;
+		tokenType_t type_;
+		std::string_view value_;
 
 	public:
-		constexpr token_t() noexcept : _type{tokenType_t::unknown}, _value{} { }
-		constexpr token_t(const tokenType_t type) noexcept : _type{type}, _value{} { }
+		constexpr token_t() noexcept : type_{tokenType_t::unknown}, value_{} { }
+		constexpr token_t(const tokenType_t type) noexcept : type_{type}, value_{} { }
 		token_t(const tokenType_t type, std::string_view &&value) noexcept :
-			_type{type}, _value{value} { }
+			type_{type}, value_{value} { }
 
-		[[nodiscard]] bool valid() const noexcept { return _type != tokenType_t::unknown; }
-		[[nodiscard]] tokenType_t type() const noexcept { return _type; }
-		[[nodiscard]] std::string_view value() const noexcept { return _value; }
+		[[nodiscard]] bool valid() const noexcept { return type_ != tokenType_t::unknown; }
+		[[nodiscard]] tokenType_t type() const noexcept { return type_; }
+		[[nodiscard]] std::string_view value() const noexcept { return value_; }
 	};
 
 	struct tokenizer_t final
@@ -38,7 +38,7 @@ namespace pcat::args::tokenizer
 		const char *arg;
 		const char *offset;
 		size_t length;
-		token_t _token;
+		token_t token_;
 		size_t count;
 		const char *const *args;
 
@@ -47,16 +47,16 @@ namespace pcat::args::tokenizer
 
 	public:
 		tokenizer_t(const size_t argsCount, const char *const *const argsList) noexcept :
-			currentArg{}, arg{}, offset{}, length{}, _token{}, count{argsCount}, args{argsList}
+			currentArg{}, arg{}, offset{}, length{}, token_{}, count{argsCount}, args{argsList}
 			{ nextArg(); next(); }
 
-		[[nodiscard]] const token_t &token() const noexcept { return _token; }
-		token_t &token() noexcept { return _token; }
+		[[nodiscard]] const token_t &token() const noexcept { return token_; }
+		token_t &token() noexcept { return token_; }
 
 		token_t &next() noexcept
 		{
 			readToken();
-			return _token;
+			return token_;
 		}
 	};
 }

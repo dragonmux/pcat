@@ -4,7 +4,7 @@ using namespace pcat::args;
 
 argNode_t *argsTree_t::find(const argType_t nodeType, const bool recursive) const noexcept
 {
-	for (const auto &node : _children)
+	for (const auto &node : children_)
 	{
 		if (node->type() == nodeType)
 			return node.get();
@@ -12,7 +12,7 @@ argNode_t *argsTree_t::find(const argType_t nodeType, const bool recursive) cons
 
 	if (recursive)
 	{
-		for (const auto &node : _children)
+		for (const auto &node : children_)
 		{
 			if (node->type() == argType_t::tree)
 			{
@@ -28,7 +28,7 @@ argNode_t *argsTree_t::find(const argType_t nodeType, const bool recursive) cons
 
 bool argsTree_t::add(std::unique_ptr<argNode_t> &&node) noexcept try
 {
-	_children.emplace_back(std::move(node));
+	children_.emplace_back(std::move(node));
 	return true;
 }
 catch (std::bad_alloc &)

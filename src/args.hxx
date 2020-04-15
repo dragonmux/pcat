@@ -13,54 +13,55 @@ namespace pcat::args
 		tree,
 		unrecognised,
 		help,
-		version
+		version,
+		outputFile
 	};
 
 	struct argNode_t
 	{
 	private:
-		argType_t _type;
+		argType_t type_;
 
 	public:
-		constexpr argNode_t(argType_t type) noexcept : _type{type} { }
+		constexpr argNode_t(argType_t type) noexcept : type_{type} { }
 		argNode_t(const argNode_t &) = delete;
 		argNode_t(argNode_t &&) = delete;
 		virtual ~argNode_t() noexcept = default;
 		argNode_t &operator =(const argNode_t &) = delete;
 		argNode_t &operator =(argNode_t &&) = delete;
-		argType_t type() const noexcept { return _type; }
+		argType_t type() const noexcept { return type_; }
 	};
 
 	struct argsTree_t final : argNode_t
 	{
 	private:
-		std::vector<std::unique_ptr<argNode_t>> _children;
+		std::vector<std::unique_ptr<argNode_t>> children_;
 
 	public:
-		argsTree_t() noexcept : argNode_t{argType_t::tree}, _children{} { }
+		argsTree_t() noexcept : argNode_t{argType_t::tree}, children_{} { }
 		[[nodiscard]] argNode_t *find(argType_t type, bool recursive = false) const noexcept;
 		[[nodiscard]] bool add(std::unique_ptr<argNode_t> &&node) noexcept;
 
-		[[nodiscard]] size_t count() const noexcept { return _children.size(); }
-		[[nodiscard]] size_t size() const noexcept { return _children.size(); }
+		[[nodiscard]] size_t count() const noexcept { return children_.size(); }
+		[[nodiscard]] size_t size() const noexcept { return children_.size(); }
 
-		[[nodiscard]] auto begin() const noexcept { return _children.begin(); }
-		[[nodiscard]] auto end() const noexcept { return _children.end(); }
+		[[nodiscard]] auto begin() const noexcept { return children_.begin(); }
+		[[nodiscard]] auto end() const noexcept { return children_.end(); }
 	};
 
 	struct argUnrecognised_t final : argNode_t
 	{
 	private:
-		std::string_view _argument;
-		std::string_view _parameter;
+		std::string_view argument_;
+		std::string_view parameter_;
 
 	public:
 		argUnrecognised_t(std::string_view argument) : argNode_t{argType_t::unrecognised},
-			_argument{argument}, _parameter{} { }
+			argument_{argument}, parameter_{} { }
 		argUnrecognised_t(std::string_view argument, std::string_view &&parameter) :
-			argNode_t{argType_t::unrecognised}, _argument{argument}, _parameter{parameter} { }
-		[[nodiscard]] std::string_view argument() const noexcept { return _argument; }
-		[[nodiscard]] std::string_view parameter() const noexcept { return _parameter; }
+			argNode_t{argType_t::unrecognised}, argument_{argument}, parameter_{parameter} { }
+		[[nodiscard]] std::string_view argument() const noexcept { return argument_; }
+		[[nodiscard]] std::string_view parameter() const noexcept { return parameter_; }
 	};
 
 	template<argType_t argType> struct argOfType_t final : argNode_t
@@ -75,16 +76,16 @@ namespace pcat::args
 	struct option_t final
 	{
 	private:
-		std::string _option;
-		argType_t _type;
+		std::string option_;
+		argType_t type_;
 
 	public:
-		option_t(std::string &&option, const argType_t type) : _option{std::move(option)},
-			_type{type} { }
+		option_t(std::string &&option, const argType_t type) : option_{std::move(option)},
+			type_{type} { }
 
-		[[nodiscard]] const std::string &name() const noexcept { return _option; }
-		[[nodiscard]] const std::string &option() const noexcept { return _option; }
-		[[nodiscard]] argType_t type() const noexcept { return _type; }
+		[[nodiscard]] const std::string &name() const noexcept { return option_; }
+		[[nodiscard]] const std::string &option() const noexcept { return option_; }
+		[[nodiscard]] argType_t type() const noexcept { return type_; }
 	};
 }
 

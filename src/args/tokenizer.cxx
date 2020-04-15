@@ -25,19 +25,19 @@ namespace pcat::args::tokenizer
 	void tokenizer_t::readToken() noexcept
 	{
 		if (!arg)
-			_token = {};
+			token_ = {};
 		else if (offset == arg + length)
 		{
 			nextArg();
 			if (!arg)
-				_token = {};
+				token_ = {};
 			else
-				_token = {tokenType_t::space};
+				token_ = {tokenType_t::space};
 		}
 		else if (isEquals(*offset))
 		{
 			++offset;
-			_token = {tokenType_t::equals, {"=", 1}};
+			token_ = {tokenType_t::equals, {"=", 1}};
 		}
 		else
 		{
@@ -48,7 +48,7 @@ namespace pcat::args::tokenizer
 					break;
 				++offset;
 			}
-			_token = {tokenType_t::arg, {begin, size_t(offset - begin)}};
+			token_ = {tokenType_t::arg, {begin, size_t(offset - begin)}};
 		}
 	}
 }
