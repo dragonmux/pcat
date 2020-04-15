@@ -1,0 +1,18 @@
+/* version.hxx - progrma version information */
+@AUTOGEN_HEADER@
+#ifndef VERSION__HXX
+#define VERSION__HXX
+
+#include <string_view>
+using std::literals::string_view_literals::operator ""sv;
+
+namespace pcat::versionInfo
+{
+	constexpr static auto version{"@VERSION@"sv};
+	constexpr static auto compiler{"@COMPILER@"sv};
+	constexpr static auto compilerVersion{"@COMPILER_VERSION@"sv};
+	constexpr static auto system{"@TARGET_SYS@"sv};
+	constexpr static auto arch{"@TARGET_ARCH@"sv};
+}
+
+#endif /*VERSION__HXX*/

@@ -19,11 +19,12 @@ pcatSrcs = [
 	'src/pcat.cxx', 'src/args.cxx', 'src/args/types.cxx', 'src/args/tokenizer.cxx', 'substrate/impl/console.cxx'
 ]
 
+subdir('src')
 executable(
 	'pcat',
 	pcatSrcs,
 	cpp_args: ['-D_GNU_SOURCE'],
-	include_directories: substrate,
+	include_directories: [substrate, include_directories('src')],
 	gnu_symbol_visibility: 'inlineshidden',
 	implicit_include_directories: false,
 	install: true
