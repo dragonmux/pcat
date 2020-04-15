@@ -8,16 +8,18 @@ pcat is a `cat`-like utility designend for fast, parallel, file concatenation, w
 
 ## Getting started
 
-After cloning the respository, you will need to run `git submodule init --update` to pull all dependencies for a build.
+NB: If you did not clone `--recursive`, after cloning the respository you will need to run `git submodule init --update` to pull all dependencies for a build.
+It is recomended not to use `--recursive` on this repo.
 
-pcat is written in standards-compliant C++17 and so requires a fairly modern compiler to build. It also depends on [Meson](https://github.com/mesonbuild/meson) >= 0.52 and [Ninja](https://github.com/ninja-build/ninja) >= 1.9.0.
+pcat is written in standards-compliant C++17 and so requires a fairly modern compiler to build.
+Minimum supported compilers include: GCC 7, Clang 5, MSVC 19, and Intel ICC 19.
 
-Meson can be installed from `pip` if missing: `pip install meson`.
-Ninja binaries are available on the Ninja releases page for Linux, Mac and Windows. If missing, please download one suitable for your OS and extract the binary somewhere in your OS's $PATH (%PATH% on Windows).
+It also depends on [Meson](https://github.com/mesonbuild/meson) >= 0.52 and [Ninja](https://github.com/ninja-build/ninja) >= 1.9.0.
 
 For general use the following steps are sufficient for a working build:
 
 ``` shell
 meson build
 ninja -C build
+ninja -C build install
 ```
