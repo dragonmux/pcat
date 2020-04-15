@@ -1,6 +1,8 @@
 #ifndef HELP__HXX
 #define HELP__HXX
 
+#include <string_view>
+
 using std::literals::string_view_literals::operator ""sv;
 
 namespace pcat
