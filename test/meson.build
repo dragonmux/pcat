@@ -42,7 +42,7 @@ foreach test : pcatTests
 	custom_target(
 		test,
 		command: [
-			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT'
+			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@'
 		] + commandExtra + testLibs,
 		input: [test + '.cxx'] + pcatObjs + testObjs,
 		output: test + '.so',
