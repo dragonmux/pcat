@@ -23,7 +23,11 @@ namespace pcat::args
 
 	public:
 		constexpr argNode_t(argType_t type) noexcept : _type{type} { }
+		argNode_t(const argNode_t &) = delete;
+		argNode_t(argNode_t &&) = delete;
 		virtual ~argNode_t() noexcept = default;
+		argNode_t &operator =(const argNode_t &) = delete;
+		argNode_t &operator =(argNode_t &&) = delete;
 		argType_t type() const noexcept { return _type; }
 	};
 
