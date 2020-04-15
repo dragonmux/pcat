@@ -27,6 +27,7 @@ jobs:
           WORKSPACE: ${{ github.workspace }}
         run: |
           echo ::set-env name=PATH::"$HOME/.local/bin:$PATH"
+          echo ::set-env name=PKG_CONFIG_PATH::"$HOME/.local/lib/x86_64-linux-gnu/pkgconfig"
           echo ::set-env name=GITHUB_WORKSPACE::"`pwd`"
       - name: Coverage environment
         env:
