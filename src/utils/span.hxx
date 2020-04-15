@@ -43,12 +43,12 @@ namespace pcat::utils
 		template<typename type1_t, typename type2_t> struct and_t<type1_t, type2_t> :
 			public std::conditional<type1_t::value, type2_t, type1_t>::type { };
 		template<typename toType_t, typename fromType_t> using isArrayConvertible =
-			std::is_convertible<fromType_t (*)[], toType_t (*)[]>;
+			std::is_convertible<fromType_t (*)[], toType_t (*)[]>; // NOLINT(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 
 		template<size_t _extent> struct extentStorage_t
 		{
 			constexpr extentStorage_t(size_t) noexcept { }
-			constexpr static size_t extent() noexcept { return _extent; }
+			[[nodiscard]] constexpr static size_t extent() noexcept { return _extent; }
 		};
 
 		template<> struct extentStorage_t<dynamicExtent>
@@ -58,13 +58,13 @@ namespace pcat::utils
 
 		public:
 			constexpr extentStorage_t(const size_t extent) noexcept : _extent{extent} { }
-			constexpr size_t extent() const noexcept { return _extent; }
+			[[nodiscard]] constexpr size_t extent() const noexcept { return _extent; }
 		};
 	} // namespace impl
 
-	template<typename T, size_t extent_v = dynamicExtent> struct span_t
+	template<typename T, size_t extent_v = dynamicExtent> struct span_t final
 	{
-		template<size_t offset, size_t count> static constexpr size_t _subspanExtent() noexcept
+		template<size_t offset, size_t count> [[nodiscard]] static constexpr size_t _subspanExtent() noexcept
 		{
 			if constexpr (count != dynamicExtent)
 				return count;
@@ -106,7 +106,7 @@ namespace pcat::utils
 		constexpr span_t(pointer first, pointer last) noexcept : span_t(first, last - first) { }
 
 		template<typename type_t, size_t N, std::enable_if_t<isCompatArray<type_t, N>, void *> = nullptr>
-			constexpr span_t(type_t (&array)[N]) noexcept : span_t(static_cast<pointer>(array), N) { } // NOLINT(cppcoreguidelines-avoid-c-arrays)
+			constexpr span_t(type_t (&array)[N]) noexcept : span_t(static_cast<pointer>(array), N) { } // NOLINT(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 		template<typename type_t, size_t N, std::enable_if_t<isCompatArray<type_t, N>, void *> = nullptr>
 			constexpr span_t(std::array<type_t, N> &array) noexcept :
 			span_t(static_cast<pointer>(array.data()), N) { }
@@ -124,6 +124,9 @@ namespace pcat::utils
 		constexpr span_t(const container_t &container) noexcept(noexcept(std::data(container)) &&
 			noexcept(std::size(container))) : span_t(std::data(container), std::size(container)) { }
 
+		span_t(span_t &&) = delete;
+		~span_t() noexcept = default;
+		span_t &operator =(span_t &&) = delete;
 		constexpr span_t &operator =(const span_t &) noexcept = default;
 		[[nodiscard]] constexpr size_t size() const noexcept { return _extent.extent(); }
 		[[nodiscard]] constexpr size_t size_bytes() const noexcept { return size() * sizeof(T); }
@@ -228,7 +231,7 @@ namespace pcat::utils
 	};
 
 	// These are the type deduction guides for span_t
-	template<typename T, size_t N> span_t(T (&)[N]) -> span_t<T, N>; // NOLINT(cppcoreguidelines-avoid-c-arrays)
+	template<typename T, size_t N> span_t(T (&)[N]) -> span_t<T, N>; // NOLINT(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 	template<typename T, size_t N> span_t(std::array<T, N> &) -> span_t<T, N>;
 	template<typename T, size_t N> span_t(const std::array<T, N> &) -> span_t<const T, N>;
 	template<typename T> span_t(T *, size_t) -> span_t<T>;
