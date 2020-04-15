@@ -73,7 +73,7 @@ int main(int argCount, char **argList)
 	}
 	if (args->find(argType_t::version) && args->find(argType_t::help))
 	{
-		console.error("Can only specify one of --help and --version, not both.");
+		console.error("Can only specify one of --help and --version, not both."sv); // NOLINT(readability-magic-numbers)
 		return 1;
 	}
 	if (args->find(argType_t::version))
