@@ -56,9 +56,10 @@ namespace pcat::args
 		std::string_view parameter_;
 
 	public:
-		argUnrecognised_t(const std::string_view argument) : argNode_t{argType_t::unrecognised},
+		argUnrecognised_t() = delete;
+		constexpr argUnrecognised_t(const std::string_view argument) : argNode_t{argType_t::unrecognised},
 			argument_{argument}, parameter_{} { }
-		argUnrecognised_t(const std::string_view argument, const std::string_view parameter) :
+		constexpr argUnrecognised_t(const std::string_view argument, const std::string_view parameter) :
 			argNode_t{argType_t::unrecognised}, argument_{argument}, parameter_{parameter} { }
 		[[nodiscard]] auto argument() const noexcept { return argument_; }
 		[[nodiscard]] auto parameter() const noexcept { return parameter_; }
@@ -70,6 +71,7 @@ namespace pcat::args
 		std::string_view fileName_;
 
 	public:
+		argOutputFile_t() = delete;
 		constexpr argOutputFile_t(const std::string_view fileName) :
 			argNode_t{argType_t::outputFile}, fileName_{fileName} { }
 		[[nodiscard]] auto fileName() const noexcept { return fileName_; }
