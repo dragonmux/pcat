@@ -93,7 +93,7 @@ jobs:
       - name: Install crunch
         shell: bash
         run: |
-          meson build --prefix=$HOME/.local/bin -Db_coverage=${{ matrix.coverage }}
+          meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }}
           ninja -C build
           ninja -C build install
         working-directory: ${{ env.GITHUB_WORKSPACE }}/crunch
