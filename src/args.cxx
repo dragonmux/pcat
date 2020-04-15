@@ -67,6 +67,9 @@ void dumpUnrecogised(const argUnrecognised_t &node, const size_t indent) noexcep
 		console.warn(indentBy_t{indent}, "Parsed unknown argument '"sv, argument, '=', parameter, "'"sv); // NOLINT(readability-magic-numbers)
 }
 
+void dumpOutputFile(const argOutputFile_t &node, const size_t indent) noexcept
+	{ console.info(indentBy_t{indent}, "Parsed output file: "sv, node.fileName()); }
+
 void dumpAST(argNode_t *node, const size_t indent) noexcept
 {
 	switch (node->type())
@@ -82,6 +85,9 @@ void dumpAST(argNode_t *node, const size_t indent) noexcept
 			break;
 		case argType_t::version:
 			console.info(indentBy_t{indent}, "Parsed version"sv); // NOLINT(readability-magic-numbers)
+			break;
+		case argType_t::outputFile:
+			dumpOutputFile(*static_cast<argOutputFile_t *>(node), indent);
 			break;
 		default:
 			console.error("An internal error has occured"sv); // NOLINT(readability-magic-numbers)
