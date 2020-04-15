@@ -20,7 +20,7 @@ namespace pcat::args::tokenizer
 		}
 	}
 
-	bool isEquals(const char c) noexcept { return c == '='; }
+	[[nodiscard]] bool isEquals(const char c) noexcept { return c == '='; }
 
 	void tokenizer_t::readToken() noexcept
 	{

@@ -34,14 +34,14 @@ namespace pcat::args
 
 	public:
 		argsTree_t() noexcept : argNode_t{argType_t::tree}, _children{} { }
-		argNode_t *find(const argType_t type, const bool recursive = false) const noexcept;
-		bool add(std::unique_ptr<argNode_t> &&node) noexcept;
+		[[nodiscard]] argNode_t *find(const argType_t type, const bool recursive = false) const noexcept;
+		[[nodiscard]] bool add(std::unique_ptr<argNode_t> &&node) noexcept;
 
-		size_t count() const noexcept { return _children.size(); }
-		size_t size() const noexcept { return _children.size(); }
+		[[nodiscard]] size_t count() const noexcept { return _children.size(); }
+		[[nodiscard]] size_t size() const noexcept { return _children.size(); }
 
-		auto begin() const noexcept { return _children.begin(); }
-		auto end() const noexcept { return _children.end(); }
+		[[nodiscard]] auto begin() const noexcept { return _children.begin(); }
+		[[nodiscard]] auto end() const noexcept { return _children.end(); }
 	};
 
 	struct argUnrecognised_t final : argNode_t
@@ -55,8 +55,8 @@ namespace pcat::args
 			_argument{argument}, _parameter{} { }
 		argUnrecognised_t(std::string_view argument, std::string_view &&parameter) :
 			argNode_t{argType_t::unrecognised}, _argument{argument}, _parameter{parameter} { }
-		std::string_view argument() const noexcept { return _argument; }
-		std::string_view parameter() const noexcept { return _parameter; }
+		[[nodiscard]] std::string_view argument() const noexcept { return _argument; }
+		[[nodiscard]] std::string_view parameter() const noexcept { return _parameter; }
 	};
 
 	template<argType_t argType> struct argOfType_t final : argNode_t
@@ -78,9 +78,9 @@ namespace pcat::args
 		option_t(std::string &&option, const argType_t type) : _option{std::move(option)},
 			_type{type} { }
 
-		const std::string &name() const noexcept { return _option; }
-		const std::string &option() const noexcept { return _option; }
-		argType_t type() const noexcept { return _type; }
+		[[nodiscard]] const std::string &name() const noexcept { return _option; }
+		[[nodiscard]] const std::string &option() const noexcept { return _option; }
+		[[nodiscard]] argType_t type() const noexcept { return _type; }
 	};
 }
 

@@ -131,23 +131,29 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 	for (const auto &option : options)
 	{
 		if (argument == option.name())
-		{
-			ast.add(makeNode(lexer, options, option));
-			return true;
-		}
+			return ast.add(makeNode(lexer, options, option));
 	}
 	lexer.next();
 	if (argument == "--dump-ast"sv) // NOLINT(readability-magic-numbers)
 		return needASTDump = true;
 	else if (token.type() != tokenType_t::equals)
-		ast.add(std::make_unique<argUnrecognised_t>(argument));
+	{
+		if (!ast.add(std::make_unique<argUnrecognised_t>(argument)))
+			return false;
+	}
 	else
 	{
 		lexer.next();
 		if (token.type() == tokenType_t::space)
-			ast.add(std::make_unique<argUnrecognised_t>(argument));
+		{
+			if (!ast.add(std::make_unique<argUnrecognised_t>(argument)))
+				return false;
+		}
 		else
-			ast.add(std::make_unique<argUnrecognised_t>(argument, token.value()));
+		{
+			if (!ast.add(std::make_unique<argUnrecognised_t>(argument, token.value())))
+				return false;
+		}
 	}
 	return true;
 }
