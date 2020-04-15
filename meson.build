@@ -15,12 +15,13 @@ cxx = meson.get_compiler('cpp')
 substrate = include_directories('substrate')
 
 pcatSrcs = [
-	'src/pcat.cxx', 'src/args.cxx', 'src/args/types.cxx', 'src/args/tokenizer.cxx'
+	'src/pcat.cxx', 'src/args.cxx', 'src/args/types.cxx', 'src/args/tokenizer.cxx', 'substrate/impl/console.cxx'
 ]
 
 executable(
 	'pcat',
 	pcatSrcs,
+	cpp_args: ['-D_GNU_SOURCE'],
 	include_directories: substrate,
 	install: true
 )

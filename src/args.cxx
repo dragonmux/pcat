@@ -1,7 +1,9 @@
+#include <substrate/console>
 #include "utils/span.hxx"
 #include "args.hxx"
 #include "args/tokenizer.hxx"
 
+using substrate::console;
 using pcat::utils::span_t;
 using namespace pcat::args;
 using namespace pcat::args::tokenizer;
@@ -26,60 +28,68 @@ const char *typeToName(const tokenType_t type)
 	return nullptr;
 }
 
-void indentBy(const size_t indent) noexcept
+struct indentBy_t : substrate::printable_t
 {
-	for (size_t i{0}; i < indent; ++i)
-		putc('\t', stdout);
-}
+private:
+	size_t indentCount;
 
-void dumpAST(argsTree_t *node, const size_t indent) noexcept;
-void dumpAST(argNode_t *node, const size_t indent) noexcept;
+public:
+	constexpr indentBy_t(const size_t indent) noexcept : indentCount{indent} { }
+
+	void operator ()(const substrate::consoleStream_t &stream) const noexcept final
+	{
+		if (indentCount)
+			stream.write(' ');
+		for (size_t i{0}; i < indentCount; ++i)
+			stream.write('\t');
+	}
+};
+
+void dumpAST(argsTree_t *node, size_t indent) noexcept;
+void dumpAST(argNode_t *node, size_t indent) noexcept;
 
 void dumpAST() noexcept
 {
 	if (!args)
-		puts("Fatally failed to parse any arguments");
+		console.error("Fatally failed to parse any arguments"sv); // NOLINT(readability-magic-numbers)
 	else
 		dumpAST(args.get(), 0);
 }
 
-void dumpUnrecogised(const argUnrecognised_t &node) noexcept
+void dumpUnrecogised(const argUnrecognised_t &node, const size_t indent) noexcept
 {
-	std::string argument{node.argument()};
-	std::string parameter{node.parameter()};
+	const auto argument{node.argument()};
+	const auto parameter{node.parameter()};
 	if (parameter.empty())
-		printf("Parsed unknown argument '%s'\n", argument.data());
+		console.warn(indentBy_t{indent}, "Parsed unknown argument '"sv, argument, "'"sv); // NOLINT(readability-magic-numbers)
 	else
-		printf("Parsed unknown argument '%s=%s'\n", argument.data(), parameter.data());
+		console.warn(indentBy_t{indent}, "Parsed unknown argument '"sv, argument, '=', parameter, "'"sv); // NOLINT(readability-magic-numbers)
 }
 
 void dumpAST(argNode_t *node, const size_t indent) noexcept
 {
-	if (node->type() != argType_t::tree)
-		indentBy(indent);
 	switch (node->type())
 	{
 		case argType_t::tree:
 			dumpAST(static_cast<argsTree_t *>(node), indent);
 			break;
 		case argType_t::unrecognised:
-			dumpUnrecogised(*static_cast<argUnrecognised_t *>(node));
+			dumpUnrecogised(*static_cast<argUnrecognised_t *>(node), indent);
 			break;
 		case argType_t::help:
-			puts("Parsed help");
+			console.info(indentBy_t{indent}, "Parsed help"sv); // NOLINT(readability-magic-numbers)
 			break;
 		case argType_t::version:
-			puts("Parsed version");
+			console.info(indentBy_t{indent}, "Parsed version"sv); // NOLINT(readability-magic-numbers)
 			break;
 		default:
-			puts("An internal error has occured");
+			console.error("An internal error has occured"sv); // NOLINT(readability-magic-numbers)
 	}
 }
 
 void dumpAST(argsTree_t *node, const size_t indent) noexcept
 {
-	indentBy(indent);
-	printf("Parsed an argument tree containing %zu arguments\n", node->count());
+	console.info(indentBy_t{indent}, "Parsed an argument tree containing "sv, node->count(), " arguments"sv); // NOLINT(readability-magic-numbers)
 	for (const auto &arg : *node)
 		dumpAST(arg.get(), indent + 1);
 }
@@ -127,7 +137,7 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 		}
 	}
 	lexer.next();
-	if (argument == "--dump-ast"sv)
+	if (argument == "--dump-ast"sv) // NOLINT(readability-magic-numbers)
 		return needASTDump = true;
 	else if (token.type() != tokenType_t::equals)
 		ast.add(std::make_unique<argUnrecognised_t>(argument));
@@ -154,7 +164,7 @@ bool parseArguments(const size_t argCount, const char *const *const argList,
 		return false;
 	// Skip the first argument (that's the name of the program) and start
 	// tokenizing directly at the second.
-	tokenizer_t lexer{argCount - 1, argList + 1};
+	tokenizer_t lexer{argCount - 1, &argList[1]};
 	const token_t &token = lexer.token();
 	const span_t options{optionsBegin, optionsEnd};
 	args = std::make_unique<argsTree_t>();
@@ -165,11 +175,12 @@ bool parseArguments(const size_t argCount, const char *const *const argList,
 		if (!parseArgument(lexer, options, *args))
 		{
 			std::string argument{token.value()};
-			printf("Found invalid token '%s' (%s) in arguments\n", argument.data(), typeToName(token.type()));
+			console.warn("Found invalid token '"sv, argument, "' ("sv, // NOLINT(readability-magic-numbers)
+				typeToName(token.type()), ") in arguments"sv); // NOLINT(readability-magic-numbers)
 			return false;
 		}
 	}
-	puts("End of token stream");
+	console.info("End of token stream"sv); // NOLINT(readability-magic-numbers)
 
 	if (needASTDump)
 		dumpAST();

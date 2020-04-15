@@ -6,6 +6,7 @@
 #include <substrate/fd>
 #include <substrate/mmap>
 #include <substrate/units>
+#include <substrate/console>
 #include "args.hxx"
 
 namespace substrate
@@ -41,6 +42,7 @@ namespace pcat
 
 int main(int argCount, char **argList)
 {
+	substrate::console = {stdout, stderr};
 	if (!parseArguments(argCount, argList, pcat::options))
 	{
 		puts("Failed to parse arguments");
