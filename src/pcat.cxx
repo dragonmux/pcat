@@ -81,5 +81,10 @@ int main(int argCount, char **argList)
 	else if (args->find(argType_t::help))
 		return pcat::printHelp();
 	dumpAST();
+	if (!pcat::gatherFiles())
+	{
+		console.error("Cannot find any valid files to concatentate, exiting."sv); // NOLINT(readability-magic-numbers)
+		return 1;
+	}
 	return 0;
 }
