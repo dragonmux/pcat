@@ -12,6 +12,7 @@ project(
 )
 
 cxx = meson.get_compiler('cpp')
+sanitizer = get_option('b_sanitize')
 substrate = include_directories('substrate')
 
 pcatSrcs = [
@@ -25,3 +26,6 @@ executable(
 	include_directories: substrate,
 	install: true
 )
+
+crunchMake = find_program('crunchMake', required: false)
+subdir('test', if_found: crunchMake)
