@@ -47,7 +47,7 @@ namespace fd
 
 	inline auto toUnique(const std::string_view &value)
 	{
-		auto result{substrate::make_unique<char []>(value.size())};
+		auto result{substrate::make_unique<char []>(value.size())}; // NOLINT(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 		memcpy(result.get(), value.data(), value.size());
 		return result;
 	}
@@ -90,7 +90,7 @@ namespace fd
 		suite.assertTrue(file.valid());
 		suite.assertEqual(file.tell(), 0);
 		const off_t length = file.length();
-		suite.assertEqual(length, 78);
+		suite.assertEqual(length, 78); // NOLINT(readability-magic-numbers)
 		suite.assertTrue(file.tail());
 		suite.assertEqual(file.tell(), length);
 		suite.assertEqual(file.seek(-(length / 2), SEEK_CUR), length / 2);
@@ -101,7 +101,7 @@ namespace fd
 
 	void readUnique(testsuit &suite, const fd_t &file, const std::string_view &expected)
 	{
-		const auto result{substrate::make_unique<char []>(expected.size())};
+		const auto result{substrate::make_unique<char []>(expected.size())}; // NOLINT(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 		suite.assertNotNull(result);
 		suite.assertTrue(file.read(result, expected.size()));
 		suite.assertEqual(result.get(), expected.data(), expected.size());
