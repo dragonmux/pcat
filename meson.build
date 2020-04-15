@@ -8,7 +8,7 @@ project(
 	],
 	license: 'GPL3+',
 	version: '0.0.1',
-	meson_version: '>= 0.48'
+	meson_version: '>= 0.52'
 )
 
 cxx = meson.get_compiler('cpp')
