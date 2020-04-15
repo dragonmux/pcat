@@ -19,9 +19,10 @@ namespace pcat::utils
 	template<typename iterator_t, typename container_t> struct normalIterator_t
 	{
 	protected:
-		iterator_t current;
+		iterator_t current; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
 		using traits_t = iterator_traits<iterator_t>;
+		using constNormalIterator_t = const normalIterator_t;
 
 	public:
 		using iterator_type = iterator_t;
@@ -39,10 +40,10 @@ namespace pcat::utils
 			std::enable_if_t<std::is_same_v<iter_t, typename container_t::pointer>,
 			container_t>> &iter) noexcept : current{iter.base()} { }
 
-		reference operator *() const noexcept { return *current; }
-		pointer operator ->() const noexcept { return current; }
-		normalIterator_t operator++(int) noexcept { return normalIterator_t{current++}; }
-		normalIterator_t operator--(int) noexcept { return normalIterator_t{current--}; }
+		[[nodiscard]] reference operator *() const noexcept { return *current; }
+		[[nodiscard]] pointer operator ->() const noexcept { return current; }
+		constNormalIterator_t operator++(int) const noexcept { return normalIterator_t{current++}; }
+		constNormalIterator_t operator--(int) const noexcept { return normalIterator_t{current--}; }
 
 		normalIterator_t &operator ++() noexcept
 		{
@@ -56,11 +57,11 @@ namespace pcat::utils
 			return *this;
 		}
 
-		reference operator [](const difference_type offset) const noexcept
+		[[nodiscard]] reference operator [](const difference_type offset) const noexcept
 			{ return current[offset]; }
-		normalIterator_t operator +(const difference_type offset) const noexcept
+		[[nodiscard]] normalIterator_t operator +(const difference_type offset) const noexcept
 			{ return normalIterator_t{current + offset}; }
-		normalIterator_t operator -(const difference_type offset) const noexcept
+		[[nodiscard]] normalIterator_t operator -(const difference_type offset) const noexcept
 			{ return normalIterator_t{current - offset}; }
 
 		normalIterator_t operator +=(const difference_type offset) const noexcept
@@ -75,7 +76,7 @@ namespace pcat::utils
 			return *this;
 		}
 
-		const iterator_t base() const noexcept { return current; }
+		[[nodiscard]] iterator_t base() const noexcept { return current; }
 	};
 
 	template<typename iteratorL_t, typename iteratorR_t, typename container_t> inline bool operator ==(

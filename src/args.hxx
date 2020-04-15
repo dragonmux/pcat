@@ -34,7 +34,7 @@ namespace pcat::args
 
 	public:
 		argsTree_t() noexcept : argNode_t{argType_t::tree}, _children{} { }
-		[[nodiscard]] argNode_t *find(const argType_t type, const bool recursive = false) const noexcept;
+		[[nodiscard]] argNode_t *find(argType_t type, bool recursive = false) const noexcept;
 		[[nodiscard]] bool add(std::unique_ptr<argNode_t> &&node) noexcept;
 
 		[[nodiscard]] size_t count() const noexcept { return _children.size(); }
@@ -97,9 +97,9 @@ using pcat::args::argType_t;
 extern std::unique_ptr<pcat::args::argsTree_t> args;
 using pcat::args::argType_t;
 
-extern bool parseArguments(const size_t argCount, const char *const *const argList,
-	const pcat::args::option_t *const optionsBegin,
-	const pcat::args::option_t *const optionsEnd);
+extern bool parseArguments(size_t argCount, const char *const *argList,
+	const pcat::args::option_t *optionsBegin,
+	const pcat::args::option_t *optionsEnd);
 
 template<size_t optionCount> bool parseArguments(const size_t argCount, const char *const *const argList,
 	const std::array<pcat::args::option_t, optionCount> &options)
