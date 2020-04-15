@@ -34,7 +34,7 @@ namespace pcat
 
 	inline int32_t printHelp()
 	{
-		puts(helpString.data());
+		console.info(helpString);
 		return 0;
 	}
 }
