@@ -29,7 +29,7 @@ namespace pcat::args
 		virtual ~argNode_t() noexcept = default;
 		argNode_t &operator =(const argNode_t &) = delete;
 		argNode_t &operator =(argNode_t &&) = delete;
-		auto type() const noexcept { return type_; }
+		[[nodiscard]] auto type() const noexcept { return type_; }
 	};
 
 	struct argsTree_t final : argNode_t
