@@ -24,6 +24,8 @@ executable(
 	pcatSrcs,
 	cpp_args: ['-D_GNU_SOURCE'],
 	include_directories: substrate,
+	gnu_symbol_visibility: 'inlineshidden',
+	implicit_include_directories: false,
 	install: true
 )
 
