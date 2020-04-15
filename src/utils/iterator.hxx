@@ -22,7 +22,6 @@ namespace pcat::utils
 		iterator_t current; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
 		using traits_t = iterator_traits<iterator_t>;
-		using constNormalIterator_t = const normalIterator_t;
 
 	public:
 		using iterator_type = iterator_t;
@@ -42,8 +41,10 @@ namespace pcat::utils
 
 		[[nodiscard]] reference operator *() const noexcept { return *current; }
 		[[nodiscard]] pointer operator ->() const noexcept { return current; }
-		constNormalIterator_t operator++(int) const noexcept { return normalIterator_t{current++}; }
-		constNormalIterator_t operator--(int) const noexcept { return normalIterator_t{current--}; }
+		const normalIterator_t operator++(int) const noexcept // NOLINT(readability-const-return-type)
+			{ return normalIterator_t{current++}; }
+		const normalIterator_t operator--(int) const noexcept // NOLINT(readability-const-return-type)
+			{ return normalIterator_t{current--}; }
 
 		normalIterator_t &operator ++() noexcept
 		{
