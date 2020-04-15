@@ -186,7 +186,6 @@ bool parseArguments(const size_t argCount, const char *const *const argList,
 			return false;
 		}
 	}
-	console.info("End of token stream"sv); // NOLINT(readability-magic-numbers)
 
 	if (needASTDump)
 		dumpAST();
