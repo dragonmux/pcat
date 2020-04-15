@@ -106,7 +106,7 @@ namespace pcat::utils
 		constexpr span_t(pointer first, pointer last) noexcept : span_t(first, last - first) { }
 
 		template<typename type_t, size_t N, std::enable_if_t<isCompatArray<type_t, N>, void *> = nullptr>
-			constexpr span_t(type_t (&array)[N]) noexcept : span_t(static_cast<pointer>(array), N) { }
+			constexpr span_t(type_t (&array)[N]) noexcept : span_t(static_cast<pointer>(array), N) { } // NOLINT(cppcoreguidelines-avoid-c-arrays)
 		template<typename type_t, size_t N, std::enable_if_t<isCompatArray<type_t, N>, void *> = nullptr>
 			constexpr span_t(std::array<type_t, N> &array) noexcept :
 			span_t(static_cast<pointer>(array.data()), N) { }
@@ -125,18 +125,18 @@ namespace pcat::utils
 			noexcept(std::size(container))) : span_t(std::data(container), std::size(container)) { }
 
 		constexpr span_t &operator =(const span_t &) noexcept = default;
-		constexpr size_t size() const noexcept { return _extent.extent(); }
-		constexpr size_t size_bytes() const noexcept { return size() * sizeof(T); }
+		[[nodiscard]] constexpr size_t size() const noexcept { return _extent.extent(); }
+		[[nodiscard]] constexpr size_t size_bytes() const noexcept { return size() * sizeof(T); }
 		[[nodiscard]] constexpr bool empty() const noexcept { return size() == 0; }
 
-		constexpr reference front() const noexcept
+		[[nodiscard]] constexpr reference front() const noexcept
 		{
 			static_assert(extent != 0);
 			static_assert(!empty());
 			return *_ptr;
 		}
 
-		constexpr reference back() const noexcept
+		[[nodiscard]] constexpr reference back() const noexcept
 		{
 			static_assert(extent != 0);
 			static_assert(!empty());
@@ -150,17 +150,17 @@ namespace pcat::utils
 			return _ptr[idx];
 		}
 
-		constexpr pointer data() const noexcept { return _ptr; }
-		constexpr iterator begin() const noexcept { return iterator{_ptr}; }
-		constexpr const_iterator cbegin() const noexcept { return const_iterator{_ptr}; }
-		constexpr iterator end() const noexcept { return iterator{_ptr + size()}; }
-		constexpr const_iterator cend() const noexcept { return const_iterator{_ptr + size()}; }
-		constexpr pointer rbegin() const noexcept { return reverse_iterator{end()}; }
-		constexpr pointer crbegin() const noexcept { return const_reverse_iterator{cend()}; }
-		constexpr pointer rend() const noexcept { return reverse_iterator{begin()}; }
-		constexpr pointer crend() const noexcept { return const_reverse_iterator{cbegin()}; }
+		[[nodiscard]] constexpr pointer data() const noexcept { return _ptr; }
+		[[nodiscard]] constexpr iterator begin() const noexcept { return iterator{_ptr}; }
+		[[nodiscard]] constexpr const_iterator cbegin() const noexcept { return const_iterator{_ptr}; }
+		[[nodiscard]] constexpr iterator end() const noexcept { return iterator{_ptr + size()}; }
+		[[nodiscard]] constexpr const_iterator cend() const noexcept { return const_iterator{_ptr + size()}; }
+		[[nodiscard]] constexpr pointer rbegin() const noexcept { return reverse_iterator{end()}; }
+		[[nodiscard]] constexpr pointer crbegin() const noexcept { return const_reverse_iterator{cend()}; }
+		[[nodiscard]] constexpr pointer rend() const noexcept { return reverse_iterator{begin()}; }
+		[[nodiscard]] constexpr pointer crend() const noexcept { return const_reverse_iterator{cbegin()}; }
 
-		template<size_t count> constexpr span_t<T, count> first() const noexcept
+		template<size_t count> [[nodiscard]] constexpr span_t<T, count> first() const noexcept
 		{
 			if constexpr (extent_v == dynamicExtent)
 				static_assert(count <= size());
@@ -169,13 +169,13 @@ namespace pcat::utils
 			return {data(), count};
 		}
 
-		constexpr span_t<T, dynamicExtent> first(size_t count) const noexcept
+		[[nodiscard]] constexpr span_t<T, dynamicExtent> first(size_t count) const noexcept
 		{
 			static_assert(count <= size());
 			return {data(), count};
 		}
 
-		template<size_t count> constexpr span_t<T, count> last() const noexcept
+		template<size_t count> [[nodiscard]] constexpr span_t<T, count> last() const noexcept
 		{
 			if constexpr (extent_v == dynamicExtent)
 				static_assert(count <= size());
@@ -184,13 +184,13 @@ namespace pcat::utils
 			return {data() + (size() - count), count};
 		}
 
-		constexpr span_t<T, dynamicExtent> last(size_t count) const noexcept
+		[[nodiscard]] constexpr span_t<T, dynamicExtent> last(size_t count) const noexcept
 		{
 			static_assert(count <= size());
 			return {data() + (size() - count), count};
 		}
 
-		template<size_t offset, size_t count = dynamicExtent> constexpr auto
+		template<size_t offset, size_t count = dynamicExtent> [[nodiscard]] constexpr auto
 			subspan() const noexcept -> span_t<T, _subspanExtent<offset, count>()>
 		{
 			if constexpr (extent_v == dynamicExtent)
@@ -213,7 +213,7 @@ namespace pcat::utils
 			return {data() + offset, count};
 		}
 
-		constexpr span_t<T, dynamicExtent> subspan(size_t offset, size_t count = dynamicExtent) const noexcept
+		[[nodiscard]] constexpr span_t<T, dynamicExtent> subspan(size_t offset, size_t count = dynamicExtent) const noexcept
 		{
 			static_assert(offset <= size());
 			if (count == dynamicExtent)
@@ -228,7 +228,7 @@ namespace pcat::utils
 	};
 
 	// These are the type deduction guides for span_t
-	template<typename T, size_t N> span_t(T (&)[N]) -> span_t<T, N>;
+	template<typename T, size_t N> span_t(T (&)[N]) -> span_t<T, N>; // NOLINT(cppcoreguidelines-avoid-c-arrays)
 	template<typename T, size_t N> span_t(std::array<T, N> &) -> span_t<T, N>;
 	template<typename T, size_t N> span_t(const std::array<T, N> &) -> span_t<const T, N>;
 	template<typename T> span_t(T *, size_t) -> span_t<T>;
@@ -257,7 +257,7 @@ namespace pcat::utils
 	}
 } // namespace pcat::utils
 
-namespace std
+namespace std // NOLINT(cert-dcl58-cpp)
 {
 	using pcat::utils::dynamicExtent;
 	using pcat::utils::span_t;
