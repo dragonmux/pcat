@@ -170,7 +170,7 @@ bool parseArguments(const size_t argCount, const char *const *const argList,
 		return false;
 	// Skip the first argument (that's the name of the program) and start
 	// tokenizing directly at the second.
-	tokenizer_t lexer{argCount - 1, argList + 1}; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	tokenizer_t lexer{argCount - 1, argList + 1};
 	const token_t &token = lexer.token();
 	const span_t options{optionsBegin, optionsEnd};
 	args = std::make_unique<argsTree_t>();
