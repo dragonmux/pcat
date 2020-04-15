@@ -100,7 +100,7 @@ namespace pcat::args
 		[[nodiscard]] constexpr auto &option() const noexcept { return option_; }
 		[[nodiscard]] constexpr auto type() const noexcept { return type_; }
 	};
-}
+} // namespace pcat::args
 
 using pcat::args::argType_t;
 
