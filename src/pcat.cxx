@@ -37,7 +37,8 @@ namespace pcat
 	using substrate::operator ""_KiB;
 	using std::literals::string_literals::operator ""s;
 
-	static const auto options{substrate::make_array<args::option_t>({ // NOLINT(cert-err58-cpp)
+	static const auto options{substrate::make_array<args::option_t>( // NOLINT(cert-err58-cpp)
+	{
 		{"--version"s, argType_t::version},
 		{"--help"s, argType_t::help},
 		{"--output"s, argType_t::outputFile},
@@ -52,7 +53,7 @@ int main(int argCount, char **argList)
 	console = {stdout, stderr};
 	if (!parseArguments(argCount, argList, pcat::options))
 	{
-		console.error("Failed to parse arguments"sv);
+		console.error("Failed to parse arguments"sv); // NOLINT(readability-magic-numbers)
 		return 1;
 	}
 	if (args->find(argType_t::version))
