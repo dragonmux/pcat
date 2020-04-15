@@ -16,9 +16,14 @@ private:
 	void testRead() { fd::testRead(*this); }
 
 public:
-	~testFD() { unlink("fd.test"); }
+	testFD() = default;
+	testFD(const testFD &) = delete;
+	testFD(testFD &&) = delete;
+	~testFD() final { unlink("fd.test"); }
+	testFD &operator =(const testFD &) = delete;
+	testFD &operator =(testFD &&) = delete;
 
-	void registerTests() final override
+	void registerTests() final
 	{
 		CXX_TEST(testBadFD)
 		CXX_TEST(testBadOpen)
