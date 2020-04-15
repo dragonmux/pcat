@@ -74,10 +74,10 @@ void dumpAST(argNode_t *node, const size_t indent) noexcept
 	switch (node->type())
 	{
 		case argType_t::tree:
-			dumpAST(static_cast<argsTree_t *>(node), indent);
+			dumpAST(dynamic_cast<argsTree_t *>(node), indent);
 			break;
 		case argType_t::unrecognised:
-			dumpUnrecogised(*static_cast<argUnrecognised_t *>(node), indent);
+			dumpUnrecogised(*dynamic_cast<argUnrecognised_t *>(node), indent);
 			break;
 		case argType_t::help:
 			console.info(indentBy_t{indent}, "Parsed help"sv); // NOLINT(readability-magic-numbers)
@@ -86,7 +86,7 @@ void dumpAST(argNode_t *node, const size_t indent) noexcept
 			console.info(indentBy_t{indent}, "Parsed version"sv); // NOLINT(readability-magic-numbers)
 			break;
 		case argType_t::outputFile:
-			dumpOutputFile(*static_cast<argOutputFile_t *>(node), indent);
+			dumpOutputFile(*dynamic_cast<argOutputFile_t *>(node), indent);
 			break;
 		default:
 			console.error("An internal error has occured"sv); // NOLINT(readability-magic-numbers)

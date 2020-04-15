@@ -16,7 +16,7 @@ namespace pcat::args
 			{
 				if (node->type() == argType_t::tree)
 				{
-					auto tree = static_cast<const argsTree_t *>(node.get());
+					auto tree = dynamic_cast<const argsTree_t *>(node.get());
 					auto result = tree->find(nodeType, true);
 					if (result)
 						return result;

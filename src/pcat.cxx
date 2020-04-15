@@ -57,7 +57,7 @@ namespace pcat
 		{
 			if (arg->type() != argType_t::unrecognised)
 				continue;
-			const auto &file{static_cast<args::argUnrecognised_t &>(*arg)};
+			const auto &file{dynamic_cast<args::argUnrecognised_t &>(*arg)};
 			result &= checkFile(file.argument());
 		}
 		return result && !inputFiles.empty();
