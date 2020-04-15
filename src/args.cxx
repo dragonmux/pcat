@@ -67,7 +67,7 @@ void dumpUnrecogised(const argUnrecognised_t &node, const size_t indent) noexcep
 }
 
 void dumpOutputFile(const argOutputFile_t &node, const size_t indent) noexcept
-	{ console.info(indentBy_t{indent}, "Parsed output file: "sv, node.fileName()); }
+	{ console.info(indentBy_t{indent}, "Parsed output file '"sv, node.fileName(), "'"sv); } // NOLINT(readability-magic-numbers)
 
 void dumpAST(argNode_t *node, const size_t indent) noexcept
 {
