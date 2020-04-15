@@ -87,16 +87,16 @@ namespace pcat::args
 	struct option_t final
 	{
 	private:
-		std::string option_;
+		std::string_view option_;
 		argType_t type_;
 
 	public:
-		option_t(std::string &&option, const argType_t type) : option_{std::move(option)},
-			type_{type} { }
+		constexpr option_t(const std::string_view option, const argType_t type) noexcept :
+			option_{option}, type_{type} { }
 
-		[[nodiscard]] const auto &name() const noexcept { return option_; }
-		[[nodiscard]] const auto &option() const noexcept { return option_; }
-		[[nodiscard]] auto type() const noexcept { return type_; }
+		[[nodiscard]] constexpr auto &name() const noexcept { return option_; }
+		[[nodiscard]] constexpr auto &option() const noexcept { return option_; }
+		[[nodiscard]] constexpr auto type() const noexcept { return type_; }
 	};
 }
 

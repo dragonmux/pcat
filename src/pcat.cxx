@@ -2,7 +2,6 @@
 #include <array>
 #include <type_traits>
 #include <utility>
-#include <string>
 #include <string_view>
 #include <substrate/fd>
 #include <substrate/mmap>
@@ -35,14 +34,13 @@ namespace pcat
 {
 	using substrate::mmap_t;
 	using substrate::operator ""_KiB;
-	using std::literals::string_literals::operator ""s;
 
-	static const auto options{substrate::make_array<args::option_t>( // NOLINT(cert-err58-cpp)
+	constexpr static auto options{substrate::make_array<args::option_t>(
 	{
-		{"--version"s, argType_t::version},
-		{"--help"s, argType_t::help},
-		{"--output"s, argType_t::outputFile},
-		{"-o"s, argType_t::outputFile}
+		{"--version"sv, argType_t::version},
+		{"--help"sv, argType_t::help},
+		{"--output"sv, argType_t::outputFile},
+		{"-o"sv, argType_t::outputFile}
 	})};
 
 	constexpr static size_t pageSize = 4_KiB;
