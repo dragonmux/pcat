@@ -6,14 +6,14 @@ config.set('COMPILER_VERSION', cxx.version())
 config.set('TARGET_SYS', target_machine.system())
 config.set('TARGET_ARCH', target_machine.cpu())
 
-versionHeader = configure_file(
+versionHeaderSrc = configure_file(
 	configuration: config,
 	input: 'version.hxx.in',
 	output: 'version.hxx.in'
 )
 
-vcs_tag(
-	input: versionHeader,
+versionHeader = vcs_tag(
+	input: versionHeaderSrc,
 	output: 'version.hxx',
 	replace_string: '@VERSION@',
 	fallback: meson.project_version()

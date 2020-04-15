@@ -22,7 +22,7 @@ pcatSrcs = [
 subdir('src')
 executable(
 	'pcat',
-	pcatSrcs,
+	pcatSrcs + [versionHeader],
 	cpp_args: ['-D_GNU_SOURCE'],
 	include_directories: [substrate, include_directories('src')],
 	gnu_symbol_visibility: 'inlineshidden',
