@@ -1,5 +1,5 @@
 ---
-Checks:              'bugprone-*,cert-*,cppcoreguidelines-*,modernize-*,performance-*,readability-*,portability-*,clang-analyzer-unix,clang-analyzer-security,clang-analyzer-deadcode,clang-analyzer-core,clang-analyzer-cplusplus,clang-analyzer-optin,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers,-readability-redundant-member-init,-readability-else-after-return,-readability-implicit-bool-conversion,-readability-named-parameter,-cppcoreguidelines-pro-bounds-pointer-arithmetic'
+Checks:              'bugprone-*,cert-*,cppcoreguidelines-*,modernize-*,performance-*,readability-*,portability-*,clang-analyzer-unix,clang-analyzer-security,clang-analyzer-deadcode,clang-analyzer-core,clang-analyzer-cplusplus,clang-analyzer-optin,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers,-readability-redundant-member-init,-readability-else-after-return,-readability-implicit-bool-conversion,-readability-named-parameter,-cppcoreguidelines-pro-bounds-pointer-arithmetic,llvm-namespace-comment'
 WarningsAsErrors: ''
 HeaderFilterRegex: '(pcat/src/.+)'
 #|(substrate/substrate/.+)
