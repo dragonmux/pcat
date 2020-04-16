@@ -4,7 +4,10 @@ project(
 	default_options: [
 		'buildtype=release',
 		'cpp_std=c++17',
-		'warning_level=3'
+		'warning_level=3',
+		'b_ndebug=if-release',
+		'b_lto=true',
+		'strip=true'
 	],
 	license: 'GPL3+',
 	version: '0.0.1',
