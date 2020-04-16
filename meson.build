@@ -27,7 +27,8 @@ pcat = executable(
 	include_directories: [substrate, include_directories('src')],
 	gnu_symbol_visibility: 'inlineshidden',
 	implicit_include_directories: false,
-	install: true
+	install: true,
+	pie: true
 )
 
 crunchMake = find_program('crunchMake', required: false)
