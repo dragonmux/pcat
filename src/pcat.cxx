@@ -132,7 +132,7 @@ int main(int argCount, char **argList)
 		console.error("One or more files specified to concatentate are invalid, exiting."sv); // NOLINT(readability-magic-numbers)
 		return 1;
 	}
-	console.info("Length of the resulting concatenated file will be "sv, pcat::totalSize(), " bytes"sv);
+	console.info("Length of the resulting concatenated file will be "sv, pcat::totalSize(), " bytes"sv); // NOLINT(readability-magic-numbers)
 
 	pcat::closeFiles();
 	return 0;
