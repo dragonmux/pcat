@@ -20,7 +20,7 @@ pcatSrcs = [
 ]
 
 subdir('src')
-executable(
+pcat = executable(
 	'pcat',
 	pcatSrcs + [versionHeader],
 	cpp_args: ['-D_GNU_SOURCE'],

@@ -17,12 +17,12 @@ if sanitizer != 'none'
 endif
 
 pcatTests = [
-	'testFD'
+	'testFD', 'testConsole'
 ]
 
 testHelpers = static_library(
 	'testHelpers',
-	['fd.cxx'],
+	['fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx'],
 	pic: true,
 	dependencies: [libcrunchpp],
 	include_directories: substrate,
@@ -31,7 +31,11 @@ testHelpers = static_library(
 )
 
 testObjectMap = {
-	'testFD': {'test': ['fd.cxx']}
+	'testFD': {'test': ['fd.cxx']},
+	'testConsole': {
+		'test': ['console.cxx', '../substrate/impl/pty.cxx'],
+		'pcat': ['substrate/impl/console.cxx']
+	}
 }
 
 foreach test : pcatTests
