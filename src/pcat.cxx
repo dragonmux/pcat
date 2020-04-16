@@ -94,7 +94,8 @@ namespace pcat
 
 	std::size_t totalSize() noexcept
 	{
-		return std::accumulate(inputFiles.begin(), inputFiles.end(), 0,
+		constexpr std::size_t zero{};
+		return std::accumulate(inputFiles.begin(), inputFiles.end(), zero,
 			[](const std::size_t count, const fd_t &file) noexcept -> std::size_t
 				{ return count + file.length(); }
 		);
