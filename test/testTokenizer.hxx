@@ -5,6 +5,7 @@ namespace tokenizer
 {
 	extern void testSimple(testsuit &suite);
 	extern void testAssigned(testsuit &suite);
+	extern void testMultiple(testsuit &suite);
 }
 
 #endif /*TEST_TOKENIZER__HXX*/
