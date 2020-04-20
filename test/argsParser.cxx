@@ -59,9 +59,26 @@ namespace parser
 		{
 			suite.assertNotNull(arg);
 			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(type));
-			const auto node = args->find(type);
-			suite.assertNotNull(node);
-			suite.assertEqual(node, arg.get());
+
+			const auto search = args->find(type);
+			suite.assertNotNull(search);
+			suite.assertEqual(search, arg.get());
+		}
+	};
+
+	template<> struct assertNode_t<argOutputFile_t>
+	{
+		void operator()(testsuit &suite, const std::unique_ptr<argNode_t> &arg)
+		{
+			suite.assertNotNull(arg);
+			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::outputFile));
+			const auto node = dynamic_cast<argOutputFile_t *>(arg.get());
+			suite.assertEqual(node->fileName().size(), stringValue.size());
+			suite.assertEqual(node->fileName().data(), stringValue.data(), stringValue.size());
+
+			const auto search = args->find(argType_t::outputFile);
+			suite.assertNotNull(search);
+			suite.assertEqual(search, arg.get());
 		}
 	};
 
@@ -87,22 +104,10 @@ namespace parser
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 1);
 		auto iterator = args->begin();
-		const std::remove_pointer_t<decltype(iterator->get())> *arg{nullptr};
-		const argOutputFile_t *node{nullptr};
-
 		suite.assertTrue(iterator != args->end());
-		arg = iterator->get();
-		suite.assertNotNull(arg);
-		suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::outputFile));
-		node = dynamic_cast<decltype(node)>(arg);
-		suite.assertEqual(node->fileName().size(), stringValue.size());
-		suite.assertEqual(node->fileName().data(), stringValue.data(), stringValue.size());
-
+		assertNode_t<argOutputFile_t>{}(suite, *iterator);
 		++iterator;
 		suite.assertTrue(iterator == args->end());
-		const auto outputFile = args->find(argType_t::outputFile);
-		suite.assertNotNull(outputFile);
-		suite.assertEqual(outputFile, const_cast<decltype(iterator->get())>(arg));
 		suite.assertNull(args->find(argType_t::version));
 	}
 
