@@ -2,7 +2,7 @@
 #include <substrate/utility>
 #include <args/tokenizer.hxx>
 #include <crunch++.h>
-#include "testTokenizer.hxx"
+#include "testArgsTokenizer.hxx"
 
 using std::literals::string_view_literals::operator ""sv;
 using pcat::args::tokenizer::tokenizer_t;
@@ -119,4 +119,4 @@ namespace tokenizer
 		suite.assertEqual(token.value().size(), 0);
 		suite.assertNull(token.value().data());
 	}
-}
+} // namespace tokenizer

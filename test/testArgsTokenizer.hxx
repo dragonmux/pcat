@@ -1,5 +1,5 @@
-#ifndef TEST_TOKENIZER__HXX
-#define TEST_TOKENIZER__HXX
+#ifndef TEST_ARGS_TOKENIZER__HXX
+#define TEST_ARGS_TOKENIZER__HXX
 
 namespace tokenizer
 {
@@ -8,4 +8,4 @@ namespace tokenizer
 	extern void testMultiple(testsuit &suite);
 }
 
-#endif /*TEST_TOKENIZER__HXX*/
+#endif /*TEST_ARGS_TOKENIZER__HXX*/
