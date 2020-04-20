@@ -8,6 +8,7 @@ namespace parser
 	extern void testAssigned(testsuit &suite);
 	extern void testMultiple(testsuit &suite);
 	extern void testUnknown(testsuit &suite);
+	extern void testInvalid(testsuit &suite);
 }
 
 #endif /*TEST_ARGS_PARSER__HXX*/

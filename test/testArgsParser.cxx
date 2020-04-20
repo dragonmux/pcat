@@ -10,6 +10,7 @@ private:
 	void testAssigned() { parser::testAssigned(*this); }
 	void testMultiple() { parser::testMultiple(*this); }
 	void testUnknown() { parser::testUnknown(*this); }
+	void testInvalid() { parser::testInvalid(*this); }
 
 public:
 	testParser() = default;
@@ -26,6 +27,7 @@ public:
 		CXX_TEST(testAssigned)
 		CXX_TEST(testMultiple)
 		CXX_TEST(testUnknown)
+		CXX_TEST(testInvalid)
 	}
 };
 
