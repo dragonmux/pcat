@@ -7,6 +7,10 @@
 
 using std::literals::string_view_literals::operator ""sv;
 using pcat::args::option_t;
+using pcat::args::argNode_t;
+using pcat::args::argOfType_t;
+using pcat::args::argHelp_t;
+using pcat::args::argVersion_t;
 using pcat::args::argOutputFile_t;
 using pcat::args::argUnrecognised_t;
 
@@ -47,6 +51,20 @@ namespace parser
 		suite.assertNull(args);
 	}
 
+	template<typename> struct assertNode_t;
+
+	template<argType_t type> struct assertNode_t<argOfType_t<type>>
+	{
+		void operator ()(testsuit &suite, const std::unique_ptr<argNode_t> &arg)
+		{
+			suite.assertNotNull(arg);
+			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(type));
+			const auto node = args->find(type);
+			suite.assertNotNull(node);
+			suite.assertEqual(node, arg.get());
+		}
+	};
+
 	void testSimple(testsuit &suite)
 	{
 		args = {};
@@ -54,18 +72,10 @@ namespace parser
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 1);
 		auto iterator = args->begin();
-		const std::remove_pointer_t<decltype(iterator->get())> *arg{nullptr};
-
 		suite.assertTrue(iterator != args->end());
-		arg = iterator->get();
-		suite.assertNotNull(arg);
-		suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::help));
-
+		assertNode_t<argHelp_t>{}(suite, *iterator);
 		++iterator;
 		suite.assertTrue(iterator == args->end());
-		const auto help = args->find(argType_t::help);
-		suite.assertNotNull(help);
-		suite.assertEqual(help, const_cast<decltype(iterator->get())>(arg));
 		suite.assertNull(args->find(argType_t::version));
 	}
 
