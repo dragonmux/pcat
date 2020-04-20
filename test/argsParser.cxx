@@ -7,6 +7,7 @@
 
 using std::literals::string_view_literals::operator ""sv;
 using pcat::args::option_t;
+using pcat::args::argOutputFile_t;
 using pcat::args::argUnrecognised_t;
 
 constexpr auto emptyArgs = substrate::make_array<const char *>({"test"});
@@ -64,7 +65,7 @@ namespace parser
 		suite.assertTrue(iterator == args->end());
 		const auto help = args->find(argType_t::help);
 		suite.assertNotNull(help);
-		suite.assertEqual(help, const_cast<decltype(help)>(arg));
+		suite.assertEqual(help, const_cast<decltype(iterator->get())>(arg));
 		suite.assertNull(args->find(argType_t::version));
 	}
 
@@ -72,6 +73,27 @@ namespace parser
 		const std::array<const char *, argsCount> &testArgs)
 	{
 		args = {};
+		suite.assertTrue(parseArguments(testArgs.size(), testArgs.data(), assignedOptions));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 1);
+		auto iterator = args->begin();
+		const std::remove_pointer_t<decltype(iterator->get())> *arg{nullptr};
+		const argOutputFile_t *node{nullptr};
+
+		suite.assertTrue(iterator != args->end());
+		arg = iterator->get();
+		suite.assertNotNull(arg);
+		suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::outputFile));
+		node = dynamic_cast<decltype(node)>(arg);
+		suite.assertEqual(node->fileName().size(), stringValue.size());
+		suite.assertEqual(node->fileName().data(), stringValue.data(), stringValue.size());
+
+		++iterator;
+		suite.assertTrue(iterator == args->end());
+		const auto outputFile = args->find(argType_t::outputFile);
+		suite.assertNotNull(outputFile);
+		suite.assertEqual(outputFile, const_cast<decltype(iterator->get())>(arg));
+		suite.assertNull(args->find(argType_t::version));
 	}
 
 	void testAssigned(testsuit &suite)
