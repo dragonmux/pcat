@@ -8,7 +8,7 @@
 
 namespace pcat::args
 {
-	enum class argType_t
+	enum class argType_t : uint8_t
 	{
 		tree,
 		unrecognised,
