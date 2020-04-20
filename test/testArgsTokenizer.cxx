@@ -17,6 +17,7 @@ private:
 	}
 
 	void testSimple() { tokenizer::testSimple(*this); }
+	void testAssigned() { tokenizer::testAssigned(*this); }
 
 public:
 	testTokenizer() = default;
@@ -30,6 +31,7 @@ public:
 	{
 		CXX_TEST(testConstruct)
 		CXX_TEST(testSimple)
+		CXX_TEST(testAssigned)
 	}
 };
 
