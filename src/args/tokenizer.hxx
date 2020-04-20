@@ -6,7 +6,7 @@
 
 namespace pcat::args::tokenizer
 {
-	enum class tokenType_t
+	enum class tokenType_t : uint8_t
 	{
 		unknown,
 		arg,

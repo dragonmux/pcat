@@ -1,7 +1,7 @@
 crunchpp = find_program('crunch++')
 libcrunchpp = dependency('crunch++')
 
-commandExtra = ['-I../substrate']
+commandExtra = ['-I../substrate', '-std=' + get_option('cpp_std')]
 if get_option('b_coverage')
 	commandExtra += ['--coverage']
 endif
@@ -17,7 +17,7 @@ if sanitizer != 'none'
 endif
 
 pcatTests = [
-	'testFD', 'testConsole'
+	'testFD', 'testConsole', 'testArgsTokenizer'
 ]
 
 testHelpers = static_library(
@@ -35,7 +35,8 @@ testObjectMap = {
 	'testConsole': {
 		'test': ['console.cxx', '../substrate/impl/pty.cxx'],
 		'pcat': ['substrate/impl/console.cxx']
-	}
+	},
+	'testArgsTokenizer': {'pcat': ['src/args/tokenizer.cxx']}
 }
 
 foreach test : pcatTests
@@ -46,7 +47,7 @@ foreach test : pcatTests
 	custom_target(
 		test,
 		command: [
-			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@'
+			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I../src'
 		] + commandExtra + testLibs,
 		input: [test + '.cxx'] + pcatObjs + testObjs,
 		output: test + '.so',
