@@ -10,8 +10,8 @@ using pcat::args::argUnrecognised_t;
 
 constexpr auto emptyArgs = substrate::make_array<const char *>({"test"});
 constexpr static auto stringHelp{"--help"sv};
-constexpr static auto stringArgument{"--argument"sv};
-constexpr static auto stringValue{"value"sv};
+constexpr static auto stringArgument{"--output"sv};
+constexpr static auto stringValue{"file"sv};
 constexpr static auto stringVersion{"--version"sv};
 constexpr static auto simpleArgs = substrate::make_array<const char *>({"test", "--help"});
 constexpr static auto assignedArgs = substrate::make_array<const char *>({"test", "--argument=value"});
@@ -19,7 +19,7 @@ constexpr static auto multipleArgs = substrate::make_array<const char *>(
 {
 	"test",
 	"--version",
-	"--argument=value",
+	"--output=file",
 	"--help"
 });
 
@@ -53,7 +53,7 @@ namespace parser
 		suite.assertNull(args);
 		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), nullptr, nullptr));
 		suite.assertNotNull(args);
-		suite.assertEqual(args->count(), 4); // should be 3
+		suite.assertEqual(args->count(), 3);
 		auto iterator = args->begin();
 		const std::remove_pointer_t<decltype(iterator->get())> *arg{nullptr};
 		const argUnrecognised_t *node{nullptr};
@@ -84,13 +84,9 @@ namespace parser
 		suite.assertNotNull(arg);
 		suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::unrecognised));
 		node = dynamic_cast<decltype(node)>(arg);
-
-		++iterator;
-		suite.assertTrue(iterator != args->end());
-		arg = iterator->get();
-		suite.assertNotNull(arg);
-		suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::unrecognised));
-		node = dynamic_cast<decltype(node)>(arg);
+		suite.assertEqual(node->argument().size(), stringHelp.size());
+		suite.assertEqual(node->argument().data(), stringHelp.data(), stringHelp.size());
+		suite.assertNull(node->parameter().data());
 
 		++iterator;
 		suite.assertTrue(iterator == args->end());

@@ -169,8 +169,12 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 			if (!ast.add(substrate::make_unique<argUnrecognised_t>(argument)))
 				return false;
 		}
-		else if (!ast.add(substrate::make_unique<argUnrecognised_t>(argument, token.value())))
-			return false;
+		else
+		{
+			if (!ast.add(substrate::make_unique<argUnrecognised_t>(argument, token.value())))
+				return false;
+			lexer.next();
+		}
 	}
 	return true;
 }
