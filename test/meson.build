@@ -22,10 +22,10 @@ pcatTests = [
 
 testHelpers = static_library(
 	'testHelpers',
-	['fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx'],
+	['fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx'],
 	pic: true,
 	dependencies: [libcrunchpp],
-	include_directories: substrate,
+	include_directories: [include_directories('../src'), substrate],
 	install: false,
 	build_by_default: true
 )
@@ -36,7 +36,7 @@ testObjectMap = {
 		'test': ['console.cxx', '../substrate/impl/pty.cxx'],
 		'pcat': ['substrate/impl/console.cxx']
 	},
-	'testArgsTokenizer': {'pcat': ['src/args/tokenizer.cxx']}
+	'testArgsTokenizer': {'test': ['tokenizer.cxx'], 'pcat': ['src/args/tokenizer.cxx']}
 }
 
 foreach test : pcatTests

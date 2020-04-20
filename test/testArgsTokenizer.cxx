@@ -1,5 +1,6 @@
-#include <crunch++.h>
 #include <args/tokenizer.hxx>
+#include <crunch++.h>
+#include "testTokenizer.hxx"
 
 using pcat::args::tokenizer::tokenizer_t;
 using pcat::args::tokenizer::tokenType_t;
@@ -15,6 +16,8 @@ private:
 		assertEqual(static_cast<uint8_t>(token.type()), static_cast<uint8_t>(tokenType_t::unknown));
 	}
 
+	void testSimple() { tokenizer::testSimple(*this); }
+
 public:
 	testTokenizer() = default;
 	testTokenizer(const testTokenizer &) = delete;
@@ -26,6 +29,7 @@ public:
 	void registerTests() final
 	{
 		CXX_TEST(testConstruct)
+		CXX_TEST(testSimple)
 	}
 };
 
