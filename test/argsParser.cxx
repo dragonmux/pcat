@@ -94,6 +94,7 @@ namespace parser
 		++iterator;
 		suite.assertTrue(iterator == args->end());
 		suite.assertNull(args->find(argType_t::version));
+		suite.assertNull(args->find(argType_t::unrecognised));
 	}
 
 	template<size_t argsCount> void testAssigned(testsuit &suite,
@@ -109,6 +110,7 @@ namespace parser
 		++iterator;
 		suite.assertTrue(iterator == args->end());
 		suite.assertNull(args->find(argType_t::version));
+		suite.assertNull(args->find(argType_t::unrecognised));
 	}
 
 	void testAssigned(testsuit &suite)
@@ -120,6 +122,21 @@ namespace parser
 	void testMultiple(testsuit &suite)
 	{
 		args = {};
+		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), multipleOptions));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 3);
+		auto iterator = args->begin();
+		suite.assertTrue(iterator != args->end());
+		assertNode_t<argVersion_t>{}(suite, *iterator);
+		++iterator;
+		suite.assertTrue(iterator != args->end());
+		assertNode_t<argOutputFile_t>{}(suite, *iterator);
+		++iterator;
+		suite.assertTrue(iterator != args->end());
+		assertNode_t<argHelp_t>{}(suite, *iterator);
+		++iterator;
+		suite.assertTrue(iterator == args->end());
+		suite.assertNull(args->find(argType_t::unrecognised));
 	}
 
 	void testUnknown(testsuit &suite)
