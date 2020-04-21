@@ -125,6 +125,4 @@ template<size_t optionCount> bool parseArguments(const size_t argCount, const ch
 	return parseArguments(argCount, argList, options.begin(), options.end());
 }
 
-extern void dumpAST() noexcept;
-
 #endif /*ARGS__HXX*/

@@ -150,8 +150,7 @@ int main(int argCount, char **argList)
 		console.error("Output file must be specified on the command line, exiting."sv); // NOLINT(readability-magic-numbers)
 		return 1;
 	}
-	dumpAST();
-	if (!pcat::gatherFiles())
+	else if (!pcat::gatherFiles())
 	{
 		console.error("One or more files specified to concatentate are invalid, exiting."sv); // NOLINT(readability-magic-numbers)
 		return 1;
