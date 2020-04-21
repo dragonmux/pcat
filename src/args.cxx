@@ -28,16 +28,6 @@ const char *typeToName(const tokenType_t type)
 	return nullptr;
 }
 
-bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, argsTree_t &ast);
-
-auto parseTree(tokenizer_t &lexer, const span_t<const option_t> &options)
-{
-	auto tree{substrate::make_unique<argsTree_t>()};
-	if (parseArgument(lexer, options, *tree))
-		return tree;
-	throw std::exception{};
-}
-
 auto parseOutputFile(tokenizer_t &lexer)
 {
 	const auto &token{lexer.token()};
@@ -52,13 +42,11 @@ auto parseOutputFile(tokenizer_t &lexer)
 	return substrate::make_unique<argOutputFile_t>(fileName);
 }
 
-std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const span_t<const option_t> &options, const option_t &option)
+std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const option_t &option)
 {
 	lexer.next();
 	switch (option.type())
 	{
-		case argType_t::tree:
-			return parseTree(lexer, options);
 		case argType_t::help:
 			return substrate::make_unique<argHelp_t>();
 		case argType_t::version:
@@ -81,7 +69,7 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 	for (const auto &option : options)
 	{
 		if (argument == option.name())
-			return ast.add(makeNode(lexer, options, option));
+			return ast.add(makeNode(lexer, option));
 	}
 	lexer.next();
 	if (token.type() != tokenType_t::equals)
