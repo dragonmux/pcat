@@ -7,7 +7,6 @@
 #include <vector>
 #include <numeric>
 #include <substrate/fd>
-#include <substrate/mmap>
 #include <substrate/utility>
 #include <substrate/units>
 #include <substrate/console>
@@ -15,6 +14,7 @@
 #include <version.hxx>
 #include "args.hxx"
 #include "help.hxx"
+#include "mmap.hxx"
 
 using std::literals::string_view_literals::operator ""sv;
 using substrate::console;
@@ -22,7 +22,6 @@ using substrate::console;
 namespace pcat
 {
 	using substrate::fd_t;
-	using substrate::mmap_t;
 	using substrate::operator ""_KiB;
 
 	constexpr static auto options{substrate::make_array<args::option_t>(
