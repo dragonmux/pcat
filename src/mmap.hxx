@@ -15,7 +15,7 @@ namespace pcat
 		off_t _len;
 		void *_addr;
 
-		constexpr void *index(const off_t idx) const
+		void *index(const off_t idx) const
 		{
 			if (idx < _len)
 			{
@@ -55,8 +55,8 @@ namespace pcat
 		}
 
 		[[nodiscard]] constexpr off_t length() const noexcept { return _len; }
-		[[nodiscard]] constexpr void *address(const off_t offset) noexcept { return index(offset); }
-		[[nodiscard]] constexpr const void *address(const off_t offset) const noexcept { return index(offset); }
+		[[nodiscard]] void *address(const off_t offset) noexcept { return index(offset); }
+		[[nodiscard]] const void *address(const off_t offset) const noexcept { return index(offset); }
 
 		template<typename T> void copyTo(const off_t idx, T &value) const
 		{
