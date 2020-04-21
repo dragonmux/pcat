@@ -31,6 +31,7 @@ constexpr static auto multipleArgs = substrate::make_array<const char *>(
 	"--help"
 });
 constexpr static auto invalidAssignedArgs = substrate::make_array<const char *>({"test", "--value=", "file"});
+constexpr static auto invalidEqualsArgs = substrate::make_array<const char *>({"test", "="});
 constexpr static auto simpleOptions = substrate::make_array<option_t>({{"--help"sv, argType_t::help}});
 constexpr static auto assignedOptions = substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}});
 constexpr static auto multipleOptions = substrate::make_array<option_t>(
@@ -218,5 +219,11 @@ namespace parser
 		++iterator;
 		suite.assertTrue(iterator == args->end());
 		suite.assertNull(args->find(argType_t::outputFile));
+
+		args = {};
+		suite.assertFalse(parseArguments(invalidEqualsArgs.size(), invalidEqualsArgs.data(), nullptr, nullptr));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+		suite.assertTrue(args->begin() == args->end());
 	}
 } // namespace parser
