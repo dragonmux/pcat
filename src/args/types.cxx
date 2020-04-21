@@ -2,26 +2,12 @@
 
 namespace pcat::args
 {
-	argNode_t *argsTree_t::find(const argType_t nodeType, const bool recursive) const noexcept
+	argNode_t *argsTree_t::find(const argType_t nodeType) const noexcept
 	{
 		for (const auto &node : children_)
 		{
 			if (node->type() == nodeType)
 				return node.get();
-		}
-
-		if (recursive)
-		{
-			for (const auto &node : children_)
-			{
-				if (node->type() == argType_t::tree)
-				{
-					auto tree = dynamic_cast<const argsTree_t *>(node.get());
-					auto result = tree->find(nodeType, true);
-					if (result)
-						return result;
-				}
-			}
 		}
 		return nullptr;
 	}

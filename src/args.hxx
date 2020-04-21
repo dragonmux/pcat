@@ -39,7 +39,7 @@ namespace pcat::args
 
 	public:
 		argsTree_t() noexcept : argNode_t{argType_t::tree}, children_{} { }
-		[[nodiscard]] argNode_t *find(argType_t type, bool recursive = false) const noexcept;
+		[[nodiscard]] argNode_t *find(argType_t type) const noexcept;
 		[[nodiscard]] bool add(std::unique_ptr<argNode_t> &&node) noexcept;
 
 		[[nodiscard]] auto count() const noexcept { return children_.size(); }
