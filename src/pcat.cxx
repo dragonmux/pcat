@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <cerrno>
 #include <string_view>
 #include <array>
 #include <vector>
@@ -35,6 +36,7 @@ namespace pcat
 
 	constexpr static size_t pageSize = 4_KiB;
 	std::vector<fd_t> inputFiles{};
+	fd_t outputFile{};
 
 	inline int32_t printHelp() noexcept
 	{
@@ -101,6 +103,23 @@ namespace pcat
 		);
 	}
 
+	bool openOutputFile(int32_t &error)
+	{
+		const auto fileName = dynamic_cast<args::argOutputFile_t *>(::args->find(argType_t::outputFile))->fileName();
+		errno = 0;
+		fd_t file{fileName.data(), O_CREAT | O_WRONLY | O_NOCTTY, substrate::normalMode};
+		error = errno;
+		if (!file.valid())
+			return false;
+		if (!file.resize(totalSize()))
+		{
+			error = errno;
+			return false;
+		}
+		outputFile = std::move(file);
+		return true;
+	}
+
 	void closeFiles() noexcept
 	{
 		for (const auto &file : inputFiles)
@@ -126,13 +145,24 @@ int main(int argCount, char **argList)
 		return pcat::versionInfo::printVersion();
 	else if (args->find(argType_t::help))
 		return pcat::printHelp();
+	else if (!args->find(argType_t::outputFile))
+	{
+		console.error("Output file must be specified on the command line, exiting."sv); // NOLINT(readability-magic-numbers)
+		return 1;
+	}
 	dumpAST();
 	if (!pcat::gatherFiles())
 	{
 		console.error("One or more files specified to concatentate are invalid, exiting."sv); // NOLINT(readability-magic-numbers)
 		return 1;
 	}
-	console.info("Length of the resulting concatenated file will be "sv, pcat::totalSize(), " bytes"sv); // NOLINT(readability-magic-numbers)
+	else if (std::int32_t error{}; !pcat::openOutputFile(error))
+	{
+		console.error("Could not open or resize the output file requested, exiting. Reason: "sv, // NOLINT(readability-magic-numbers)
+			std::strerror(error));
+		pcat::closeFiles();
+		return 1;
+	}
 
 	pcat::closeFiles();
 	return 0;
