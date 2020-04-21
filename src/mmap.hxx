@@ -5,22 +5,15 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <stdexcept>
+#include <substrate/fd>
 
 namespace pcat
 {
 	struct mmap_t final
 	{
 	private:
-		int32_t _fd;
 		off_t _len;
 		void *_addr;
-
-		mmap_t(const mmap_t &map, const off_t len, const int32_t prot, const int32_t flags = MAP_SHARED,
-			void *addr = nullptr) noexcept : _fd{-1}, _len{len}, _addr{[&]() noexcept -> void *
-			{
-				const auto ptr = ::mmap(addr, len, prot, flags, map._fd, 0);
-				return ptr == MAP_FAILED ? nullptr : ptr;
-			}()} { }
 
 		constexpr void *index(const off_t idx) const
 		{
@@ -32,10 +25,12 @@ namespace pcat
 			throw std::out_of_range("mmap_t index out of range");
 		}
 
+		using fd_t = substrate::fd_t;
+
 	public:
-		constexpr mmap_t() noexcept : _fd{-1}, _len{0}, _addr{nullptr} { }
-		mmap_t(const int32_t fd, const off_t len, const int32_t prot, const int32_t flags = MAP_SHARED,
-			void *addr = nullptr) noexcept : _fd{fd}, _len{len}, _addr{[&]() noexcept -> void *
+		constexpr mmap_t() noexcept : _len{0}, _addr{nullptr} { }
+		mmap_t(const fd_t &fd, const off_t len, const int32_t prot, const int32_t flags = MAP_SHARED,
+			void *addr = nullptr) noexcept : _len{len}, _addr{[&]() noexcept -> void *
 			{
 				const auto ptr = ::mmap(addr, len, prot, flags, fd, 0);
 				return ptr == MAP_FAILED ? nullptr : ptr;
@@ -45,8 +40,6 @@ namespace pcat
 
 		~mmap_t() noexcept
 		{
-			if (_fd != -1)
-				::close(_fd);
 			if (_addr)
 				::munmap(_addr, _len);
 		}
@@ -55,7 +48,6 @@ namespace pcat
 
 		void swap(mmap_t &map) noexcept
 		{
-			std::swap(_fd, map._fd);
 			std::swap(_addr, map._addr);
 			std::swap(_len, map._len);
 		}
@@ -77,7 +69,7 @@ namespace pcat
 		}
 
 		constexpr bool operator ==(const mmap_t &b) const noexcept
-			{ return _fd == b._fd && _addr == b._addr && _len == b._len; }
+			{ return _addr == b._addr && _len == b._len; }
 		constexpr bool operator !=(const mmap_t &b) const noexcept { return !(*this == b); }
 	};
 
