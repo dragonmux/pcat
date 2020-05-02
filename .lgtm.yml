@@ -1,6 +1,7 @@
 extraction:
   cpp:
     after_prepare:
+      - export PATH="$HOME/.local/bin:$PATH"
       - pip3 install --upgrade setuptools wheel
       - pip3 install --upgrade meson
     configure:
@@ -8,8 +9,7 @@ extraction:
         - meson build
     index:
       build_command:
-        - cd build
-        - ninja
+        - ninja -C build
 
 queries:
   - include: "*"
