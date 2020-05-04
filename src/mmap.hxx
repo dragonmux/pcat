@@ -19,8 +19,10 @@ namespace pcat
 		{
 			if (idx < _len)
 			{
-				const auto addr = reinterpret_cast<std::uintptr_t>(_addr);
-				return reinterpret_cast<void *>(addr + idx);
+				// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+				const auto addr = reinterpret_cast<std::uintptr_t>(_addr); // lgtm[cpp/reinterpret-cast]
+				// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+				return reinterpret_cast<void *>(addr + idx); // lgtm[cpp/reinterpret-cast]
 			}
 			throw std::out_of_range("mmap_t index out of range");
 		}
