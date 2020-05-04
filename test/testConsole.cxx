@@ -1,7 +1,7 @@
 #include <crunch++.h>
 #include "testConsole.hxx"
 
-class testConsole final : public testsuit
+class testConsole final : public testsuite
 {
 private:
 	void testConstruct() { consoleTests::testConstruct(*this); }

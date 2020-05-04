@@ -26,7 +26,7 @@ constexpr static auto i64{int64_t(INT64_C(0x123456789ABCDEA5))};
 
 namespace fd
 {
-	void testBadFD(testsuit &suite)
+	void testBadFD(testsuite &suite)
 	{
 		fd_t file{};
 		suite.assertEqual(file, -1);
@@ -37,7 +37,7 @@ namespace fd
 		suite.assertEqual(file.write(nullptr, 0, nullptr), -1);
 	}
 
-	void testBadOpen(testsuit &suite)
+	void testBadOpen(testsuite &suite)
 	{
 		fd_t file{"bad.file", O_RDONLY};
 		suite.assertEqual(file, -1);
@@ -55,7 +55,7 @@ namespace fd
 	inline auto toUnique(const char value)
 		{ return substrate::make_unique<char>(value); }
 
-	void testWrite(testsuit &suite)
+	void testWrite(testsuite &suite)
 	{
 		fd_t file{"fd.test", O_WRONLY | O_CREAT | O_EXCL, substrate::normalMode};
 		suite.assertGreaterThan(file, -1);
@@ -84,7 +84,7 @@ namespace fd
 		suite.assertTrue(file.writeBE(i64));
 	}
 
-	void testSeek(testsuit &suite)
+	void testSeek(testsuite &suite)
 	{
 		fd_t file{"fd.test", O_RDONLY};
 		suite.assertTrue(file.valid());
@@ -99,7 +99,7 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	void readUnique(testsuit &suite, const fd_t &file, const std::string_view &expected)
+	void readUnique(testsuite &suite, const fd_t &file, const std::string_view &expected)
 	{
 		const auto result{substrate::make_unique<char []>(expected.size())}; // NOLINT(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 		suite.assertNotNull(result);
@@ -108,7 +108,7 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	void readUnique(testsuit &suite, const fd_t &file, const char expected)
+	void readUnique(testsuite &suite, const fd_t &file, const char expected)
 	{
 		const auto result{substrate::make_unique<char>()};
 		suite.assertNotNull(result);
@@ -117,7 +117,7 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	template<typename T> void read(testsuit &suite, const fd_t &file, const T &expected)
+	template<typename T> void read(testsuite &suite, const fd_t &file, const T &expected)
 	{
 		T result{};
 		suite.assertTrue(file.read(result));
@@ -125,7 +125,7 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	template<typename T, size_t N> void readArray(testsuit &suite, const fd_t &file,
+	template<typename T, size_t N> void readArray(testsuite &suite, const fd_t &file,
 		const std::array<T, N> &expected)
 	{
 		std::array<T, N> result{};
@@ -134,7 +134,7 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	template<typename T> void readLE(testsuit &suite, const fd_t &file, const T expected)
+	template<typename T> void readLE(testsuite &suite, const fd_t &file, const T expected)
 	{
 		T result{};
 		suite.assertTrue(file.readLE(result));
@@ -142,7 +142,7 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	template<typename T> void readBE(testsuit &suite, const fd_t &file, const T expected)
+	template<typename T> void readBE(testsuite &suite, const fd_t &file, const T expected)
 	{
 		T result{};
 		suite.assertTrue(file.readBE(result));
@@ -150,7 +150,7 @@ namespace fd
 		suite.assertFalse(file.isEOF());
 	}
 
-	void testRead(testsuit &suite)
+	void testRead(testsuite &suite)
 	{
 		fd_t file{"fd.test", O_RDONLY};
 		suite.assertGreaterThan(file, -1);

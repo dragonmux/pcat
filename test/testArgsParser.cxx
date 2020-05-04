@@ -2,7 +2,7 @@
 #include <crunch++.h>
 #include "testArgsParser.hxx"
 
-class testParser : public testsuit
+class testParser : public testsuite
 {
 private:
 	void testEmpty() { parser::testEmpty(*this); }

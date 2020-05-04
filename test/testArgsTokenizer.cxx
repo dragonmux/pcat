@@ -5,7 +5,7 @@
 using pcat::args::tokenizer::tokenizer_t;
 using pcat::args::tokenizer::tokenType_t;
 
-class testTokenizer : public testsuit
+class testTokenizer : public testsuite
 {
 private:
 	void testConstruct()

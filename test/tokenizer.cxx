@@ -24,7 +24,7 @@ constexpr static auto multipleArgs = substrate::make_array<const char *>(
 
 namespace tokenizer
 {
-	void testSimple(testsuit &suite)
+	void testSimple(testsuite &suite)
 	{
 		tokenizer_t lexer{simpleArgs.size(), simpleArgs.data()};
 		const auto &token{lexer.token()};
@@ -40,7 +40,7 @@ namespace tokenizer
 		suite.assertNull(token.value().data());
 	}
 
-	void testAssigned(testsuit &suite)
+	void testAssigned(testsuite &suite)
 	{
 		tokenizer_t lexer{assignedArgs.size(), assignedArgs.data()};
 		const auto &token{lexer.token()};
@@ -68,7 +68,7 @@ namespace tokenizer
 		suite.assertNull(token.value().data());
 	}
 
-	void testMultiple(testsuit &suite)
+	void testMultiple(testsuite &suite)
 	{
 		tokenizer_t lexer{multipleArgs.size(), multipleArgs.data()};
 		const auto &token{lexer.token()};

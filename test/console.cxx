@@ -65,7 +65,7 @@ constexpr std::array<uint16_t, 2> testIntegerArray{0xF00DU, 0xDEADU};
 
 namespace consoleTests
 {
-	void testConstruct(testsuit &suite)
+	void testConstruct(testsuite &suite)
 	{
 		fd_t tty{defaultTTY, O_WRONLY | O_NOCTTY};
 		suite.assertTrue(tty.valid());
@@ -76,7 +76,7 @@ namespace consoleTests
 	}
 
 #ifndef _WINDOWS
-	void assertConsoleRead(testsuit &suite, const fd_t &fd, const std::string_view expected)
+	void assertConsoleRead(testsuite &suite, const fd_t &fd, const std::string_view expected)
 	{
 		fixedVector_t<char> result{expected.length()};
 		suite.assertTrue(result.valid());
@@ -85,7 +85,7 @@ namespace consoleTests
 		suite.assertEqual(result.data(), expected.data(), expected.length());
 	}
 
-	void testPTYWrite(testsuit &suite)
+	void testPTYWrite(testsuite &suite)
 	{
 		pty_t pty{};
 		suite.assertTrue(pty.valid());
@@ -110,7 +110,7 @@ namespace consoleTests
 	}
 #endif
 
-	void assertPipeRead(testsuit &suite, const readPipe_t &fd, const std::string_view expected)
+	void assertPipeRead(testsuite &suite, const readPipe_t &fd, const std::string_view expected)
 	{
 		fixedVector_t<char> result{expected.length()};
 		suite.assertTrue(result.valid());
@@ -118,7 +118,7 @@ namespace consoleTests
 		suite.assertEqual(result.data(), expected.data(), expected.length());
 	}
 
-	void testPipeWrite(testsuit &suite)
+	void testPipeWrite(testsuite &suite)
 	{
 		pipe_t pipe{};
 		suite.assertTrue(pipe.valid());
@@ -142,7 +142,7 @@ namespace consoleTests
 		suite.assertFalse(console.valid());
 	}
 
-	void testConversions(testsuit &suite)
+	void testConversions(testsuite &suite)
 	{
 		pipe_t pipe{};
 		suite.assertTrue(pipe.valid());

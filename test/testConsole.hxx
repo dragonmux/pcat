@@ -3,12 +3,12 @@
 
 namespace consoleTests
 {
-	void testConstruct(testsuit &suite);
+	void testConstruct(testsuite &suite);
 #ifndef _WINDOWS
-	void testPTYWrite(testsuit &suite);
+	void testPTYWrite(testsuite &suite);
 #endif
-	void testPipeWrite(testsuit &suite);
-	void testConversions(testsuit &suite);
+	void testPipeWrite(testsuite &suite);
+	void testConversions(testsuite &suite);
 }
 
 #endif /*TEST_CONSOLE__HXX*/

@@ -43,7 +43,7 @@ constexpr static auto multipleOptions = substrate::make_array<option_t>(
 
 namespace parser
 {
-	void testEmpty(testsuit &suite)
+	void testEmpty(testsuite &suite)
 	{
 		args = {};
 		suite.assertFalse(parseArguments(0, nullptr, nullptr, nullptr));
@@ -58,7 +58,7 @@ namespace parser
 
 	template<argType_t type> struct assertNode_t<argOfType_t<type>>
 	{
-		void operator ()(testsuit &suite, const std::unique_ptr<argNode_t> &arg)
+		void operator ()(testsuite &suite, const std::unique_ptr<argNode_t> &arg)
 		{
 			suite.assertNotNull(arg);
 			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(type));
@@ -71,7 +71,7 @@ namespace parser
 
 	template<> struct assertNode_t<argOutputFile_t>
 	{
-		void operator()(testsuit &suite, const std::unique_ptr<argNode_t> &arg)
+		void operator()(testsuite &suite, const std::unique_ptr<argNode_t> &arg)
 		{
 			suite.assertNotNull(arg);
 			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::outputFile));
@@ -85,7 +85,7 @@ namespace parser
 		}
 	};
 
-	void testSimple(testsuit &suite)
+	void testSimple(testsuite &suite)
 	{
 		args = {};
 		suite.assertTrue(parseArguments(simpleArgs.size(), simpleArgs.data(), simpleOptions));
@@ -100,7 +100,7 @@ namespace parser
 		suite.assertNull(args->find(argType_t::unrecognised));
 	}
 
-	template<size_t argsCount> void testAssigned(testsuit &suite,
+	template<size_t argsCount> void testAssigned(testsuite &suite,
 		const std::array<const char *, argsCount> &testArgs)
 	{
 		args = {};
@@ -116,13 +116,13 @@ namespace parser
 		suite.assertNull(args->find(argType_t::unrecognised));
 	}
 
-	void testAssigned(testsuit &suite)
+	void testAssigned(testsuite &suite)
 	{
 		testAssigned(suite, assignedArgs);
 		testAssigned(suite, delimitedArgs);
 	}
 
-	void testMultiple(testsuit &suite)
+	void testMultiple(testsuite &suite)
 	{
 		args = {};
 		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), multipleOptions));
@@ -142,7 +142,7 @@ namespace parser
 		suite.assertNull(args->find(argType_t::unrecognised));
 	}
 
-	void testUnknown(testsuit &suite)
+	void testUnknown(testsuite &suite)
 	{
 		args = {};
 		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), nullptr, nullptr));
@@ -187,7 +187,7 @@ namespace parser
 		suite.assertNull(args->find(argType_t::help));
 	}
 
-	void testInvalid(testsuit &suite)
+	void testInvalid(testsuite &suite)
 	{
 		args = {};
 		suite.assertTrue(parseArguments(invalidAssignedArgs.size(), invalidAssignedArgs.data(), assignedOptions));

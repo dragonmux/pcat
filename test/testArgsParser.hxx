@@ -3,12 +3,12 @@
 
 namespace parser
 {
-	extern void testEmpty(testsuit &suite);
-	extern void testSimple(testsuit &suite);
-	extern void testAssigned(testsuit &suite);
-	extern void testMultiple(testsuit &suite);
-	extern void testUnknown(testsuit &suite);
-	extern void testInvalid(testsuit &suite);
+	extern void testEmpty(testsuite &suite);
+	extern void testSimple(testsuite &suite);
+	extern void testAssigned(testsuite &suite);
+	extern void testMultiple(testsuite &suite);
+	extern void testUnknown(testsuite &suite);
+	extern void testInvalid(testsuite &suite);
 }
 
 #endif /*TEST_ARGS_PARSER__HXX*/
