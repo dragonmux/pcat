@@ -34,6 +34,7 @@ namespace pcat
 	})};
 
 	constexpr static size_t pageSize = 4_KiB;
+	constexpr static size_t transferBlockSize = 64 * pageSize;
 	std::vector<fd_t> inputFiles{};
 	fd_t outputFile{};
 
@@ -119,6 +120,20 @@ namespace pcat
 		return true;
 	}
 
+	void calculateInputChunking() noexcept
+	{
+		for (const auto &file : inputFiles)
+		{
+			const size_t length = file.length();
+			for (size_t offset = 0; offset < length; offset += transferBlockSize)
+			{
+				const size_t amount = std::min(length - offset, transferBlockSize);
+				console.info("Copying ", amount, " bytes from ", int32_t{file},
+					" starting at offset ", offset);
+			}
+		}
+	}
+
 	void closeFiles() noexcept
 	{
 		for (const auto &file : inputFiles)
@@ -161,6 +176,8 @@ int main(int argCount, char **argList)
 		pcat::closeFiles();
 		return 1;
 	}
+
+	pcat::calculateInputChunking();
 
 	pcat::closeFiles();
 	return 0;
