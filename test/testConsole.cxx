@@ -21,17 +21,13 @@ public:
 
 	void registerTests() final
 	{
-		CXX_TEST(testConstruct)
+		CRUNCHpp_TEST(testConstruct)
 #ifndef _WINDOWS
-		CXX_TEST(testPTYWrite)
+		CRUNCHpp_TEST(testPTYWrite)
 #endif
-		CXX_TEST(testPipeWrite)
-		CXX_TEST(testConversions)
+		CRUNCHpp_TEST(testPipeWrite)
+		CRUNCHpp_TEST(testConversions)
 	}
 };
 
-CRUNCH_API void registerCXXTests() noexcept;
-void registerCXXTests() noexcept
-{
-	registerTestClasses<testConsole>();
-}
+CRUNCHpp_TESTS(testConsole)

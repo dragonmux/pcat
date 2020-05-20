@@ -2,7 +2,7 @@
 #include <crunch++.h>
 #include "testArgsParser.hxx"
 
-class testParser : public testsuite
+class testParser final : public testsuite
 {
 private:
 	void testEmpty() { parser::testEmpty(*this); }
@@ -22,17 +22,13 @@ public:
 
 	void registerTests() final
 	{
-		CXX_TEST(testEmpty)
-		CXX_TEST(testSimple)
-		CXX_TEST(testAssigned)
-		CXX_TEST(testMultiple)
-		CXX_TEST(testUnknown)
-		CXX_TEST(testInvalid)
+		CRUNCHpp_TEST(testEmpty)
+		CRUNCHpp_TEST(testSimple)
+		CRUNCHpp_TEST(testAssigned)
+		CRUNCHpp_TEST(testMultiple)
+		CRUNCHpp_TEST(testUnknown)
+		CRUNCHpp_TEST(testInvalid)
 	}
 };
 
-CRUNCH_API void registerCXXTests() noexcept;
-void registerCXXTests() noexcept
-{
-	registerTestClasses<testParser>();
-}
+CRUNCHpp_TESTS(testParser)

@@ -5,7 +5,7 @@
 using pcat::args::tokenizer::tokenizer_t;
 using pcat::args::tokenizer::tokenType_t;
 
-class testTokenizer : public testsuite
+class testTokenizer final : public testsuite
 {
 private:
 	void testConstruct()
@@ -30,15 +30,11 @@ public:
 
 	void registerTests() final
 	{
-		CXX_TEST(testConstruct)
-		CXX_TEST(testSimple)
-		CXX_TEST(testAssigned)
-		CXX_TEST(testMultiple)
+		CRUNCHpp_TEST(testConstruct)
+		CRUNCHpp_TEST(testSimple)
+		CRUNCHpp_TEST(testAssigned)
+		CRUNCHpp_TEST(testMultiple)
 	}
 };
 
-CRUNCH_API void registerCXXTests() noexcept;
-void registerCXXTests() noexcept
-{
-	registerTestClasses<testTokenizer>();
-}
+CRUNCHpp_TESTS(testTokenizer)

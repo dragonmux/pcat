@@ -25,16 +25,12 @@ public:
 
 	void registerTests() final
 	{
-		CXX_TEST(testBadFD)
-		CXX_TEST(testBadOpen)
-		CXX_TEST(testWrite)
-		CXX_TEST(testSeek)
-		CXX_TEST(testRead)
+		CRUNCHpp_TEST(testBadFD)
+		CRUNCHpp_TEST(testBadOpen)
+		CRUNCHpp_TEST(testWrite)
+		CRUNCHpp_TEST(testSeek)
+		CRUNCHpp_TEST(testRead)
 	}
 };
 
-CRUNCH_API void registerCXXTests() noexcept;
-void registerCXXTests() noexcept
-{
-	registerTestClasses<testFD>();
-}
+CRUNCHpp_TESTS(testFD)
