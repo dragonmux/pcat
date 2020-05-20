@@ -1,5 +1,5 @@
-crunchpp = find_program('crunch++')
-libcrunchpp = dependency('crunch++')
+crunchpp = find_program('crunch++', version: ['>= 1.0.0', '< 2.0.0'])
+libcrunchpp = dependency('crunch++', version: ['>= 1.0.0', '< 2.0.0'])
 
 commandExtra = ['-I../substrate', '-std=' + get_option('cpp_std')]
 if get_option('b_coverage')
