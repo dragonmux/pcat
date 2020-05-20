@@ -37,6 +37,13 @@ namespace pcat
 				const auto ptr = ::mmap(addr, len, prot, flags, fd, 0);
 				return ptr == MAP_FAILED ? nullptr : ptr;
 			}()} { }
+		mmap_t(const fd_t &fd, const off_t offset, const off_t length, const int32_t prot,
+			const int32_t flags = MAP_SHARED, void *addr = nullptr) noexcept : _len{length},
+			_addr{[&]() noexcept -> void *
+			{
+				const auto ptr = ::mmap(addr, length, prot, flags, fd, offset);
+				return ptr == MAP_FAILED ? nullptr : ptr;
+			}()} { }
 		mmap_t(const mmap_t &) = delete;
 		mmap_t(mmap_t &&map) = delete;
 		mmap_t &operator =(const mmap_t &) = delete;
