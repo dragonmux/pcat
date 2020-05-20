@@ -134,7 +134,8 @@ int main(int argCount, char **argList)
 	}
 	if (args->find(argType_t::version) && args->find(argType_t::help))
 	{
-		console.error("Can only specify one of --help and --version, not both."sv); // NOLINT(readability-magic-numbers)
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Can only specify one of --help and --version, not both."sv);
 		return 1;
 	}
 	if (args->find(argType_t::version))
@@ -143,17 +144,20 @@ int main(int argCount, char **argList)
 		return pcat::printHelp();
 	else if (!args->find(argType_t::outputFile))
 	{
-		console.error("Output file must be specified on the command line, exiting."sv); // NOLINT(readability-magic-numbers)
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Output file must be specified on the command line, exiting."sv);
 		return 1;
 	}
 	else if (!pcat::gatherFiles())
 	{
-		console.error("One or more files specified to concatentate are invalid, exiting."sv); // NOLINT(readability-magic-numbers)
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("One or more files specified to concatentate are invalid, exiting."sv);
 		return 1;
 	}
 	else if (std::int32_t error{}; !pcat::openOutputFile(error))
 	{
-		console.error("Could not open or resize the output file requested, exiting. Reason: "sv, // NOLINT(readability-magic-numbers)
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Could not open or resize the output file requested, exiting. Reason: "sv,
 			std::strerror(error));
 		pcat::closeFiles();
 		return 1;
