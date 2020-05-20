@@ -24,7 +24,8 @@ if cxx.has_argument('-fPIC')
 endif
 
 pcatSrcs = [
-	'src/pcat.cxx', 'src/args.cxx', 'src/args/types.cxx', 'src/args/tokenizer.cxx', 'substrate/impl/console.cxx'
+	'src/pcat.cxx', 'src/chunking.cxx', 'src/args.cxx', 'src/args/types.cxx',
+	'src/args/tokenizer.cxx', 'substrate/impl/console.cxx'
 ]
 
 subdir('src')

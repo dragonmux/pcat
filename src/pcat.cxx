@@ -8,13 +8,12 @@
 #include <numeric>
 #include <substrate/fd>
 #include <substrate/utility>
-#include <substrate/units>
 #include <substrate/console>
 #include <sys/file.h>
 #include <version.hxx>
 #include "args.hxx"
 #include "help.hxx"
-#include "mmap.hxx"
+#include "chunking.hxx"
 
 using std::literals::string_view_literals::operator ""sv;
 using substrate::console;
@@ -22,7 +21,6 @@ using substrate::console;
 namespace pcat
 {
 	using substrate::fd_t;
-	using substrate::operator ""_KiB;
 
 	constexpr static auto options{substrate::make_array<args::option_t>(
 	{
@@ -33,8 +31,6 @@ namespace pcat
 		{"-o"sv, argType_t::outputFile}
 	})};
 
-	constexpr static size_t pageSize = 4_KiB;
-	constexpr static size_t transferBlockSize = 64 * pageSize;
 	std::vector<fd_t> inputFiles{};
 	fd_t outputFile{};
 
@@ -118,20 +114,6 @@ namespace pcat
 		}
 		outputFile = std::move(file);
 		return true;
-	}
-
-	void calculateInputChunking() noexcept
-	{
-		for (const auto &file : inputFiles)
-		{
-			const size_t length = file.length();
-			for (size_t offset = 0; offset < length; offset += transferBlockSize)
-			{
-				const size_t amount = std::min(length - offset, transferBlockSize);
-				console.info("Copying ", amount, " bytes from ", int32_t{file},
-					" starting at offset ", offset);
-			}
-		}
 	}
 
 	void closeFiles() noexcept
