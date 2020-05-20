@@ -72,16 +72,67 @@ namespace pcat
 		const off_t outputLength{outputFile.length()};
 		mappingOffset_t outputOffset{};
 
+		constexpr void nextInputBlock() noexcept
+		{
+			inputOffset += inputOffset.length();
+			if (inputOffset.offset() == inputLength)
+			{
+				++file;
+				assert(file <= inputFiles.end()); // NOLINT
+				inputLength = file == inputFiles.end() ? 0 : file->length();
+				inputOffset = {};
+			}
+		};
+
 	public:
 		chunking_t() noexcept { outputOffset.length(blockLength(outputLength - outputOffset)); }
+		chunking_t(const inputFilesIterator_t file_) noexcept : file{file_}, inputLength{0}, inputOffset{},
+			outputOffset{outputLength} { }
 		chunkState_t operator *() const noexcept { return {*file, inputOffset, outputOffset}; }
 
-		bool operator ==(chunking_t &other) const noexcept
+		constexpr void operator ++() noexcept
+		{
+			if (outputOffset == outputLength)
+				return;
+			else if (outputOffset.length() != inputOffset.length())
+			{
+				const off_t originalOutputOffset = outputOffset.offset();
+				while (outputOffset.length() - inputOffset.length())
+				{
+					const off_t remainder = outputOffset.length() - inputOffset.length();
+					console.info("Transfer caused a remainder of ", remainder, " bytes to go for output block");
+					outputOffset += inputOffset.length();
+					outputOffset.length(remainder);
+					nextInputBlock();
+					inputOffset.length(std::min(remainder, inputLength));
+
+					console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
+						" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
+				}
+				outputOffset = {originalOutputOffset};
+			}
+			nextInputBlock();
+			inputOffset.length(blockLength(inputLength - inputOffset));
+			outputOffset += transferBlockSize;
+			outputOffset.length(blockLength(outputLength - outputOffset));
+		}
+
+		bool operator ==(const chunking_t &other) const noexcept
 		{
 			return file == other.file &&
 				inputOffset == other.inputOffset &&
 				outputOffset == other.outputOffset;
 		}
+		bool operator !=(const chunking_t &other) const noexcept { return !(*this == other); }
+	};
+
+	// begin() and end() are non-static to fufill the requirements of for-each looping
+	struct fileChunker_t final
+	{
+		// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+		chunking_t begin() noexcept { return {}; }
+		// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+		chunking_t end() noexcept { return {inputFiles.end()}; }
 	};
 
 	void calculateInputChunking() noexcept
@@ -135,7 +186,14 @@ namespace pcat
 
 	int32_t chunkedCopy() noexcept
 	{
-		calculateInputChunking();
+		fileChunker_t chunker{};
+		for (chunkState_t chunk : chunker)
+		{
+			const auto inputOffset = chunk.inputOffset();
+			const auto outputOffset = chunk.outputOffset();
+			console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
+				" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
+		}
 		return 0;
 	}
 } // namespace pcat
