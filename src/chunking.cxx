@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cerrno>
 #include <substrate/console>
 #include "chunking.hxx"
 #include "mmap.hxx"
@@ -88,6 +89,12 @@ namespace pcat
 			inputOffset.length(blockLength(inputLength - inputOffset));
 		}
 
-		assert(file == inputFiles.end());
+		assert(file == inputFiles.end()); // NOLINT
+	}
+
+	int32_t chunkedCopy() noexcept
+	{
+		calculateInputChunking();
+		return 0;
 	}
 } // namespace pcat

@@ -162,9 +162,14 @@ int main(int argCount, char **argList)
 		pcat::closeFiles();
 		return 1;
 	}
-
-	pcat::calculateInputChunking();
-
+	else if (std::int32_t error{pcat::chunkedCopy()}; error)
+	{
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Copying data to output file failed, exiting. Reason: "sv,
+			std::strerror(error));
+		pcat::closeFiles();
+		return 1;
+	}
 	pcat::closeFiles();
 	return 0;
 }

@@ -15,7 +15,7 @@ namespace pcat
 	extern std::vector<fd_t> inputFiles;
 	extern fd_t outputFile;
 
-	extern void calculateInputChunking() noexcept;
+	extern int32_t chunkedCopy() noexcept;
 }
 
 #endif /*CHUNKING__HXX*/
