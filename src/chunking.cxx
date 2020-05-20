@@ -45,6 +45,45 @@ namespace pcat
 	constexpr off_t blockLength(const off_t length)
 		{ return std::min(transferBlockSize, length); }
 
+	using inputFilesIterator_t = typename decltype(inputFiles)::iterator;
+
+	struct chunkState_t final
+	{
+	private:
+		const fd_t &inputFile_;
+		mappingOffset_t inputOffset_;
+		mappingOffset_t outputOffset_;
+
+	public:
+		constexpr chunkState_t(const fd_t &inputFile, const mappingOffset_t &inputOffset,
+			const mappingOffset_t &outputOffset) noexcept : inputFile_{inputFile},
+			inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
+		[[nodiscard]] constexpr const fd_t &inputFile() const noexcept { return inputFile_; }
+		[[nodiscard]] constexpr mappingOffset_t inputOffset() const noexcept { return inputOffset_; }
+		[[nodiscard]] constexpr mappingOffset_t outputOffset() const noexcept { return outputOffset_; }
+	};
+
+	struct chunking_t final
+	{
+	private:
+		inputFilesIterator_t file{inputFiles.begin()};
+		off_t inputLength{file->length()};
+		mappingOffset_t inputOffset{0, blockLength(inputLength)};
+		const off_t outputLength{outputFile.length()};
+		mappingOffset_t outputOffset{};
+
+	public:
+		chunking_t() noexcept { outputOffset.length(blockLength(outputLength - outputOffset)); }
+		chunkState_t operator *() const noexcept { return {*file, inputOffset, outputOffset}; }
+
+		bool operator ==(chunking_t &other) const noexcept
+		{
+			return file == other.file &&
+				inputOffset == other.inputOffset &&
+				outputOffset == other.outputOffset;
+		}
+	};
+
 	void calculateInputChunking() noexcept
 	{
 		auto file = inputFiles.begin();
