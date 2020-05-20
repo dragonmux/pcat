@@ -11,9 +11,9 @@ namespace pcat
 	struct mappingOffset_t final
 	{
 	private:
-		size_t offset_;
-		size_t adjust_;
-		size_t length_;
+		size_t offset_{0};
+		size_t adjust_{0};
+		size_t length_{0};
 
 		constexpr void recalcAdjustment()
 		{
@@ -22,8 +22,10 @@ namespace pcat
 		}
 
 	public:
-		constexpr mappingOffset_t(const size_t offset, const size_t length) : offset_{offset},
-			adjust_{0}, length_{length} { recalcAdjustment(); }
+		constexpr mappingOffset_t() noexcept = default;
+		constexpr mappingOffset_t(const size_t offset) noexcept : offset_{offset} { recalcAdjustment(); }
+		constexpr mappingOffset_t(const size_t offset, const size_t length) noexcept :
+			offset_{offset}, length_{length} { recalcAdjustment(); }
 		[[nodiscard]] constexpr size_t offset() const noexcept { return offset_ + adjust_; }
 		[[nodiscard]] constexpr size_t adjustment() const noexcept { return adjust_; }
 		[[nodiscard]] constexpr size_t length() const noexcept { return length_; }
@@ -50,8 +52,7 @@ namespace pcat
 		mappingOffset_t inputOffset{0, blockLength(inputLength)};
 
 		const size_t outputLength = outputFile.length();
-		for (mappingOffset_t outputOffset{0, 0}; outputOffset < outputLength;
-			outputOffset += transferBlockSize)
+		for (mappingOffset_t outputOffset{}; outputOffset < outputLength; outputOffset += transferBlockSize)
 		{
 			outputOffset.length(blockLength(outputLength - outputOffset));
 			console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
@@ -63,8 +64,9 @@ namespace pcat
 				if (inputOffset.offset() == inputLength)
 				{
 					++file;
-					inputLength = file->length();
-					inputOffset = {0, 0};
+					assert(file <= inputFiles.end()); // NOLINT
+					inputLength = file == inputFiles.end() ? 0 : file->length();
+					inputOffset = {};
 				}
 			};
 
@@ -83,7 +85,7 @@ namespace pcat
 					console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
 						" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
 				}
-				outputOffset = {originalOutputOffset, 0};
+				outputOffset = {originalOutputOffset};
 			}
 			nextInputBlock();
 			inputOffset.length(blockLength(inputLength - inputOffset));
