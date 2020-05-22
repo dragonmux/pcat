@@ -83,8 +83,8 @@ namespace pcat
 		template<typename T> void copyTo(const off_t idx, T *value, const off_t length) const
 		{
 			const auto *const src = index(idx);
-			assert(length < _len - idx);
-			memcpy(value, src, length);
+			assert(length <= _len - idx);
+			std::memcpy(value, src, length);
 		}
 
 		template<typename T> void copyFrom(const off_t idx, const T &value) const
@@ -96,8 +96,8 @@ namespace pcat
 		template<typename T> void copyFrom(const off_t idx, const T &value, const off_t length) const
 		{
 			const auto dest = index(idx);
-			assert(length < _len - idx);
-			memcpy(dest, value, length);
+			assert(length <= _len - idx);
+			std::memcpy(dest, value, length);
 		}
 
 		constexpr bool operator ==(const mmap_t &b) const noexcept

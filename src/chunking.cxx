@@ -164,6 +164,17 @@ namespace pcat
 				return error;
 			}
 
+			try
+			{
+				outputChunk.copyTo(outputOffset.adjustment(), inputChunk.address(inputOffset.adjustment()),
+					inputOffset.length());
+			}
+			catch (const std::out_of_range &error)
+			{
+				console.error("Failure while copying data block: ", error.what());
+				return EINVAL;
+			}
+
 			if (!outputChunk.sync())
 			{
 				const auto error = errno;
