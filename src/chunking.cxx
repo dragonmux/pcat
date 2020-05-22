@@ -204,6 +204,21 @@ namespace pcat
 			console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
 				" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
 
+			const mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
+				outputOffset.adjustedLength(), PROT_WRITE};
+			if (!outputChunk.valid())
+			{
+				const auto error = errno;
+				console.error("Failed to map destination file transfer chunk: ", std::strerror(error));
+				return error;
+			}
+			else if (!outputChunk.advise<MADV_SEQUENTIAL, MADV_DONTDUMP>())
+			{
+				const auto error = errno;
+				console.error("Failed to advise the source map: ", std::strerror(error));
+				return error;
+			}
+
 			const mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
 				inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE};
 			if (!inputChunk.valid())
@@ -213,21 +228,6 @@ namespace pcat
 				return error;
 			}
 			else if (!inputChunk.advise<MADV_SEQUENTIAL, MADV_WILLNEED, MADV_DONTDUMP>())
-			{
-				const auto error = errno;
-				console.error("Failed to advise the source map: ", std::strerror(error));
-				return error;
-			}
-
-			mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
-				outputOffset.adjustedLength(), PROT_WRITE};
-			if (!outputChunk.valid())
-			{
-				const auto error = errno;
-				console.error("Failed to map destination file transfer chunk: ", std::strerror(error));
-				return error;
-			}
-			else if (!outputChunk.advise<MADV_SEQUENTIAL, MADV_DONTDUMP>())
 			{
 				const auto error = errno;
 				console.error("Failed to advise the source map: ", std::strerror(error));
