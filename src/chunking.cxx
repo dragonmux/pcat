@@ -166,8 +166,11 @@ namespace pcat
 
 			try
 			{
-				outputChunk.copyTo(outputOffset.adjustment(), inputChunk.address(inputOffset.adjustment()),
-					inputOffset.length());
+				outputChunk.copyTo(
+					outputOffset.adjustment(),
+					inputChunk.address(inputOffset.adjustment()),
+					inputOffset.length()
+				);
 			}
 			catch (const std::out_of_range &error)
 			{
