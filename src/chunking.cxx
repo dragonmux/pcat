@@ -98,9 +98,6 @@ namespace pcat
 			outputOffset_.length(remainder);
 			nextInputBlock();
 			inputOffset_.length(std::min(remainder, inputLength_));
-
-			console.info("Copying ", inputOffset_.length(), " bytes at ", inputOffset_.offset(),
-				" to ", outputOffset_.length(), " byte region at ", outputOffset_.offset());
 		}
 
 		bool operator ==(const chunkState_t &other) const noexcept
@@ -197,39 +194,44 @@ namespace pcat
 				return error;
 			}
 
-			const auto &inputFile = chunk.inputFile();
-			const auto inputOffset = chunk.inputOffset();
-			const mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
-				inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE};
-			if (!inputChunk.valid())
+			do
 			{
-				const auto error = errno;
-				console.error("Failed to map source file transfer chunk: ", std::strerror(error));
-				return error;
-			}
-			else if (!inputChunk.advise<MADV_SEQUENTIAL, MADV_WILLNEED, MADV_DONTDUMP>())
-			{
-				const auto error = errno;
-				console.error("Failed to advise the source map: ", std::strerror(error));
-				return error;
-			}
+				const auto &inputFile = chunk.inputFile();
+				const auto inputOffset = chunk.inputOffset();
+				const mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
+					inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE};
+				if (!inputChunk.valid())
+				{
+					const auto error = errno;
+					console.error("Failed to map source file transfer chunk: ", std::strerror(error));
+					return error;
+				}
+				else if (!inputChunk.advise<MADV_SEQUENTIAL, MADV_WILLNEED, MADV_DONTDUMP>())
+				{
+					const auto error = errno;
+					console.error("Failed to advise the source map: ", std::strerror(error));
+					return error;
+				}
 
-			console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
-				" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
+				console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
+					" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
 
-			try
-			{
-				outputChunk.copyTo(
-					outputOffset.adjustment(),
-					inputChunk.address(inputOffset.adjustment()),
-					inputOffset.length()
-				);
+				try
+				{
+					outputChunk.copyTo(
+						outputOffset.adjustment(),
+						inputChunk.address(inputOffset.adjustment()),
+						inputOffset.length()
+					);
+				}
+				catch (const std::out_of_range &error)
+				{
+					console.error("Failure while copying data block: ", error.what());
+					return EINVAL;
+				}
+				++chunk;
 			}
-			catch (const std::out_of_range &error)
-			{
-				console.error("Failure while copying data block: ", error.what());
-				return EINVAL;
-			}
+			while (!chunk.atEnd());
 
 			if (!outputChunk.sync())
 			{
