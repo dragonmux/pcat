@@ -50,22 +50,6 @@ namespace pcat
 	struct chunkState_t final
 	{
 	private:
-		const fd_t &inputFile_;
-		mappingOffset_t inputOffset_;
-		mappingOffset_t outputOffset_;
-
-	public:
-		constexpr chunkState_t(const fd_t &inputFile, const mappingOffset_t &inputOffset,
-			const mappingOffset_t &outputOffset) noexcept : inputFile_{inputFile},
-			inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
-		[[nodiscard]] constexpr const fd_t &inputFile() const noexcept { return inputFile_; }
-		[[nodiscard]] constexpr mappingOffset_t inputOffset() const noexcept { return inputOffset_; }
-		[[nodiscard]] constexpr mappingOffset_t outputOffset() const noexcept { return outputOffset_; }
-	};
-
-	struct subchunkState_t final
-	{
-	private:
 		inputFilesIterator_t file_;
 		off_t inputLength_;
 		mappingOffset_t inputOffset_;
@@ -84,18 +68,18 @@ namespace pcat
 		};
 
 	public:
-		constexpr subchunkState_t(const inputFilesIterator_t &file, const off_t inputLength,
+		constexpr chunkState_t(const inputFilesIterator_t &file, const off_t inputLength,
 			const mappingOffset_t &inputOffset, const mappingOffset_t &outputOffset) noexcept :
 			file_{file}, inputLength_{inputLength}, inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
-		chunkState_t operator *() const noexcept { return {*file_, inputOffset_, outputOffset_}; }
-		[[nodiscard]] const fd_t &inputFile() const noexcept { return *file_; }
 		[[nodiscard]] constexpr const inputFilesIterator_t &file() const noexcept { return file_; }
 		[[nodiscard]] constexpr off_t inputLength() const noexcept { return inputLength_; }
+		[[nodiscard]] const fd_t &inputFile() const noexcept { return *file_; }
 		[[nodiscard]] constexpr const mappingOffset_t &inputOffset() const noexcept { return inputOffset_; }
+		[[nodiscard]] constexpr const mappingOffset_t &outputOffset() const noexcept { return outputOffset_; }
 
-		[[nodiscard]] constexpr subchunkState_t end() const noexcept
+		[[nodiscard]] constexpr chunkState_t end() const noexcept
 		{
-			subchunkState_t state{*this};
+			chunkState_t state{*this};
 			while (state.outputOffset_.length() - state.inputOffset_.length())
 				++state;
 			return state;
@@ -119,13 +103,13 @@ namespace pcat
 				" to ", outputOffset_.length(), " byte region at ", outputOffset_.offset());
 		}
 
-		bool operator ==(const subchunkState_t &other) const noexcept
+		bool operator ==(const chunkState_t &other) const noexcept
 		{
 			return file_ == other.file_ &&
 				inputOffset_ == other.inputOffset_ &&
 				outputOffset_ == other.outputOffset_;
 		}
-		bool operator !=(const subchunkState_t &other) const noexcept { return !(*this == other); }
+		bool operator !=(const chunkState_t &other) const noexcept { return !(*this == other); }
 	};
 
 	struct chunking_t final
@@ -149,14 +133,13 @@ namespace pcat
 			}
 		};
 
-		[[nodiscard]] constexpr subchunkState_t subchunkState() const noexcept
-			{ return {file, inputLength, inputOffset, outputOffset}; }
-
 	public:
 		chunking_t() noexcept { outputOffset.length(blockLength(outputLength - outputOffset)); }
 		chunking_t(const inputFilesIterator_t file_) noexcept : file{file_}, inputLength{0}, inputOffset{},
 			outputOffset{outputLength} { }
-		chunkState_t operator *() const noexcept { return {*file, inputOffset, outputOffset}; }
+		[[nodiscard]] constexpr chunkState_t subchunkState() const noexcept
+			{ return {file, inputLength, inputOffset, outputOffset}; }
+		chunkState_t operator *() const noexcept { return subchunkState(); }
 
 		constexpr void operator ++() noexcept
 		{
