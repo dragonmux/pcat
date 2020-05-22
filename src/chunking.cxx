@@ -145,6 +145,9 @@ namespace pcat
 			}
 		};
 
+		[[nodiscard]] constexpr subchunkState_t subchunkState() const noexcept
+			{ return {file, inputLength, inputOffset, outputOffset}; }
+
 	public:
 		chunking_t() noexcept { outputOffset.length(blockLength(outputLength - outputOffset)); }
 		chunking_t(const inputFilesIterator_t file_) noexcept : file{file_}, inputLength{0}, inputOffset{},
@@ -157,20 +160,10 @@ namespace pcat
 				return;
 			else if (outputOffset.length() != inputOffset.length())
 			{
-				const auto originalOutputOffset = outputOffset;
-				while (outputOffset.length() - inputOffset.length())
-				{
-					const off_t remainder = outputOffset.length() - inputOffset.length();
-					console.info("Transfer caused a remainder of ", remainder, " bytes to go for output block");
-					outputOffset += inputOffset.length();
-					outputOffset.length(remainder);
-					nextInputBlock();
-					inputOffset.length(std::min(remainder, inputLength));
-
-					console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
-						" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
-				}
-				outputOffset = originalOutputOffset;
+				const auto state{subchunkState().end()};
+				file = state.file();
+				inputLength = state.inputLength();
+				inputOffset = state.inputOffset();
 			}
 			nextInputBlock();
 			inputOffset.length(blockLength(inputLength - inputOffset));
