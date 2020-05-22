@@ -156,7 +156,7 @@ namespace pcat
 			}
 
 			mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
-				outputOffset.adjustedLength(), PROT_WRITE, MAP_PRIVATE};
+				outputOffset.adjustedLength(), PROT_WRITE};
 			if (!outputChunk.valid())
 			{
 				const auto error = errno;
