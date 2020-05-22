@@ -88,7 +88,7 @@ namespace pcat
 			const mappingOffset_t &inputOffset, const mappingOffset_t &outputOffset) noexcept :
 			file_{file}, inputLength_{inputLength}, inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
 		chunkState_t operator *() const noexcept { return {*file_, inputOffset_, outputOffset_}; }
-		[[nodiscard]] constexpr const fd_t &inputFile() const noexcept { return *file_; }
+		[[nodiscard]] const fd_t &inputFile() const noexcept { return *file_; }
 		[[nodiscard]] constexpr const inputFilesIterator_t &file() const noexcept { return file_; }
 		[[nodiscard]] constexpr off_t inputLength() const noexcept { return inputLength_; }
 		[[nodiscard]] constexpr const mappingOffset_t &inputOffset() const noexcept { return inputOffset_; }
