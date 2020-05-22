@@ -77,8 +77,8 @@ namespace pcat
 			inputOffset += inputOffset.length();
 			if (inputOffset.offset() == inputLength)
 			{
+				assert(file < inputFiles.end()); // NOLINT
 				++file;
-				assert(file <= inputFiles.end()); // NOLINT
 				inputLength = file == inputFiles.end() ? 0 : file->length();
 				inputOffset = {};
 			}
@@ -96,7 +96,7 @@ namespace pcat
 				return;
 			else if (outputOffset.length() != inputOffset.length())
 			{
-				const off_t originalOutputOffset = outputOffset.offset();
+				const auto originalOutputOffset = outputOffset;
 				while (outputOffset.length() - inputOffset.length())
 				{
 					const off_t remainder = outputOffset.length() - inputOffset.length();
@@ -109,11 +109,11 @@ namespace pcat
 					console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
 						" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
 				}
-				outputOffset = {originalOutputOffset};
+				outputOffset = originalOutputOffset;
 			}
 			nextInputBlock();
 			inputOffset.length(blockLength(inputLength - inputOffset));
-			outputOffset += transferBlockSize;
+			outputOffset += outputOffset.length();
 			outputOffset.length(blockLength(outputLength - outputOffset));
 		}
 
