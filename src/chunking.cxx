@@ -88,6 +88,7 @@ namespace pcat
 			const mappingOffset_t &inputOffset, const mappingOffset_t &outputOffset) noexcept :
 			file_{file}, inputLength_{inputLength}, inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
 		chunkState_t operator *() const noexcept { return {*file_, inputOffset_, outputOffset_}; }
+		[[nodiscard]] constexpr const fd_t &inputFile() const noexcept { return *file_; }
 		[[nodiscard]] constexpr const inputFilesIterator_t &file() const noexcept { return file_; }
 		[[nodiscard]] constexpr off_t inputLength() const noexcept { return inputLength_; }
 		[[nodiscard]] constexpr const mappingOffset_t &inputOffset() const noexcept { return inputOffset_; }
@@ -100,9 +101,12 @@ namespace pcat
 			return state;
 		}
 
+		[[nodiscard]] constexpr bool atEnd() const noexcept
+			{ return outputOffset_.length() == inputOffset_.length(); }
+
 		constexpr void operator ++() noexcept
 		{
-			if (outputOffset_.length() == inputOffset_.length())
+			if (atEnd())
 				return;
 			const off_t remainder = outputOffset_.length() - inputOffset_.length();
 			console.info("Transfer caused a remainder of ", remainder, " bytes to go for output block");
