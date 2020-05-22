@@ -63,6 +63,67 @@ namespace pcat
 		[[nodiscard]] constexpr mappingOffset_t outputOffset() const noexcept { return outputOffset_; }
 	};
 
+	struct subchunkState_t final
+	{
+	private:
+		inputFilesIterator_t file_;
+		off_t inputLength_;
+		mappingOffset_t inputOffset_;
+		mappingOffset_t outputOffset_;
+
+		constexpr void nextInputBlock() noexcept
+		{
+			inputOffset_ += inputOffset_.length();
+			if (inputOffset_.offset() == inputLength_)
+			{
+				assert(file_ < inputFiles.end()); // NOLINT
+				++file_;
+				inputLength_ = file_ == inputFiles.end() ? 0 : file_->length();
+				inputOffset_ = {};
+			}
+		};
+
+	public:
+		constexpr subchunkState_t(const inputFilesIterator_t &file, const off_t inputLength,
+			const mappingOffset_t &inputOffset, const mappingOffset_t &outputOffset) noexcept :
+			file_{file}, inputLength_{inputLength}, inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
+		chunkState_t operator *() const noexcept { return {*file_, inputOffset_, outputOffset_}; }
+		[[nodiscard]] constexpr const inputFilesIterator_t &file() const noexcept { return file_; }
+		[[nodiscard]] constexpr off_t inputLength() const noexcept { return inputLength_; }
+		[[nodiscard]] constexpr const mappingOffset_t &inputOffset() const noexcept { return inputOffset_; }
+
+		[[nodiscard]] constexpr subchunkState_t end() const noexcept
+		{
+			subchunkState_t state{*this};
+			while (state.outputOffset_.length() - state.inputOffset_.length())
+				++state;
+			return state;
+		}
+
+		constexpr void operator ++() noexcept
+		{
+			if (outputOffset_.length() == inputOffset_.length())
+				return;
+			const off_t remainder = outputOffset_.length() - inputOffset_.length();
+			console.info("Transfer caused a remainder of ", remainder, " bytes to go for output block");
+			outputOffset_ += inputOffset_.length();
+			outputOffset_.length(remainder);
+			nextInputBlock();
+			inputOffset_.length(std::min(remainder, inputLength_));
+
+			console.info("Copying ", inputOffset_.length(), " bytes at ", inputOffset_.offset(),
+				" to ", outputOffset_.length(), " byte region at ", outputOffset_.offset());
+		}
+
+		bool operator ==(const subchunkState_t &other) const noexcept
+		{
+			return file_ == other.file_ &&
+				inputOffset_ == other.inputOffset_ &&
+				outputOffset_ == other.outputOffset_;
+		}
+		bool operator !=(const subchunkState_t &other) const noexcept { return !(*this == other); }
+	};
+
 	struct chunking_t final
 	{
 	private:
