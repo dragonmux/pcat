@@ -154,7 +154,7 @@ namespace pcat
 				console.error("Failed to map source file transfer chunk: ", std::strerror(error));
 				return error;
 			}
-			else if (!inputChunk.advise(MADV_SEQUENTIAL | MADV_WILLNEED | MADV_DONTDUMP))
+			else if (!inputChunk.advise<MADV_SEQUENTIAL, MADV_WILLNEED, MADV_DONTDUMP>())
 			{
 				const auto error = errno;
 				console.error("Failed to advise the source map: ", std::strerror(error));
@@ -169,7 +169,7 @@ namespace pcat
 				console.error("Failed to map destination file transfer chunk: ", std::strerror(error));
 				return error;
 			}
-			else if (!outputChunk.advise(MADV_SEQUENTIAL | MADV_DONTDUMP))
+			else if (!outputChunk.advise<MADV_SEQUENTIAL, MADV_DONTDUMP>())
 			{
 				const auto error = errno;
 				console.error("Failed to advise the source map: ", std::strerror(error));

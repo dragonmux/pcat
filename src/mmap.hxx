@@ -77,6 +77,16 @@ namespace pcat
 		[[nodiscard]] bool advise(const int32_t adviceFlags) const noexcept
 			{ return madvise(_addr, _len, adviceFlags) == 0; }
 
+		template<int32_t adviceFlag, int32_t... adviceFlags> [[nodiscard]] bool advise() const noexcept
+		{
+			if (!advise(adviceFlag))
+				return false;
+			if constexpr (sizeof...(adviceFlags) == 0)
+				return true;
+			else
+				return advise<adviceFlags...>();
+		}
+
 		template<typename T> void copyFrom(const off_t idx, T &value) const
 		{
 			const auto *const src = index(idx);
