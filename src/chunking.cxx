@@ -93,7 +93,6 @@ namespace pcat
 			if (atEnd())
 				return;
 			const off_t remainder = outputOffset_.length() - inputOffset_.length();
-			console.info("Transfer caused a remainder of ", remainder, " bytes to go for output block");
 			outputOffset_ += inputOffset_.length();
 			outputOffset_.length(remainder);
 			nextInputBlock();
@@ -212,9 +211,6 @@ namespace pcat
 					console.error("Failed to advise the source map: ", std::strerror(error));
 					return error;
 				}
-
-				console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
-					" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
 
 				try
 				{
