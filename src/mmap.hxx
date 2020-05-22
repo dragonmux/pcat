@@ -74,26 +74,26 @@ namespace pcat
 		[[nodiscard]] bool sync(const off_t length, const int32_t flags = MS_SYNC | MS_INVALIDATE) const noexcept
 			{ return msync(_addr, length, flags) == 0; }
 
-		template<typename T> void copyTo(const off_t idx, T &value) const
+		template<typename T> void copyFrom(const off_t idx, T &value) const
 		{
 			const auto *const src = index(idx);
 			memcpy(&value, src, sizeof(T));
 		}
 
-		template<typename T> void copyTo(const off_t idx, T *value, const off_t length) const
+		template<typename T> void copyFrom(const off_t idx, T *value, const off_t length) const
 		{
 			const auto *const src = index(idx);
 			assert(length <= _len - idx);
 			std::memcpy(value, src, length);
 		}
 
-		template<typename T> void copyFrom(const off_t idx, const T &value) const
+		template<typename T> void copyTo(const off_t idx, const T &value) const
 		{
 			const auto dest = index(idx);
 			memcpy(dest, &value, sizeof(T));
 		}
 
-		template<typename T> void copyFrom(const off_t idx, const T &value, const off_t length) const
+		template<typename T> void copyTo(const off_t idx, const T &value, const off_t length) const
 		{
 			const auto dest = index(idx);
 			assert(length <= _len - idx);
