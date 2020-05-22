@@ -74,6 +74,9 @@ namespace pcat
 		[[nodiscard]] bool sync(const off_t length, const int32_t flags = MS_SYNC | MS_INVALIDATE) const noexcept
 			{ return msync(_addr, length, flags) == 0; }
 
+		[[nodiscard]] bool advise(const int32_t adviceFlags) const noexcept
+			{ return madvise(_addr, _len, adviceFlags) == 0; }
+
 		template<typename T> void copyFrom(const off_t idx, T &value) const
 		{
 			const auto *const src = index(idx);

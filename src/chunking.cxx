@@ -146,12 +146,18 @@ namespace pcat
 			console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
 				" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
 
-			mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
-				inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE | MAP_POPULATE};
+			const mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
+				inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE};
 			if (!inputChunk.valid())
 			{
 				const auto error = errno;
 				console.error("Failed to map source file transfer chunk: ", std::strerror(error));
+				return error;
+			}
+			else if (!inputChunk.advise(MADV_SEQUENTIAL | MADV_WILLNEED | MADV_DONTDUMP))
+			{
+				const auto error = errno;
+				console.error("Failed to advise the source map: ", std::strerror(error));
 				return error;
 			}
 
@@ -161,6 +167,12 @@ namespace pcat
 			{
 				const auto error = errno;
 				console.error("Failed to map destination file transfer chunk: ", std::strerror(error));
+				return error;
+			}
+			else if (!outputChunk.advise(MADV_SEQUENTIAL | MADV_DONTDUMP))
+			{
+				const auto error = errno;
+				console.error("Failed to advise the source map: ", std::strerror(error));
 				return error;
 			}
 
