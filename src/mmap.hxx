@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <stdexcept>
+#include <cassert>
 #include <substrate/fd>
 
 namespace pcat
@@ -67,16 +68,36 @@ namespace pcat
 		[[nodiscard]] void *address(const off_t offset) noexcept { return index(offset); }
 		[[nodiscard]] const void *address(const off_t offset) const noexcept { return index(offset); }
 
+		[[nodiscard]] bool sync(const int32_t flags = MS_SYNC | MS_INVALIDATE) const noexcept
+			{ return sync(_len, flags); }
+
+		[[nodiscard]] bool sync(const off_t length, const int32_t flags = MS_SYNC | MS_INVALIDATE) const noexcept
+			{ return msync(_addr, length, flags) == 0; }
+
 		template<typename T> void copyTo(const off_t idx, T &value) const
 		{
 			const auto *const src = index(idx);
 			memcpy(&value, src, sizeof(T));
 		}
 
+		template<typename T> void copyTo(const off_t idx, T *value, const off_t length) const
+		{
+			const auto *const src = index(idx);
+			assert(length < _len - idx);
+			memcpy(value, src, length);
+		}
+
 		template<typename T> void copyFrom(const off_t idx, const T &value) const
 		{
 			const auto dest = index(idx);
 			memcpy(dest, &value, sizeof(T));
+		}
+
+		template<typename T> void copyFrom(const off_t idx, const T &value, const off_t length) const
+		{
+			const auto dest = index(idx);
+			assert(length < _len - idx);
+			memcpy(dest, value, length);
 		}
 
 		constexpr bool operator ==(const mmap_t &b) const noexcept
