@@ -103,7 +103,7 @@ namespace pcat
 	{
 		const auto fileName = dynamic_cast<args::argOutputFile_t *>(::args->find(argType_t::outputFile))->fileName();
 		errno = 0;
-		fd_t file{fileName.data(), O_CREAT | O_WRONLY | O_NOCTTY, substrate::normalMode};
+		fd_t file{fileName.data(), O_CREAT | O_RDWR | O_NOCTTY, substrate::normalMode};
 		error = errno;
 		if (!file.valid())
 			return false;

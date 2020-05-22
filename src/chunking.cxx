@@ -140,10 +140,38 @@ namespace pcat
 		fileChunker_t chunker{};
 		for (chunkState_t chunk : chunker)
 		{
+			const auto &inputFile = chunk.inputFile();
 			const auto inputOffset = chunk.inputOffset();
 			const auto outputOffset = chunk.outputOffset();
 			console.info("Copying ", inputOffset.length(), " bytes at ", inputOffset.offset(),
 				" to ", outputOffset.length(), " byte region at ", outputOffset.offset());
+
+			mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
+				inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE | MAP_POPULATE};
+			if (!inputChunk.valid())
+			{
+				const auto error = errno;
+				console.error("Failed to map source file transfer chunk: ", std::strerror(error));
+				return error;
+			}
+
+			mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
+				outputOffset.adjustedLength(), PROT_WRITE, MAP_PRIVATE};
+			if (!outputChunk.valid())
+			{
+				const auto error = errno;
+				console.error("Failed to map destination file transfer chunk: ", std::strerror(error));
+				return error;
+			}
+
+			if (!outputChunk.sync())
+			{
+				const auto error = errno;
+				console.error("Failed to synchronise the mapping for region ", outputOffset.offset(),
+					':', outputOffset.length(), " at address ", outputChunk.address(0));
+				console.error("Failure reason: ", std::strerror(error));
+				return error;
+			}
 		}
 		return 0;
 	}
