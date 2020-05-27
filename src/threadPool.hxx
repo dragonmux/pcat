@@ -27,8 +27,8 @@ namespace pcat
 		bool workValid{false};
 		std::atomic<bool> finished{false};
 		threadedQueue_t<int32_t> results{};
-		affinity_t affinity{};
 		std::vector<std::thread> threads{};
+		affinity_t affinity{};
 		workFunc_t workerFunction;
 
 		std::pair<bool, std::tuple<args_t...>> waitWork() noexcept
@@ -78,6 +78,8 @@ namespace pcat
 
 		[[nodiscard]] size_t numProcessors() const noexcept { return affinity.numProcessors(); }
 
+		[[nodiscard]] result_t queue(args_t &...args)
+			{ return queue(std::move(args)...); }
 		[[nodiscard]] result_t queue(args_t &&...args)
 		{
 			result_t result{};

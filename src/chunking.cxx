@@ -73,6 +73,7 @@ namespace pcat
 		constexpr chunkState_t(const inputFilesIterator_t &file, const off_t inputLength,
 			const mappingOffset_t &inputOffset, const mappingOffset_t &outputOffset) noexcept :
 			file_{file}, inputLength_{inputLength}, inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
+		constexpr chunkState_t(const chunkState_t &) = default;
 		[[nodiscard]] constexpr const inputFilesIterator_t &file() const noexcept { return file_; }
 		[[nodiscard]] constexpr off_t inputLength() const noexcept { return inputLength_; }
 		[[nodiscard]] const fd_t &inputFile() const noexcept { return *file_; }
@@ -246,7 +247,7 @@ namespace pcat
 
 		for (chunkState_t chunk : chunker)
 		{
-			const int32_t result{copyThreads.queue(std::move(chunk))};
+			const int32_t result{copyThreads.queue(chunk)};
 			if (result)
 				return result;
 		}
