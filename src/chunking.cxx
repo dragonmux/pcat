@@ -243,7 +243,6 @@ namespace pcat
 	{
 		threadPool_t copyThreads{copyChunk};
 		fileChunker_t chunker{};
-		console.info("Process has ", copyThreads.numProcessors(), " processors assigned to it");
 
 		for (chunkState_t chunk : chunker)
 		{
