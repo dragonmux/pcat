@@ -17,6 +17,7 @@ project(
 cxx = meson.get_compiler('cpp')
 sanitizer = get_option('b_sanitize')
 substrate = include_directories('substrate')
+threading = dependency('threads')
 
 fPIC = []
 if cxx.has_argument('-fPIC')
@@ -34,6 +35,7 @@ pcat = executable(
 	pcatSrcs + [versionHeader],
 	cpp_args: ['-D_GNU_SOURCE'] + fPIC,
 	include_directories: [substrate, include_directories('src')],
+	dependencies: [threading],
 	gnu_symbol_visibility: 'inlineshidden',
 	implicit_include_directories: false,
 	install: true,
