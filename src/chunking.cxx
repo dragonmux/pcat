@@ -241,16 +241,16 @@ namespace pcat
 
 	int32_t chunkedCopy() noexcept
 	{
-		affinity_t affinity{};
+		threadPool_t<decltype(copyChunk)> copyThreads{copyChunk};
 		fileChunker_t chunker{};
-		console.info("Process has ", affinity.numProcessors(), " processors assigned to it");
+		console.info("Process has ", copyThreads.numProcessors(), " processors assigned to it");
 
-		for (const chunkState_t chunk : chunker)
+		for (chunkState_t chunk : chunker)
 		{
-			const int32_t result = copyChunk(chunk);
+			const int32_t result{copyThreads.queue(std::move(chunk))};
 			if (result)
 				return result;
 		}
-		return 0;
+		return copyThreads.finish();
 	}
 } // namespace pcat
