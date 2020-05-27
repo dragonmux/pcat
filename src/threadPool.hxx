@@ -28,7 +28,7 @@ namespace pcat
 		std::atomic<bool> finished{false};
 		threadedQueue_t<int32_t> results{};
 		affinity_t affinity{};
-		std::vector<std::thread> threads{affinity.numProcessors()};
+		std::vector<std::thread> threads{};
 		workFunc_t workerFunction;
 
 		std::pair<bool, std::tuple<args_t...>> waitWork() noexcept
@@ -90,12 +90,15 @@ namespace pcat
 			return result;
 		}
 
-		[[nodiscard]] result_t finish() noexcept
+		[[nodiscard]] result_t finish()
 		{
+			if (threads.empty())
+				return {};
 			finished = true;
 			haveWork.notify_all();
 			for (auto &thread : threads)
 				thread.join();
+			threads.clear();
 
 			result_t result{};
 			while (!results.empty())
