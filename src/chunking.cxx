@@ -1,10 +1,12 @@
 #include <cassert>
 #include <cerrno>
+#include <string_view>
 #include <substrate/console>
 #include "chunking.hxx"
 #include "mmap.hxx"
 #include "threadPool.hxx"
 
+using std::literals::string_view_literals::operator ""sv;
 using substrate::console;
 
 namespace pcat
@@ -183,13 +185,13 @@ namespace pcat
 		if (!outputChunk.valid())
 		{
 			const auto error = errno;
-			console.error("Failed to map destination file transfer chunk: ", std::strerror(error));
+			console.error("Failed to map destination file transfer chunk: "sv, std::strerror(error));
 			return error;
 		}
 		else if (!outputChunk.advise<MADV_SEQUENTIAL, MADV_DONTDUMP>())
 		{
 			const auto error = errno;
-			console.error("Failed to advise the source map: ", std::strerror(error));
+			console.error("Failed to advise the source map: "sv, std::strerror(error));
 			return error;
 		}
 
@@ -202,13 +204,13 @@ namespace pcat
 			if (!inputChunk.valid())
 			{
 				const auto error = errno;
-				console.error("Failed to map source file transfer chunk: ", std::strerror(error));
+				console.error("Failed to map source file transfer chunk: "sv, std::strerror(error));
 				return error;
 			}
 			else if (!inputChunk.advise<MADV_SEQUENTIAL, MADV_WILLNEED, MADV_DONTDUMP>())
 			{
 				const auto error = errno;
-				console.error("Failed to advise the source map: ", std::strerror(error));
+				console.error("Failed to advise the source map: "sv, std::strerror(error));
 				return error;
 			}
 
@@ -222,7 +224,7 @@ namespace pcat
 			}
 			catch (const std::out_of_range &error)
 			{
-				console.error("Failure while copying data block: ", error.what());
+				console.error("Failure while copying data block: "sv, error.what());
 				return EINVAL;
 			}
 			++chunk;
@@ -232,9 +234,9 @@ namespace pcat
 		if (!outputChunk.sync())
 		{
 			const auto error = errno;
-			console.error("Failed to synchronise the mapping for region ", outputOffset.offset(),
-				':', outputOffset.length(), " at address ", outputChunk.address(0));
-			console.error("Failure reason: ", std::strerror(error));
+			console.error("Failed to synchronise the mapping for region "sv, outputOffset.offset(),
+				':', outputOffset.length(), " at address "sv, outputChunk.address(0));
+			console.error("Failure reason: "sv, std::strerror(error));
 			return error;
 		}
 		return 0;
@@ -249,13 +251,16 @@ namespace pcat
 		{
 			const int32_t result{copyThreads.queue(chunk)};
 			if (result)
+			{
+				console.error("Copying failed: "sv, std::strerror(result));
 				return result;
+			}
 		}
 		return copyThreads.finish();
 	}
 	catch (std::system_error &error)
 	{
-		console.error("Copying failed: ", error.what());
+		console.error("Copying failed: "sv, error.what());
 		return error.code().value();
 	}
 } // namespace pcat
