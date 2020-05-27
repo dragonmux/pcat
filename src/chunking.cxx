@@ -173,74 +173,82 @@ namespace pcat
 		chunking_t end() noexcept { return {inputFiles.end()}; }
 	};
 
-	int32_t chunkedCopy() noexcept
+	int32_t copyChunk(chunkState_t chunk)
 	{
-		affinity_t affinity{};
-		fileChunker_t chunker{};
-		console.info("Process has ", affinity.numProcessors(), " processors assigned to it");
-
-		for (chunkState_t chunk : chunker)
+		const auto outputOffset = chunk.outputOffset();
+		const mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
+			outputOffset.adjustedLength(), PROT_WRITE};
+		if (!outputChunk.valid())
 		{
-			const auto outputOffset = chunk.outputOffset();
-			const mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
-				outputOffset.adjustedLength(), PROT_WRITE};
-			if (!outputChunk.valid())
+			const auto error = errno;
+			console.error("Failed to map destination file transfer chunk: ", std::strerror(error));
+			return error;
+		}
+		else if (!outputChunk.advise<MADV_SEQUENTIAL, MADV_DONTDUMP>())
+		{
+			const auto error = errno;
+			console.error("Failed to advise the source map: ", std::strerror(error));
+			return error;
+		}
+
+		do
+		{
+			const auto &inputFile = chunk.inputFile();
+			const auto inputOffset = chunk.inputOffset();
+			const mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
+				inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE};
+			if (!inputChunk.valid())
 			{
 				const auto error = errno;
-				console.error("Failed to map destination file transfer chunk: ", std::strerror(error));
+				console.error("Failed to map source file transfer chunk: ", std::strerror(error));
 				return error;
 			}
-			else if (!outputChunk.advise<MADV_SEQUENTIAL, MADV_DONTDUMP>())
+			else if (!inputChunk.advise<MADV_SEQUENTIAL, MADV_WILLNEED, MADV_DONTDUMP>())
 			{
 				const auto error = errno;
 				console.error("Failed to advise the source map: ", std::strerror(error));
 				return error;
 			}
 
-			do
+			try
 			{
-				const auto &inputFile = chunk.inputFile();
-				const auto inputOffset = chunk.inputOffset();
-				const mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
-					inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE};
-				if (!inputChunk.valid())
-				{
-					const auto error = errno;
-					console.error("Failed to map source file transfer chunk: ", std::strerror(error));
-					return error;
-				}
-				else if (!inputChunk.advise<MADV_SEQUENTIAL, MADV_WILLNEED, MADV_DONTDUMP>())
-				{
-					const auto error = errno;
-					console.error("Failed to advise the source map: ", std::strerror(error));
-					return error;
-				}
-
-				try
-				{
-					outputChunk.copyTo(
-						outputOffset.adjustment(),
-						inputChunk.address(inputOffset.adjustment()),
-						inputOffset.length()
-					);
-				}
-				catch (const std::out_of_range &error)
-				{
-					console.error("Failure while copying data block: ", error.what());
-					return EINVAL;
-				}
-				++chunk;
+				outputChunk.copyTo(
+					outputOffset.adjustment(),
+					inputChunk.address(inputOffset.adjustment()),
+					inputOffset.length()
+				);
 			}
-			while (!chunk.atEnd());
-
-			if (!outputChunk.sync())
+			catch (const std::out_of_range &error)
 			{
-				const auto error = errno;
-				console.error("Failed to synchronise the mapping for region ", outputOffset.offset(),
-					':', outputOffset.length(), " at address ", outputChunk.address(0));
-				console.error("Failure reason: ", std::strerror(error));
-				return error;
+				console.error("Failure while copying data block: ", error.what());
+				return EINVAL;
 			}
+			++chunk;
+		}
+		while (!chunk.atEnd());
+
+		if (!outputChunk.sync())
+		{
+			const auto error = errno;
+			console.error("Failed to synchronise the mapping for region ", outputOffset.offset(),
+				':', outputOffset.length(), " at address ", outputChunk.address(0));
+			console.error("Failure reason: ", std::strerror(error));
+			return error;
+		}
+		return 0;
+	}
+
+	int32_t chunkedCopy() noexcept
+	{
+		affinity_t affinity{};
+		fileChunker_t chunker{};
+		console.info("Process has ", affinity.numProcessors(), " processors assigned to it");
+
+		for (const chunkState_t chunk : chunker)
+		{
+			const int32_t result = copyChunk(chunk);
+			if (result)
+				return result;
 		}
 		return 0;
 	}
