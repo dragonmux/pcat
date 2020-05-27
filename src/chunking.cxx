@@ -239,7 +239,7 @@ namespace pcat
 		return 0;
 	}
 
-	int32_t chunkedCopy() noexcept
+	int32_t chunkedCopy() noexcept try
 	{
 		threadPool_t<decltype(copyChunk)> copyThreads{copyChunk};
 		fileChunker_t chunker{};
@@ -252,5 +252,10 @@ namespace pcat
 				return result;
 		}
 		return copyThreads.finish();
+	}
+	catch (std::system_error &error)
+	{
+		console.error("Copying failed: ", error.what());
+		return error.code().value();
 	}
 } // namespace pcat
