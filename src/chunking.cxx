@@ -51,10 +51,10 @@ namespace pcat
 	struct chunkState_t final
 	{
 	private:
-		inputFilesIterator_t file_;
-		off_t inputLength_;
-		mappingOffset_t inputOffset_;
-		mappingOffset_t outputOffset_;
+		inputFilesIterator_t file_{};
+		off_t inputLength_{};
+		mappingOffset_t inputOffset_{};
+		mappingOffset_t outputOffset_{};
 
 		constexpr void nextInputBlock() noexcept
 		{
@@ -69,6 +69,7 @@ namespace pcat
 		};
 
 	public:
+		chunkState_t() noexcept = default;
 		constexpr chunkState_t(const inputFilesIterator_t &file, const off_t inputLength,
 			const mappingOffset_t &inputOffset, const mappingOffset_t &outputOffset) noexcept :
 			file_{file}, inputLength_{inputLength}, inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
