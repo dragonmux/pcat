@@ -106,6 +106,9 @@ namespace pcat
 			return result;
 		}
 	};
+
+	template<typename result_t, typename... args_t>
+		threadPool_t(result_t (*)(args_t...)) -> threadPool_t<result_t(args_t...)>;
 } // namespace pcat
 
 #endif /*THREAD_POOL__HXX*/

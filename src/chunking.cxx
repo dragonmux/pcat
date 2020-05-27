@@ -241,7 +241,7 @@ namespace pcat
 
 	int32_t chunkedCopy() noexcept try
 	{
-		threadPool_t<decltype(copyChunk)> copyThreads{copyChunk};
+		threadPool_t copyThreads{copyChunk};
 		fileChunker_t chunker{};
 		console.info("Process has ", copyThreads.numProcessors(), " processors assigned to it");
 
