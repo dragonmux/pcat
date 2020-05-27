@@ -31,7 +31,7 @@ namespace pcat
 		std::vector<std::thread> threads{affinity.numProcessors()};
 		workFunc_t workerFunction;
 
-		std::tuple<args_t...> waitWork() noexcept
+		std::pair<bool, std::tuple<args_t...>> waitWork() noexcept
 		{
 			std::unique_lock<std::mutex> lock{workMutex};
 			++waitingThreads;
@@ -41,9 +41,9 @@ namespace pcat
 			if (workValid)
 			{
 				workValid = false;
-				return workItem;
+				return {true, workItem};
 			}
-			return {};
+			return {false, {}};
 		}
 
 		template<size_t... indicies> result_t invoke(std::tuple<args_t...> &&args, std::index_sequence<indicies...>)
@@ -54,8 +54,9 @@ namespace pcat
 			affinity.pinThreadTo(processor);
 			while (!finished)
 			{
-				auto args = waitWork();
-				if (finished)
+				auto [valid, args] = waitWork();
+				// This checks for both if we don't have something to do and if we're supposed to be finsihing up
+				if (finished && !valid)
 					break;
 				auto result = invoke(std::move(args), std::make_index_sequence<sizeof...(args_t)>());
 				results.push(std::move(result));
