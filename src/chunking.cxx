@@ -3,6 +3,7 @@
 #include <substrate/console>
 #include "chunking.hxx"
 #include "mmap.hxx"
+#include "affinity.hxx"
 
 using substrate::console;
 
@@ -174,7 +175,10 @@ namespace pcat
 
 	int32_t chunkedCopy() noexcept
 	{
+		affinity_t affinity{};
 		fileChunker_t chunker{};
+		console.info("Process has ", affinity.numProcessors(), " processors assigned to it");
+
 		for (chunkState_t chunk : chunker)
 		{
 			const auto outputOffset = chunk.outputOffset();
