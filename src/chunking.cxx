@@ -3,7 +3,7 @@
 #include <substrate/console>
 #include "chunking.hxx"
 #include "mmap.hxx"
-#include "affinity.hxx"
+#include "threadPool.hxx"
 
 using substrate::console;
 
