@@ -3,6 +3,7 @@
 [![Build Status](https://github.com/DX-MON/pcat/workflows/GitHub%20Actions/badge.svg)](https://github.com/DX-MON/pcat/actions)
 [![codecov](https://codecov.io/gh/DX-MON/pcat/branch/master/graph/badge.svg)](https://codecov.io/gh/DX-MON/pcat)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/DX-MON/pcat.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DX-MON/pcat/alerts/)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDX-MON%2Fpcat.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FDX-MON%2Fpcat?ref=badge_shield)
 
 pcat is a `cat`-like utility designend for fast, parallel, file concatenation, with a HPC focus in mind.
 
@@ -23,3 +24,7 @@ meson build
 ninja -C build
 ninja -C build install
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDX-MON%2Fpcat.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FDX-MON%2Fpcat?ref=badge_large)
