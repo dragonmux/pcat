@@ -23,6 +23,7 @@ namespace pcat
 		std::atomic<size_t> waitingThreads{};
 		std::mutex workMutex{};
 		std::condition_variable haveWork{};
+		std::condition_variable queueClear{};
 		std::tuple<args_t...> workItem{args_t{}...};
 		bool workValid{false};
 		std::atomic<bool> finished{false};
@@ -41,6 +42,7 @@ namespace pcat
 			if (workValid)
 			{
 				workValid = false;
+				queueClear.notify_all();
 				return {true, workItem};
 			}
 			return {false, {}};
@@ -61,6 +63,16 @@ namespace pcat
 				auto result = invoke(std::move(args), std::make_index_sequence<sizeof...(args_t)>());
 				results.push(std::move(result));
 			}
+		}
+
+		void lockedEnqueue(args_t &&...args)
+		{
+			std::unique_lock<std::mutex> lock{workMutex};
+			if (workValid)
+				queueClear.wait(lock, [this]() noexcept -> bool { return !workValid; });
+			workItem = {std::forward<args_t>(args)...};
+			workValid = true;
+			haveWork.notify_one();
 		}
 
 	public:
@@ -85,10 +97,7 @@ namespace pcat
 			result_t result{};
 			if (!waitingThreads)
 				result = results.pop();
-			std::lock_guard<std::mutex> lock{workMutex};
-			workItem = {std::forward<args_t>(args)...};
-			workValid = true;
-			haveWork.notify_one();
+			lockedEnqueue(std::forward<args_t>(args)...);
 			return result;
 		}
 
