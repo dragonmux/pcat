@@ -102,13 +102,13 @@ namespace pcat
 
 		template<typename T> void copyTo(const off_t idx, const T &value) const
 		{
-			const auto dest = index(idx);
+			auto *const dest = index(idx);
 			memcpy(dest, &value, sizeof(T));
 		}
 
 		template<typename T> void copyTo(const off_t idx, const T &value, const off_t length) const
 		{
-			const auto dest = index(idx);
+			auto *const dest = index(idx);
 			assert(length <= _len - idx);
 			std::memcpy(dest, value, length);
 		}

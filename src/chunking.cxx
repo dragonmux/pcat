@@ -63,7 +63,7 @@ namespace pcat
 			inputOffset_ += inputOffset_.length();
 			if (inputOffset_.offset() == inputLength_)
 			{
-				assert(file_ < inputFiles.end()); // NOLINT
+				assert(file_ != inputFiles.end()); // NOLINT
 				++file_;
 				inputLength_ = file_ == inputFiles.end() ? 0 : file_->length();
 				inputOffset_ = {};
