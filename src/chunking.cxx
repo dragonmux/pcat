@@ -179,7 +179,8 @@ namespace pcat
 
 	int32_t copyChunk(chunkState_t chunk)
 	{
-		const auto outputOffset = chunk.outputOffset();
+		const auto &outputOffset = chunk.outputOffset();
+		const auto outputLength{outputOffset.length()};
 		const mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
 			outputOffset.adjustedLength(), PROT_WRITE};
 		if (!outputChunk.valid())
@@ -195,10 +196,11 @@ namespace pcat
 			return error;
 		}
 
+		auto offset{outputOffset.adjustment()};
 		do
 		{
 			const auto &inputFile = chunk.inputFile();
-			const auto inputOffset = chunk.inputOffset();
+			const auto &inputOffset = chunk.inputOffset();
 			const mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
 				inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE};
 			if (!inputChunk.valid())
@@ -217,7 +219,7 @@ namespace pcat
 			try
 			{
 				outputChunk.copyTo(
-					outputOffset.adjustment(),
+					offset,
 					inputChunk.address(inputOffset.adjustment()),
 					inputOffset.length()
 				);
@@ -227,9 +229,10 @@ namespace pcat
 				console.error("Failure while copying data block: "sv, error.what());
 				return EINVAL;
 			}
+			offset += inputOffset.length();
 			++chunk;
 		}
-		while (!chunk.atEnd());
+		while (offset < outputLength);
 
 		if (!outputChunk.sync())
 		{
