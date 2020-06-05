@@ -2,6 +2,7 @@
 #define AFFINITY__HXX
 
 #include <vector>
+#include <thread>
 #include <system_error>
 #include <stdexcept>
 #include <sched.h>
@@ -40,7 +41,7 @@ namespace pcat
 			}
 		}
 
-		[[nodiscard]] size_t numProcessors() const noexcept { return processors.size(); }
+		[[nodiscard]] std::size_t numProcessors() const noexcept { return processors.size(); }
 		[[nodiscard]] auto begin() const noexcept { return processors.begin(); }
 		[[nodiscard]] auto end() const noexcept { return processors.end(); }
 
