@@ -56,6 +56,13 @@ namespace affinity
 			suite.assertNotEqual(result, -1);
 			suite.assertEqual(result, processor);
 		}
+
+		suite.assertTrue(std::async(std::launch::async, []() noexcept -> bool
+		{
+			try { affinity->pinThreadTo(affinity->numProcessors()); }
+			catch (const std::out_of_range &) { return true; }
+			return false;
+		}).get());
 		affinity.reset();
 	}
 }
