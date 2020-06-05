@@ -7,6 +7,7 @@ private:
 	void testEmplace() { threadedQueue::testEmplace(*this); }
 	void testPush() { threadedQueue::testPush(*this); }
 	void testPop() { threadedQueue::testPop(*this); }
+	void testAsync() { threadedQueue::testAsync(*this); }
 
 public:
 	testThreadedQueue() = default;
@@ -22,6 +23,7 @@ public:
 		CRUNCHpp_TEST(testEmplace)
 		CRUNCHpp_TEST(testPush)
 		CRUNCHpp_TEST(testPop)
+		CRUNCHpp_TEST(testAsync)
 	}
 };
 
