@@ -3,6 +3,10 @@
 class testThreadedQueue final : public testsuite
 {
 private:
+	void testEmpty() { threadedQueue::testEmpty(*this); }
+	void testEmplace() { threadedQueue::testEmplace(*this); }
+	void testPush() { threadedQueue::testPush(*this); }
+	void testPop() { threadedQueue::testPop(*this); }
 
 public:
 	testThreadedQueue() = default;
@@ -14,6 +18,10 @@ public:
 
 	void registerTests() final
 	{
+		CRUNCHpp_TEST(testEmpty)
+		CRUNCHpp_TEST(testEmplace)
+		CRUNCHpp_TEST(testPush)
+		CRUNCHpp_TEST(testPop)
 	}
 };
 
