@@ -17,14 +17,15 @@ if sanitizer != 'none'
 endif
 
 pcatTests = [
-	'testFD', 'testConsole', 'testArgsTokenizer', 'testArgsParser'
+	'testFD', 'testConsole', 'testArgsTokenizer', 'testArgsParser',
+	'testThreadedQueue'
 ]
 
 testHelpers = static_library(
 	'testHelpers',
 	[
 		'fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx',
-		'argsParser.cxx'
+		'argsParser.cxx', 'threadedQueue.cxx'
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
@@ -46,7 +47,8 @@ testObjectMap = {
 			'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
 			'substrate/impl/console.cxx'
 		]
-	}
+	},
+	'testThreadedQueue': {'test': ['threadedQueue.cxx']}
 }
 
 foreach test : pcatTests
