@@ -20,7 +20,7 @@ namespace pcat
 	{
 	private:
 		using workFunc_t = result_t (*)(args_t...);
-		std::atomic<size_t> waitingThreads{};
+		std::atomic<std::size_t> waitingThreads{};
 		std::mutex workMutex{};
 		std::condition_variable haveWork{};
 		std::condition_variable queueClear{};
@@ -48,8 +48,8 @@ namespace pcat
 			return {false, {}};
 		}
 
-		template<size_t... indicies> result_t invoke(std::tuple<args_t...> &&args, std::index_sequence<indicies...>)
-			{ return workerFunction(std::get<indicies>(std::move(args))...); }
+		template<std::size_t... indicies> result_t invoke(std::tuple<args_t...> &&args,
+			std::index_sequence<indicies...>) { return workerFunction(std::get<indicies>(std::move(args))...); }
 
 		void workerThread(const int32_t processor)
 		{
@@ -88,7 +88,7 @@ namespace pcat
 		threadPool_t &operator =(const threadPool_t &) = delete;
 		threadPool_t &operator =(threadPool_t &&) = delete;
 
-		[[nodiscard]] size_t numProcessors() const noexcept { return affinity.numProcessors(); }
+		[[nodiscard]] std::size_t numProcessors() const noexcept { return affinity.numProcessors(); }
 		[[nodiscard]] bool valid() const noexcept { return !threads.empty(); }
 		[[nodiscard]] bool ready() const noexcept { return waitingThreads; }
 
