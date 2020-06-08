@@ -44,3 +44,9 @@ pcat = executable(
 
 crunchMake = find_program('crunchMake', version: ['>= 1.0.0', '< 2.0.0'], required: false)
 subdir('test', if_found: crunchMake)
+
+runClangTidy = find_program('runClangTidy.py')
+run_target(
+	'clang-tidy',
+	command: [runClangTidy, '-s', meson.current_source_dir(), '-p', meson.current_build_dir()]
+)
