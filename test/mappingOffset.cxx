@@ -121,12 +121,20 @@ namespace mappingOffset
 		suite.assertEqual(unalignedOffset->adjustedLength(), (pageSize * 2) - 524);
 		suite.assertEqual(off_t{*unalignedOffset}, pageSize);
 
-		/*mappingOffset_t alignedOffset{pageSize, 2408};
-		suite.assertEqual(alignedOffset.offset(), pageSize);
-		suite.assertEqual(alignedOffset.adjustment(), 0);
-		suite.assertEqual(alignedOffset.length(), 2408);
-		suite.assertEqual(alignedOffset.adjustedOffset(), pageSize);
-		suite.assertEqual(alignedOffset.adjustedLength(), 2408);
-		suite.assertEqual(off_t{alignedOffset}, pageSize);*/
+		auto alignedOffset{substrate::make_unique_nothrow<mappingOffset_t>(pageSize, pageSize * 4)};
+		suite.assertNotNull(alignedOffset);
+		suite.assertEqual(alignedOffset->offset(), pageSize);
+		suite.assertEqual(alignedOffset->adjustment(), 0);
+		suite.assertEqual(alignedOffset->length(), pageSize * 4);
+		suite.assertEqual(alignedOffset->adjustedOffset(), pageSize);
+		suite.assertEqual(alignedOffset->adjustedLength(), pageSize * 4);
+		suite.assertEqual(off_t{*alignedOffset}, pageSize);
+		*alignedOffset += 1024;
+		suite.assertEqual(alignedOffset->offset(), pageSize + 1024);
+		suite.assertEqual(alignedOffset->adjustment(), 1024);
+		suite.assertEqual(alignedOffset->length(), pageSize * 4);
+		suite.assertEqual(alignedOffset->adjustedOffset(), pageSize);
+		suite.assertEqual(alignedOffset->adjustedLength(), (pageSize * 4) + 1024);
+		suite.assertEqual(off_t{*alignedOffset}, pageSize + 1024);
 	}
 } // namespace mappingOffset
