@@ -255,7 +255,7 @@ namespace pcat
 		while (!copyThreads.ready())
 			std::this_thread::sleep_for(1us);
 
-		for (chunkState_t chunk : chunker)
+		for (const chunkState_t &chunk : chunker)
 		{
 			const int32_t result{copyThreads.queue(chunk)};
 			if (result)

@@ -92,7 +92,7 @@ namespace pcat
 		[[nodiscard]] bool valid() const noexcept { return !threads.empty(); }
 		[[nodiscard]] bool ready() const noexcept { return waitingThreads; }
 
-		[[nodiscard]] result_t queue(args_t &...args)
+		[[nodiscard]] result_t queue(args_t ...args)
 		{
 			result_t result{};
 			if (!waitingThreads)
