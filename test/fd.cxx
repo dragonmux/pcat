@@ -181,4 +181,4 @@ namespace fd
 		suite.assertFalse(file.read(junk));
 		suite.assertTrue(file.isEOF());
 	}
-}
+} // namespace fd

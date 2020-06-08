@@ -41,7 +41,7 @@ namespace pcat::args::tokenizer
 		}
 		else
 		{
-			const auto begin = offset;
+			const auto *const begin = offset;
 			while (offset < arg + length)
 			{
 				if (isEquals(*offset))
@@ -51,4 +51,4 @@ namespace pcat::args::tokenizer
 			token_ = {tokenType_t::arg, {begin, size_t(offset - begin)}};
 		}
 	}
-}
+} // namespace pcat::args::tokenizer

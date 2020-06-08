@@ -65,4 +65,4 @@ namespace affinity
 		}).get());
 		affinity.reset();
 	}
-}
+} // namespace affinity

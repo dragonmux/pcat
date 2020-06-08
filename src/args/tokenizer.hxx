@@ -17,11 +17,11 @@ namespace pcat::args::tokenizer
 	struct token_t final
 	{
 	private:
-		tokenType_t type_;
-		std::string_view value_;
+		tokenType_t type_{tokenType_t::unknown};
+		std::string_view value_{};
 
 	public:
-		constexpr token_t() noexcept : type_{tokenType_t::unknown}, value_{} { }
+		constexpr token_t() noexcept = default;
 		constexpr token_t(const tokenType_t type) noexcept : type_{type}, value_{} { }
 		token_t(const tokenType_t type, std::string_view &&value) noexcept :
 			type_{type}, value_{value} { }
@@ -59,6 +59,6 @@ namespace pcat::args::tokenizer
 			return token_;
 		}
 	};
-}
+} // namespace pcat::args::tokenizer
 
 #endif /*ARGS_TOKENIZER__HXX*/

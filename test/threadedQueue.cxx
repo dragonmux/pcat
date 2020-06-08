@@ -65,4 +65,4 @@ namespace threadedQueue
 		suite.assertTrue(queue.empty());
 		suite.assertEqual(queue.size(), 0);
 	}
-}
+} // namespace threadedQueue

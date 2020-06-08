@@ -62,7 +62,7 @@ namespace parser
 			suite.assertNotNull(arg);
 			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(type));
 
-			const auto search = args->find(type);
+			auto *const search = args->find(type);
 			suite.assertNotNull(search);
 			suite.assertEqual(search, arg.get());
 		}
@@ -74,11 +74,11 @@ namespace parser
 		{
 			suite.assertNotNull(arg);
 			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::outputFile));
-			const auto node = dynamic_cast<argOutputFile_t *>(arg.get());
+			auto *const node = dynamic_cast<argOutputFile_t *>(arg.get());
 			suite.assertEqual(node->fileName().size(), stringFile.size());
 			suite.assertEqual(node->fileName().data(), stringFile.data(), stringFile.size());
 
-			const auto search = args->find(argType_t::outputFile);
+			auto *const search = args->find(argType_t::outputFile);
 			suite.assertNotNull(search);
 			suite.assertEqual(search, arg.get());
 		}
