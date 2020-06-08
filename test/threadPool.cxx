@@ -2,7 +2,7 @@
 #include <chrono>
 #include <substrate/utility>
 #include <threadPool.hxx>
-#include "testAffinity.hxx"
+#include "testThreadPool.hxx"
 
 using pcat::affinity_t;
 using pcat::threadPool_t;
