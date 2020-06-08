@@ -5,6 +5,7 @@ class testThreadPool final : public testsuite
 private:
 	void testUnused() { threadPool::testUnused(*this); }
 	void testOnce() { threadPool::testOnce(*this); }
+	void testQueueWait() { threadPool::testQueueWait(*this); }
 
 public:
 	testThreadPool() = default;
@@ -18,6 +19,7 @@ public:
 	{
 		CRUNCHpp_TEST(testUnused)
 		CRUNCHpp_TEST(testOnce)
+		CRUNCHpp_TEST(testQueueWait)
 	}
 };
 
