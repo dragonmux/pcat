@@ -89,10 +89,9 @@ namespace pcat
 		threadPool_t &operator =(threadPool_t &&) = delete;
 
 		[[nodiscard]] size_t numProcessors() const noexcept { return affinity.numProcessors(); }
+		[[nodiscard]] bool valid() const noexcept { return !threads.empty(); }
 
 		[[nodiscard]] result_t queue(args_t &...args)
-			{ return queue(std::move(args)...); }
-		[[nodiscard]] result_t queue(args_t &&...args)
 		{
 			result_t result{};
 			if (!waitingThreads)
