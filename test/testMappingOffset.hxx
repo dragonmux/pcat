@@ -6,7 +6,7 @@
 namespace mappingOffset
 {
 	extern void testDefaultConstruct(testsuite &suite);
-	//extern void testOnce(testsuite &suite);
+	extern void testOffsetConstruct(testsuite &suite);
 	//extern void testQueueWait(testsuite &suite);
 }
 

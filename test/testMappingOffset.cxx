@@ -4,7 +4,7 @@ class testMappingOffset final : public testsuite
 {
 private:
 	void testDefaultConstruct() { mappingOffset::testDefaultConstruct(*this); }
-	//void testOnce() { mappingOffset::testOnce(*this); }
+	void testOffsetConstruct() { mappingOffset::testOffsetConstruct(*this); }
 	//void testQueueWait() { mappingOffset::testQueueWait(*this); }
 
 public:
@@ -18,7 +18,7 @@ public:
 	void registerTests() final
 	{
 		CRUNCHpp_TEST(testDefaultConstruct)
-		//CRUNCHpp_TEST(testOnce)
+		CRUNCHpp_TEST(testOffsetConstruct)
 		//CRUNCHpp_TEST(testQueueWait)
 	}
 };
