@@ -26,12 +26,12 @@ namespace threadPool
 		auto pool = substrate::make_unique_nothrow<threadPool_t<decltype(dummyWork)>>(dummyWork);
 		suite.assertNotNull(pool);
 		suite.assertTrue(pool->valid());
-		suite.assertFalse(pool->queue());
 		while (!pool->ready())
 		{
 			std::this_thread::yield();
 			std::this_thread::sleep_for(1us);
 		}
+		suite.assertFalse(pool->queue());
 		suite.assertTrue(pool->valid());
 		suite.assertTrue(pool->finish());
 		suite.assertFalse(pool->valid());
