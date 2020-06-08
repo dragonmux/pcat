@@ -41,8 +41,7 @@ namespace threadPool
 		auto pool = substrate::make_unique_nothrow<threadPool_t<decltype(dummyWork)>>(dummyWork);
 		suite.assertNotNull(pool);
 		suite.assertTrue(pool->valid());
-		while (!pool->ready())
-			std::this_thread::sleep_for(1us);
+		suite.assertTrue(pool->ready());
 		suite.assertFalse(pool->queue());
 		suite.assertTrue(pool->valid());
 		suite.assertTrue(pool->finish());
@@ -55,14 +54,14 @@ namespace threadPool
 		auto pool = substrate::make_unique_nothrow<threadPool_t<decltype(busyWork)>>(busyWork);
 		suite.assertNotNull(pool);
 		suite.assertTrue(pool->valid());
-		while (!pool->ready())
-			std::this_thread::sleep_for(1us);
+		suite.assertTrue(pool->ready());
 		const auto threads{pool->numProcessors()};
 		suite.assertNotEqual(threads, 0);
 		for (std::size_t i{}; i < threads; ++i)
 			suite.assertFalse(pool->queue(threads - i));
-		//suite.assertFalse(pool->ready()); // in theory, this should be false here..
-		pool->queue(threads);
+		suite.assertFalse(pool->ready());
+		[[maybe_unused]] const auto result =
+		/*suite.assertTrue(*/pool->queue(threads);//);
 		suite.assertTrue(pool->finish());
 		suite.assertFalse(pool->valid());
 	}

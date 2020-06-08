@@ -1,14 +1,12 @@
 #include <cassert>
 #include <cerrno>
 #include <string_view>
-#include <chrono>
 #include <substrate/console>
 #include "chunking.hxx"
 #include "mmap.hxx"
 #include "threadPool.hxx"
 
 using namespace std::literals::string_view_literals;
-using namespace std::literals::chrono_literals;
 using substrate::console;
 
 namespace pcat
@@ -252,8 +250,7 @@ namespace pcat
 	{
 		threadPool_t copyThreads{copyChunk};
 		fileChunker_t chunker{};
-		while (!copyThreads.ready())
-			std::this_thread::sleep_for(1us);
+		assert(copyThreads.ready());
 
 		for (const chunkState_t &chunk : chunker)
 		{

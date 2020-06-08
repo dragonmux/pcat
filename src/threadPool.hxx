@@ -9,11 +9,14 @@
 #include <atomic>
 #include <tuple>
 #include <utility>
+#include <chrono>
 #include "affinity.hxx"
 #include "threadedQueue.hxx"
 
 namespace pcat
 {
+	using namespace std::literals::chrono_literals;
+
 	template<typename workFunc_t> struct threadPool_t;
 
 	template<typename result_t, typename... args_t> struct threadPool_t<result_t(args_t...)> final
@@ -81,6 +84,8 @@ namespace pcat
 			for (const uint32_t processor : affinity)
 				threads.emplace_back(std::thread{[this](const int32_t processor) -> void
 					{ workerThread(processor); }, processor});
+			while (!ready())
+				std::this_thread::sleep_for(1us);
 		}
 		threadPool_t(const threadPool_t &) = delete;
 		threadPool_t(threadPool_t &&) = delete;
@@ -90,7 +95,7 @@ namespace pcat
 
 		[[nodiscard]] std::size_t numProcessors() const noexcept { return affinity.numProcessors(); }
 		[[nodiscard]] bool valid() const noexcept { return !threads.empty(); }
-		[[nodiscard]] bool ready() const noexcept { return waitingThreads; }
+		[[nodiscard]] bool ready() const noexcept { return waitingThreads == affinity.numProcessors(); }
 
 		[[nodiscard]] result_t queue(args_t ...args)
 		{
