@@ -18,14 +18,15 @@ endif
 
 pcatTests = [
 	'testFD', 'testConsole', 'testArgsTokenizer', 'testArgsParser',
-	'testThreadedQueue', 'testAffinity', 'testThreadPool'
+	'testThreadedQueue', 'testAffinity', 'testThreadPool', 'testMappingOffset'
 ]
 
 testHelpers = static_library(
 	'testHelpers',
 	[
 		'fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx',
-		'argsParser.cxx', 'threadedQueue.cxx', 'affinity.cxx', 'threadPool.cxx'
+		'argsParser.cxx', 'threadedQueue.cxx', 'affinity.cxx', 'threadPool.cxx',
+		'mappingOffset.cxx'
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
@@ -50,7 +51,8 @@ testObjectMap = {
 	},
 	'testThreadedQueue': {'test': ['threadedQueue.cxx']},
 	'testAffinity': {'test': ['affinity.cxx']},
-	'testThreadPool' : {'test': ['threadPool.cxx']}
+	'testThreadPool' : {'test': ['threadPool.cxx']},
+	'testMappingOffset' : {'test': ['mappingOffset.cxx']}
 }
 
 foreach test : pcatTests
