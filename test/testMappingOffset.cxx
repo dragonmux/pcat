@@ -6,6 +6,7 @@ private:
 	void testDefaultConstruct() { mappingOffset::testDefaultConstruct(*this); }
 	void testOffsetConstruct() { mappingOffset::testOffsetConstruct(*this); }
 	void testLengthConstruct() { mappingOffset::testLengthConstruct(*this); }
+	void testOffsetRecalculation() { mappingOffset::testOffsetRecalculation(*this); }
 
 public:
 	testMappingOffset() = default;
@@ -20,6 +21,7 @@ public:
 		CRUNCHpp_TEST(testDefaultConstruct)
 		CRUNCHpp_TEST(testOffsetConstruct)
 		CRUNCHpp_TEST(testLengthConstruct)
+		CRUNCHpp_TEST(testOffsetRecalculation)
 	}
 };
 

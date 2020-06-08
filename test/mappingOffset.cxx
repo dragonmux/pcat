@@ -1,3 +1,4 @@
+#include <substrate/utility>
 #include <mappingOffset.hxx>
 #include "testMappingOffset.hxx"
 
@@ -69,5 +70,63 @@ namespace mappingOffset
 		suite.assertEqual(alignedOffset.adjustedOffset(), pageSize);
 		suite.assertEqual(alignedOffset.adjustedLength(), 2408);
 		suite.assertEqual(off_t{alignedOffset}, pageSize);
+	}
+
+	void testOffsetRecalculation(testsuite &suite)
+	{
+		// Use of make_unique_nothrow forces construction into runtime.
+		auto zeroOffset{substrate::make_unique_nothrow<mappingOffset_t>()};
+		suite.assertNotNull(zeroOffset);
+		suite.assertEqual(zeroOffset->offset(), 0);
+		suite.assertEqual(zeroOffset->adjustment(), 0);
+		suite.assertEqual(zeroOffset->length(), 0);
+		suite.assertEqual(zeroOffset->adjustedOffset(), 0);
+		suite.assertEqual(zeroOffset->adjustedLength(), 0);
+		suite.assertEqual(off_t{*zeroOffset}, 0);
+		zeroOffset->length(256);
+		suite.assertEqual(zeroOffset->offset(), 0);
+		suite.assertEqual(zeroOffset->adjustment(), 0);
+		suite.assertEqual(zeroOffset->length(), 256);
+		suite.assertEqual(zeroOffset->adjustedOffset(), 0);
+		suite.assertEqual(zeroOffset->adjustedLength(), 256);
+		suite.assertEqual(off_t{*zeroOffset}, 0);
+		*zeroOffset += 256;
+		suite.assertEqual(zeroOffset->offset(), 256);
+		suite.assertEqual(zeroOffset->adjustment(), 256);
+		suite.assertEqual(zeroOffset->length(), 256);
+		suite.assertEqual(zeroOffset->adjustedOffset(), 0);
+		suite.assertEqual(zeroOffset->adjustedLength(), 512);
+		suite.assertEqual(off_t{*zeroOffset}, 256);
+
+		auto unalignedOffset{substrate::make_unique_nothrow<mappingOffset_t>(524)};
+		suite.assertNotNull(unalignedOffset);
+		suite.assertEqual(unalignedOffset->offset(), 524);
+		suite.assertEqual(unalignedOffset->adjustment(), 524);
+		suite.assertEqual(unalignedOffset->length(), 0);
+		suite.assertEqual(unalignedOffset->adjustedOffset(), 0);
+		suite.assertEqual(unalignedOffset->adjustedLength(), 524);
+		suite.assertEqual(off_t{*unalignedOffset}, 524);
+		unalignedOffset->length((pageSize * 2) - 524);
+		suite.assertEqual(unalignedOffset->offset(), 524);
+		suite.assertEqual(unalignedOffset->adjustment(), 524);
+		suite.assertEqual(unalignedOffset->length(), (pageSize * 2) - 524);
+		suite.assertEqual(unalignedOffset->adjustedOffset(), 0);
+		suite.assertEqual(unalignedOffset->adjustedLength(), pageSize * 2);
+		suite.assertEqual(off_t{*unalignedOffset}, 524);
+		*unalignedOffset += pageSize - 524;
+		suite.assertEqual(unalignedOffset->offset(), pageSize);
+		suite.assertEqual(unalignedOffset->adjustment(), 0);
+		suite.assertEqual(unalignedOffset->length(), (pageSize * 2) - 524);
+		suite.assertEqual(unalignedOffset->adjustedOffset(), pageSize);
+		suite.assertEqual(unalignedOffset->adjustedLength(), (pageSize * 2) - 524);
+		suite.assertEqual(off_t{*unalignedOffset}, pageSize);
+
+		/*mappingOffset_t alignedOffset{pageSize, 2408};
+		suite.assertEqual(alignedOffset.offset(), pageSize);
+		suite.assertEqual(alignedOffset.adjustment(), 0);
+		suite.assertEqual(alignedOffset.length(), 2408);
+		suite.assertEqual(alignedOffset.adjustedOffset(), pageSize);
+		suite.assertEqual(alignedOffset.adjustedLength(), 2408);
+		suite.assertEqual(off_t{alignedOffset}, pageSize);*/
 	}
 } // namespace mappingOffset
