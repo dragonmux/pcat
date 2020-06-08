@@ -2,7 +2,6 @@
 #include <string_view>
 #include <substrate/utility>
 #include <args.hxx>
-#include <crunch++.h>
 #include "testArgsParser.hxx"
 
 using std::literals::string_view_literals::operator ""sv;

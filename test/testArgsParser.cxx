@@ -1,5 +1,4 @@
 #include <args.hxx>
-#include <crunch++.h>
 #include "testArgsParser.hxx"
 
 class testParser final : public testsuite

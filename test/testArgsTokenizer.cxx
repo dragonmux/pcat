@@ -1,5 +1,4 @@
 #include <args/tokenizer.hxx>
-#include <crunch++.h>
 #include "testArgsTokenizer.hxx"
 
 using pcat::args::tokenizer::tokenizer_t;

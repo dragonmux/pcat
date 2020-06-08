@@ -3,7 +3,6 @@
 #include <memory>
 #include <array>
 #include <string_view>
-#include <crunch++.h>
 #include <substrate/fd>
 #include <substrate/utility>
 #include "testFD.hxx"

@@ -1,4 +1,3 @@
-#include <crunch++.h>
 #include "testConsole.hxx"
 
 class testConsole final : public testsuite

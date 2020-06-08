@@ -3,7 +3,6 @@
 #else
 #include <io.h>
 #endif
-#include <crunch++.h>
 #include "testFD.hxx"
 
 class testFD final : public testsuite

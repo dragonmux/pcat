@@ -6,7 +6,6 @@
 #include <substrate/fd>
 #include <substrate/pty>
 #include <substrate/pipe>
-#include <crunch++.h>
 #include "testConsole.hxx"
 
 #ifndef _WINDOWS

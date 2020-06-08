@@ -1,6 +1,8 @@
 #ifndef TEST_CONSOLE__HXX
 #define TEST_CONSOLE__HXX
 
+#include <crunch++.h>
+
 namespace consoleTests
 {
 	void testConstruct(testsuite &suite);

@@ -1,6 +1,8 @@
 #ifndef TEST_ARGS_PARSER__HXX
 #define TEST_ARGS_PARSER__HXX
 
+#include <crunch++.h>
+
 namespace parser
 {
 	extern void testEmpty(testsuite &suite);

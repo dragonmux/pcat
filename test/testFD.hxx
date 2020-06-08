@@ -1,6 +1,8 @@
 #ifndef TEST_FD__HXX
 #define TEST_FD__HXX
 
+#include <crunch++.h>
+
 namespace fd
 {
 	void testBadFD(testsuite &suite);
