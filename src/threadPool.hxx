@@ -90,6 +90,7 @@ namespace pcat
 
 		[[nodiscard]] size_t numProcessors() const noexcept { return affinity.numProcessors(); }
 		[[nodiscard]] bool valid() const noexcept { return !threads.empty(); }
+		[[nodiscard]] bool ready() const noexcept { return waitingThreads; }
 
 		[[nodiscard]] result_t queue(args_t &...args)
 		{
