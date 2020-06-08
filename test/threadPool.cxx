@@ -13,14 +13,13 @@ namespace threadPool
 	bool dummyWork() { return true; }
 	bool busyWork(const std::size_t iterations)
 	{
-		std::size_t counter{};
+		volatile std::size_t counter{};
 		for (size_t i{}; i < iterations; ++i)
 		{
 			for (size_t j{}; j < 1000000; ++j)
 				++counter;
 		}
-		std::chrono::milliseconds duration{iterations};
-		std::this_thread::sleep_for(duration);
+		std::this_thread::sleep_for(25ms);
 		return counter == size_t(iterations * 1000000U);
 	}
 
@@ -43,10 +42,7 @@ namespace threadPool
 		suite.assertNotNull(pool);
 		suite.assertTrue(pool->valid());
 		while (!pool->ready())
-		{
-			std::this_thread::yield();
 			std::this_thread::sleep_for(1us);
-		}
 		suite.assertFalse(pool->queue());
 		suite.assertTrue(pool->valid());
 		suite.assertTrue(pool->finish());
@@ -60,10 +56,7 @@ namespace threadPool
 		suite.assertNotNull(pool);
 		suite.assertTrue(pool->valid());
 		while (!pool->ready())
-		{
-			std::this_thread::yield();
 			std::this_thread::sleep_for(1us);
-		}
 		const auto threads{pool->numProcessors()};
 		suite.assertNotEqual(threads, 0);
 		for (std::size_t i{}; i < threads; ++i)
