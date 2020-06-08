@@ -5,7 +5,7 @@
 
 namespace threadPool
 {
-	extern void testConstruct(testsuite &suite);
+	extern void testUnused(testsuite &suite);
 }
 
 #endif /*TEST_THREAD_POOL__HXX*/
