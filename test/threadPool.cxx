@@ -28,7 +28,10 @@ namespace threadPool
 		suite.assertTrue(pool->valid());
 		suite.assertFalse(pool->queue());
 		while (!pool->ready())
+		{
+			std::this_thread::yield();
 			std::this_thread::sleep_for(1us);
+		}
 		suite.assertTrue(pool->valid());
 		suite.assertTrue(pool->finish());
 		suite.assertFalse(pool->valid());
