@@ -4,6 +4,7 @@
 #include <threadPool.hxx>
 #include "testAffinity.hxx"
 
+using pcat::affinity_t;
 using pcat::threadPool_t;
 using namespace std::literals::chrono_literals;
 
@@ -13,12 +14,15 @@ namespace threadPool
 
 	void testUnused(testsuite &suite)
 	{
+		affinity_t affinity{};
 		auto pool = substrate::make_unique_nothrow<threadPool_t<decltype(dummyWork)>>(dummyWork);
 		suite.assertNotNull(pool);
 		suite.assertTrue(pool->valid());
+		suite.assertEqual(pool->numProcessors(), affinity.numProcessors());
 		suite.assertFalse(pool->finish());
 		suite.assertFalse(pool->valid());
 		suite.assertFalse(pool->finish());
+		suite.assertEqual(pool->numProcessors(), affinity.numProcessors());
 	}
 
 	void testOnce(testsuite &suite)
