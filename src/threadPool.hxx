@@ -95,7 +95,7 @@ namespace pcat
 		[[nodiscard]] result_t queue(args_t ...args)
 		{
 			result_t result{};
-			if (!waitingThreads)
+			if (!waitingThreads || !results.empty())
 				result = results.pop();
 			lockedEnqueue(std::forward<args_t>(args)...);
 			return result;
