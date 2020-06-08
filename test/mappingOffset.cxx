@@ -43,4 +43,31 @@ namespace mappingOffset
 		suite.assertEqual(alignedOffset.adjustedLength(), 0);
 		suite.assertEqual(off_t{alignedOffset}, pageSize);
 	}
+
+	void testLengthConstruct(testsuite &suite)
+	{
+		const mappingOffset_t zeroOffset{0, 256};
+		suite.assertEqual(zeroOffset.offset(), 0);
+		suite.assertEqual(zeroOffset.adjustment(), 0);
+		suite.assertEqual(zeroOffset.length(), 256);
+		suite.assertEqual(zeroOffset.adjustedOffset(), 0);
+		suite.assertEqual(zeroOffset.adjustedLength(), 256);
+		suite.assertEqual(off_t{zeroOffset}, 0);
+
+		const mappingOffset_t unalignedOffset{524, pageSize - 524};
+		suite.assertEqual(unalignedOffset.offset(), 524);
+		suite.assertEqual(unalignedOffset.adjustment(), 524);
+		suite.assertEqual(unalignedOffset.length(), pageSize - 524);
+		suite.assertEqual(unalignedOffset.adjustedOffset(), 0);
+		suite.assertEqual(unalignedOffset.adjustedLength(), pageSize);
+		suite.assertEqual(off_t{unalignedOffset}, 524);
+
+		const mappingOffset_t alignedOffset{pageSize, 2408};
+		suite.assertEqual(alignedOffset.offset(), pageSize);
+		suite.assertEqual(alignedOffset.adjustment(), 0);
+		suite.assertEqual(alignedOffset.length(), 2408);
+		suite.assertEqual(alignedOffset.adjustedOffset(), pageSize);
+		suite.assertEqual(alignedOffset.adjustedLength(), 2408);
+		suite.assertEqual(off_t{alignedOffset}, pageSize);
+	}
 } // namespace mappingOffset

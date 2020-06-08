@@ -7,7 +7,7 @@ namespace mappingOffset
 {
 	extern void testDefaultConstruct(testsuite &suite);
 	extern void testOffsetConstruct(testsuite &suite);
-	//extern void testQueueWait(testsuite &suite);
+	extern void testLengthConstruct(testsuite &suite);
 }
 
 #endif /*TEST_MAPPING_OFFSET__HXX*/
