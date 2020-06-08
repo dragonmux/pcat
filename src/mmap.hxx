@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <stdexcept>
+#include <cstring>
 #include <cassert>
 #include <substrate/fd>
 
