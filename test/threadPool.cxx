@@ -15,8 +15,8 @@ namespace threadPool
 		suite.assertTrue(pool->valid());
 		//suite.assertFalse(pool->queue());
 		//suite.assertTrue(pool->valid());
-		//suite.assertTrue(pool->finish());
-		//suite.assertFalse(pool->valid());
+		suite.assertFalse(pool->finish());
+		suite.assertFalse(pool->valid());
 		suite.assertFalse(pool->finish());
 	}
 }
