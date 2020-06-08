@@ -2,6 +2,7 @@
 #define CHUNKING__HXX
 
 #include <vector>
+#include <sys/types.h>
 #include <substrate/fd>
 #include <substrate/units>
 
