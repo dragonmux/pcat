@@ -16,6 +16,7 @@ private:
 	}
 
 	void testDefaultConstruct() { memoryMap::testDefaultConstruct(*this); }
+	void testMapEntireFile() { memoryMap::testMapEntireFile(*this, testData); }
 
 public:
 	testMMap() : testData{"mmap.test", O_CREAT | O_RDWR, substrate::normalMode} { prepare(); }
@@ -38,6 +39,7 @@ public:
 		if (!testData.valid())
 			skip("Could not create test data for mmap_t tests");
 		CRUNCHpp_TEST(testDefaultConstruct)
+		CRUNCHpp_TEST(testMapEntireFile)
 	}
 };
 
