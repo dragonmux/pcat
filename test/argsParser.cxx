@@ -4,7 +4,7 @@
 #include <args.hxx>
 #include "testArgsParser.hxx"
 
-using std::literals::string_view_literals::operator ""sv;
+using namespace std::literals::string_view_literals;
 using pcat::args::option_t;
 using pcat::args::argNode_t;
 using pcat::args::argOfType_t;

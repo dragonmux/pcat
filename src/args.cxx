@@ -8,7 +8,7 @@ using substrate::console;
 using pcat::utils::span_t;
 using namespace pcat::args;
 using namespace pcat::args::tokenizer;
-using std::literals::string_view_literals::operator ""sv;
+using namespace std::literals::string_view_literals;
 
 std::unique_ptr<argsTree_t> args{};
 

@@ -15,7 +15,7 @@
 #include "help.hxx"
 #include "chunking.hxx"
 
-using std::literals::string_view_literals::operator ""sv;
+using namespace std::literals::string_view_literals;
 using substrate::console;
 
 namespace pcat

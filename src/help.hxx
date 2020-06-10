@@ -3,7 +3,7 @@
 
 #include <string_view>
 
-using std::literals::string_view_literals::operator ""sv;
+using namespace std::literals::string_view_literals;
 
 namespace pcat
 {

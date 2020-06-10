@@ -14,8 +14,8 @@ constexpr static const char *defaultTTY = "/dev/ptmx";
 constexpr static const char *defaultTTY = "CON";
 #endif
 
-using std::literals::string_view_literals::operator ""sv;
-using std::literals::chrono_literals::operator ""us;
+using namespace std::literals::string_view_literals;
+using namespace std::literals::chrono_literals;
 using substrate::console;
 using substrate::consoleStream_t;
 using substrate::asHex_t;

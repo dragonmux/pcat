@@ -8,7 +8,7 @@
 #include "testFD.hxx"
 
 using substrate::fd_t;
-using std::literals::string_view_literals::operator ""sv;
+using namespace std::literals::string_view_literals;
 
 constexpr static std::array<char, 4> testArray{'t', 'E', 'S', 't'};
 constexpr static char testChar{'.'};
