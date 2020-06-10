@@ -4,15 +4,15 @@
 class testMMap final : public testsuite
 {
 private:
-	fd_t testData{prepare()};
+	fd_t testData{};
 	random_t firstRandom{};
 	random_t secondRandom{};
 
-	fd_t prepare()
+	void prepare()
 	{
 		fd_t file{"mmap.test", O_CREAT | O_WRONLY, substrate::normalMode};
 		if (!file.valid())
-			return {};
+			return;
 		std::random_device dev{};
 		firstRandom = dev();
 		secondRandom = dev();
@@ -23,14 +23,14 @@ private:
 			!file.write(secondRandom))
 			throw std::system_error{std::error_code{errno, std::system_category()}};
 		file = {};
-		return {"mmap.test", O_RDWR};
+		testData = {"mmap.test", O_RDWR};
 	}
 
 	void testDefaultConstruct() { memoryMap::testDefaultConstruct(*this); }
 	void testMapEntireFile() { memoryMap::testMapEntireFile(*this, testData, firstRandom); }
 
 public:
-	testMMap() = default;
+	testMMap() { prepare(); }
 	testMMap(const testMMap &) = delete;
 	testMMap(testMMap &&) = delete;
 	testMMap &operator =(const testMMap &) = delete;
