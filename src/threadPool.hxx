@@ -30,7 +30,7 @@ namespace pcat
 		std::tuple<args_t...> workItem{args_t{}...};
 		bool workValid{false};
 		std::atomic<bool> finished{false};
-		threadedQueue_t<int32_t> results{};
+		threadedQueue_t<result_t> results{};
 		std::vector<std::thread> threads{};
 		affinity_t affinity{};
 		workFunc_t workerFunction;
