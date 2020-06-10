@@ -15,6 +15,7 @@ namespace memoryMap
 {
 	extern void testDefaultConstruct(testsuite &suite);
 	extern void testMapEntireFile(testsuite &suite, const fd_t &fd, random_t random);
+	extern void testMapPartials(testsuite &suite, const fd_t &fd, random_t random);
 }
 
 #endif /*TEST_MMAP__HXX*/

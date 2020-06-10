@@ -28,6 +28,7 @@ private:
 
 	void testDefaultConstruct() { memoryMap::testDefaultConstruct(*this); }
 	void testMapEntireFile() { memoryMap::testMapEntireFile(*this, testData, firstRandom); }
+	void testMapPartials() { memoryMap::testMapPartials(*this, testData, secondRandom); }
 
 public:
 	testMMap() { prepare(); }
@@ -51,6 +52,7 @@ public:
 			skip("Could not create test data for mmap_t tests");
 		CRUNCHpp_TEST(testDefaultConstruct)
 		CRUNCHpp_TEST(testMapEntireFile)
+		CRUNCHpp_TEST(testMapPartials)
 	}
 };
 

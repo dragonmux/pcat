@@ -4,6 +4,8 @@
 
 using pcat::mmap_t;
 
+constexpr static auto testString{u8"おはようございます"sv};
+
 namespace memoryMap
 {
 	void testDefaultConstruct(testsuite &suite)
@@ -44,5 +46,49 @@ namespace memoryMap
 		auto defaultMap{substrate::make_unique_nothrow<mmap_t>()};
 		suite.assertNotNull(defaultMap);
 		suite.assertTrue(map != *defaultMap);
+	}
+
+	void testMapUpper(testsuite &suite, const fd_t &fd, const random_t random)
+	{
+		mmap_t map{fd, pcat::pageSize, off_t(sizeof(random_t)), PROT_READ};
+		suite.assertTrue(map.valid());
+		suite.assertEqual(map.length(), sizeof(random_t));
+
+		random_t result{};
+		map.copyFrom(0, result);
+		suite.assertEqual(result, random);
+	}
+
+	void testMapWriteLower(testsuite &suite, const fd_t &fd, const random_t random)
+	{
+		mmap_t map{fd, pcat::pageSize, PROT_WRITE};
+		suite.assertTrue(map.valid());
+		suite.assertEqual(map.length(), pcat::pageSize);
+		map.copyTo(4, random);
+		map.copyTo(1024, testString.data(), testString.size());
+	}
+
+	void testMapReadLower(testsuite &suite, const fd_t &fd, const random_t random)
+	{
+		mmap_t map{fd, off_t{}, pcat::pageSize, PROT_READ, MAP_PRIVATE};
+		suite.assertTrue(map.valid());
+		suite.assertEqual(map.length(), pcat::pageSize);
+
+		random_t result{};
+		map.copyFrom(4, result);
+		suite.assertEqual(result, random);
+
+		std::array<char, testString.size()> testData{};
+		map.copyFrom(1024, testData.data(), testData.size());
+		static_assert(testData.size() == testString.size());
+		suite.assertEqual(testData.data(), testString.data(), testString.size());
+	}
+
+	void testMapPartials(testsuite &suite, const fd_t &fd, const random_t random)
+	{
+		suite.assertEqual(fd.length(), pcat::pageSize + sizeof(random_t));
+		testMapUpper(suite, fd, random);
+		testMapWriteLower(suite, fd, random);
+		testMapReadLower(suite, fd, random);
 	}
 } // namespace memoryMap
