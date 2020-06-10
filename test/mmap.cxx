@@ -33,6 +33,7 @@ namespace memoryMap
 		suite.assertTrue(map.advise(MADV_DONTNEED));
 		suite.assertTrue(map.advise<MADV_SEQUENTIAL>());
 		suite.assertTrue(map.advise<MADV_RANDOM, MADV_WILLNEED>());
+		suite.assertFalse(map.advise<MADV_REMOVE>());
 		suite.assertTrue(map.sync());
 
 		random_t result{};
@@ -70,9 +71,10 @@ namespace memoryMap
 
 	void testMapReadLower(testsuite &suite, const fd_t &fd, const random_t random)
 	{
-		mmap_t map{fd, off_t{}, pcat::pageSize, PROT_READ, MAP_PRIVATE};
+		const mmap_t map{fd, off_t{}, pcat::pageSize, PROT_READ, MAP_PRIVATE};
 		suite.assertTrue(map.valid());
 		suite.assertEqual(map.length(), pcat::pageSize);
+		suite.assertNotNull(map.address(0));
 
 		random_t result{};
 		map.copyFrom(4, result);
