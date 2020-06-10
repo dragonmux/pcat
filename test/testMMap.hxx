@@ -13,6 +13,8 @@ using namespace std::literals::string_view_literals;
 
 namespace memoryMap
 {
+	constexpr static auto testStringMmap{"mmap"sv};
+
 	extern void testDefaultConstruct(testsuite &suite);
 	extern void testMapEntireFile(testsuite &suite, const fd_t &fd, random_t random);
 	extern void testMapPartials(testsuite &suite, const fd_t &fd, random_t random);

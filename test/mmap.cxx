@@ -41,7 +41,7 @@ namespace memoryMap
 
 		std::array<char, 4> magicString{};
 		map.copyFrom(0, magicString.data(), magicString.size());
-		suite.assertEqual(std::string_view{magicString.data(), magicString.size()}, "mmap"sv);
+		suite.assertEqual(std::string_view{magicString.data(), magicString.size()}, testStringMmap);
 
 		auto defaultMap{substrate::make_unique_nothrow<mmap_t>()};
 		suite.assertNotNull(defaultMap);

@@ -16,7 +16,7 @@ private:
 		std::random_device dev{};
 		firstRandom = dev();
 		secondRandom = dev();
-		if (!file.write("mmap"sv) ||
+		if (!file.write(memoryMap::testStringMmap) ||
 			// This uses the machine native order so we can more easily test the value later
 			!file.write(firstRandom) ||
 			file.seek(pcat::pageSize, SEEK_SET) != pcat::pageSize ||
