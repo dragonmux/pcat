@@ -1,6 +1,5 @@
 #include <string_view>
 #include <array>
-#include <random>
 #include <substrate/utility>
 #include <chunking.hxx>
 #include "testChunkState.hxx"
@@ -8,7 +7,6 @@
 using namespace std::literals::string_view_literals;
 constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
 
-using random_t = typename std::random_device::result_type;
 using substrate::fd_t;
 
 constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_view, std::size_t>>(
@@ -32,22 +30,21 @@ private:
 	void testDefaultConstruct() { chunkState::testDefaultConstruct(*this); }
 	void testNoFilesConstruct() { chunkState::testNoFilesConstruct(*this); }
 
-	void makeFile(const std::string_view fileName, const std::size_t size, const random_t seed) noexcept
+	void makeFile(const std::string_view fileName, const std::size_t size)
 	{
-		fd_t file{fileName.data(), O_WRONLY | O_NOCTTY};
-		std::minstd_rand engine{seed};
-		std::uniform_int_distribution<uint32_t> genRandom{};
-		for (size_t i{}; i < size; ++i)
-			file.write(genRandom(engine));
-		files.emplace_back(fileName.data(), O_RDONLY | O_NOCTTY);
+		const auto &file = files.emplace_back(fileName.data(), O_RDWR | O_NOCTTY);
+		if (!file.valid() || !file.resize(size))
+		{
+			files.pop_back();
+			throw std::logic_error{"Failed to create and resize an input test file"};
+		}
 	}
 
 public:
 	testChunkState()
 	{
-		std::random_device randDev{};
 		for (const auto &file : chunkFiles)
-			makeFile(file.first, file.second, randDev());
+			makeFile(file.first, file.second);
 	}
 
 	testChunkState(const testChunkState &) = delete;
