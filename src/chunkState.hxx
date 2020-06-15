@@ -45,13 +45,13 @@ namespace pcat
 		[[nodiscard]] constexpr chunkState_t end() const noexcept
 		{
 			chunkState_t state{*this};
-			while (state.outputOffset_.length() - state.inputOffset_.length())
+			while (!state.atEnd())
 				++state;
 			return state;
 		}
 
 		[[nodiscard]] constexpr bool atEnd() const noexcept
-			{ return outputOffset_.length() == inputOffset_.length(); }
+			{ return !outputOffset_.length(); }
 
 		constexpr void operator ++() noexcept
 		{
