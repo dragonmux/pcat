@@ -16,5 +16,8 @@ namespace chunkState
 		suite.assertTrue(state->inputOffset() == mappingOffset_t{});
 		suite.assertTrue(state->outputOffset() == mappingOffset_t{});
 		suite.assertTrue(state->end() == chunkState_t{});
+		suite.assertTrue(state->atEnd());
+		++*state;
+		suite.assertTrue(state->atEnd());
 	}
 } // namespace chunkState
