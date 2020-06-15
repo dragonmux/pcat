@@ -39,6 +39,7 @@ namespace fileChunker
 		suite.assertEqual(inputFiles.size(), 1);
 		suite.assertEqual(inputFiles[0].length(), transferBlockSize);
 		suite.assertFalse(fileChunker_t{}.begin() == fileChunker_t{}.end());
+		suite.assertTrue(fileChunker_t{}.begin() != fileChunker_t{}.end());
 
 		chunking_t beginState{};
 		const auto beginChunk{beginState.subchunkState()};
