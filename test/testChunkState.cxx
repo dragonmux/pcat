@@ -41,6 +41,15 @@ private:
 		chunkState::testFillAlignedChunk(*this);
 	}
 
+	void testFillUnalignedChunks()
+	{
+		inputFiles.clear();
+		inputFiles.emplace_back(files[0].dup());
+		inputFiles.emplace_back(files[2].dup());
+		inputFiles.emplace_back(files[4].dup());
+		chunkState::testFillUnalignedChunks(*this);
+	}
+
 	void makeFile(const std::string_view fileName, const std::size_t size)
 	{
 		const auto &file = files.emplace_back(fileName.data(), O_RDWR | O_CREAT | O_NOCTTY);
@@ -76,6 +85,7 @@ public:
 		CRUNCHpp_TEST(testDefaultConstruct)
 		CRUNCHpp_TEST(testNoFilesConstruct)
 		CRUNCHpp_TEST(testFillAlignedChunk)
+		CRUNCHpp_TEST(testFillUnalignedChunks)
 	}
 };
 

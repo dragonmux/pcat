@@ -65,4 +65,53 @@ namespace chunkState
 		suite.assertTrue(beginState.outputOffset() == endState.outputOffset());
 		suite.assertTrue(beginState.file() == inputFiles.end());
 	}
+
+	void testFillFirstUnalignedChunk(testsuite &suite)
+	{
+		auto beginState{substrate::make_unique_nothrow<chunkState_t>
+		(
+			inputFiles.begin(), 1024, mappingOffset_t{0, 1024}, mappingOffset_t{0, transferBlockSize}
+		)};
+		const chunkState_t midState1
+		{
+			inputFiles.begin() + 1, 3072, mappingOffset_t{0, 3072}, mappingOffset_t{1024, transferBlockSize - 1024}
+		};
+		const chunkState_t midState2
+		{
+			inputFiles.begin() + 2, transferBlockSize, mappingOffset_t{0, transferBlockSize - 4096},
+			mappingOffset_t{4096, transferBlockSize - 4096}
+		};
+		const chunkState_t endState
+		{
+			inputFiles.begin() + 2, transferBlockSize, mappingOffset_t{transferBlockSize - 4096},
+			mappingOffset_t{transferBlockSize, 0}
+		};
+		suite.assertEqual(beginState->inputLength(), 1024);
+		suite.assertTrue(beginState->file() == inputFiles.begin());
+		suite.assertFalse(beginState->atEnd());
+		suite.assertTrue(beginState->end() == endState);
+		++*beginState;
+		suite.assertFalse(beginState->atEnd());
+		suite.assertTrue(*beginState == midState1);
+		++*beginState;
+		suite.assertFalse(beginState->atEnd());
+		suite.assertTrue(*beginState == midState2);
+		++*beginState;
+		suite.assertTrue(beginState->atEnd());
+		suite.assertTrue(*beginState == endState);
+		suite.assertTrue(beginState->inputLength() == endState.inputLength());
+		suite.assertTrue(beginState->inputOffset() == endState.inputOffset());
+		suite.assertTrue(beginState->outputOffset() == endState.outputOffset());
+		suite.assertTrue(beginState->file() == endState.file());
+	}
+
+	void testFillUnalignedChunks(testsuite &suite)
+	{
+		suite.assertFalse(inputFiles.begin() == inputFiles.end());
+		suite.assertEqual(inputFiles.size(), 3);
+		suite.assertEqual(inputFiles[0].length(), 1024);
+		suite.assertEqual(inputFiles[1].length(), 3072);
+		suite.assertEqual(inputFiles[2].length(), transferBlockSize);
+		testFillFirstUnalignedChunk(suite);
+	}
 } // namespace chunkState
