@@ -27,6 +27,8 @@ namespace fileChunker
 		++state;
 		const auto endChunk{state.subchunkState()};
 		suite.assertTrue(beginChunk == endChunk);
+
+		suite.assertTrue(fileChunker_t{}.begin() == fileChunker_t{}.end());
 	}
 
 	/*void testNoFilesConstruct(testsuite &suite)
