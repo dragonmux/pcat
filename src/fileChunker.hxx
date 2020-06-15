@@ -9,7 +9,7 @@ namespace pcat
 	{
 	private:
 		inputFilesIterator_t file{inputFiles.begin()};
-		off_t inputLength{file->length()};
+		off_t inputLength{file == inputFiles.end() ? 0 : file->length()};
 		mappingOffset_t inputOffset{0, blockLength(inputLength)};
 		const off_t outputLength{outputFile.length()};
 		mappingOffset_t outputOffset{};
