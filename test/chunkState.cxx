@@ -26,7 +26,8 @@ namespace chunkState
 	void testNoFilesConstruct(testsuite &suite)
 	{
 		suite.assertTrue(inputFiles.begin() == inputFiles.end());
-		auto state{substrate::make_unique_nothrow<chunkState_t>(
+		auto state{substrate::make_unique_nothrow<chunkState_t>
+		(
 			inputFiles.begin(), 0, mappingOffset_t{}, mappingOffset_t{}
 		)};
 		suite.assertNotNull(state);
@@ -43,11 +44,13 @@ namespace chunkState
 		suite.assertFalse(inputFiles.begin() == inputFiles.end());
 		suite.assertEqual(inputFiles.size(), 1);
 		suite.assertEqual(inputFiles[0].length(), transferBlockSize);
-		chunkState_t beginState{
+		chunkState_t beginState
+		{
 			inputFiles.begin(), transferBlockSize, mappingOffset_t{0, transferBlockSize},
 			mappingOffset_t{0, transferBlockSize}
 		};
-		const chunkState_t endState{
+		const chunkState_t endState
+		{
 			inputFiles.end(), 0, mappingOffset_t{}, mappingOffset_t{transferBlockSize, 0}
 		};
 		suite.assertEqual(beginState.inputLength(), transferBlockSize);
@@ -57,7 +60,7 @@ namespace chunkState
 		++beginState;
 		suite.assertTrue(beginState.atEnd());
 		suite.assertTrue(beginState == endState);
-		suite.assertTrue(beginState.inputLength() == endState.inputLength());
+		suite.assertEqual(beginState.inputLength(), endState.inputLength());
 		suite.assertTrue(beginState.inputOffset() == endState.inputOffset());
 		suite.assertTrue(beginState.outputOffset() == endState.outputOffset());
 		suite.assertTrue(beginState.file() == inputFiles.end());
