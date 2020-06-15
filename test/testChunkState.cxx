@@ -1,5 +1,7 @@
 #include <string_view>
 #include <array>
+#include <utility>
+#include <stdexcept>
 #include <substrate/utility>
 #include <chunking.hxx>
 #include "testChunkState.hxx"
