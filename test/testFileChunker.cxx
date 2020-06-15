@@ -34,9 +34,8 @@ private:
 	std::vector<fd_t> files{};
 
 	void testDefaultConstruct() { fileChunker::testDefaultConstruct(*this); }
-	/*void testNoFilesConstruct() { fileChunker::testNoFilesConstruct(*this); }
 
-	void testFillAlignedChunk()
+	/*void testFillAlignedChunk()
 	{
 		inputFiles.clear();
 		inputFiles.emplace_back(files[4].dup());
@@ -89,7 +88,6 @@ public:
 	void registerTests() final
 	{
 		CRUNCHpp_TEST(testDefaultConstruct)
-		//CRUNCHpp_TEST(testNoFilesConstruct)
 		//CRUNCHpp_TEST(testFillAlignedChunk)
 		//CRUNCHpp_TEST(testFillUnalignedChunks)
 	}

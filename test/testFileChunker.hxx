@@ -7,7 +7,6 @@
 namespace fileChunker
 {
 	extern void testDefaultConstruct(testsuite &suite);
-	extern void testNoFilesConstruct(testsuite &suite);
 	extern void testFillAlignedChunk(testsuite &suite);
 	extern void testFillUnalignedChunks(testsuite &suite);
 }
