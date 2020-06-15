@@ -24,6 +24,7 @@ namespace chunkState
 
 	void testNoFilesConstruct(testsuite &suite)
 	{
+		suite.assertTrue(inputFiles.begin() == inputFiles.end());
 		auto state{substrate::make_unique_nothrow<chunkState_t>(
 			inputFiles.begin(), 0, mappingOffset_t{}, mappingOffset_t{}
 		)};
@@ -33,5 +34,6 @@ namespace chunkState
 		suite.assertTrue(state->outputOffset() == mappingOffset_t{});
 		suite.assertTrue(state->atEnd());
 		suite.assertTrue(state->end() == *state);
+		suite.assertTrue(state->file() == inputFiles.begin());
 	}
 } // namespace chunkState
