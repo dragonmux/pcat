@@ -12,7 +12,7 @@ public:
 	testChunkState(testChunkState &&) = delete;
 	testChunkState &operator =(const testChunkState &) = delete;
 	testChunkState &operator =(testChunkState &&) = delete;
-	~testChunkState() final = default;
+	~testChunkState() final { pcat::inputFiles.clear(); }
 
 	void registerTests() final
 	{
