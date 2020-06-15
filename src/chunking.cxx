@@ -31,7 +31,7 @@ namespace pcat
 		}
 
 		auto offset{outputOffset.adjustment()};
-		do
+		while (!chunk.atEnd())
 		{
 			const auto &inputFile = chunk.inputFile();
 			const auto &inputOffset = chunk.inputOffset();
@@ -64,9 +64,9 @@ namespace pcat
 				return EINVAL;
 			}
 			offset += inputOffset.length();
+			assert(offset <= outputLength);
 			++chunk;
 		}
-		while (offset < outputLength);
 
 		if (!outputChunk.sync())
 		{
