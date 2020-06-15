@@ -55,6 +55,7 @@ namespace chunkState
 		};
 		suite.assertEqual(beginState.inputLength(), transferBlockSize);
 		suite.assertTrue(beginState.file() == inputFiles.begin());
+		suite.assertTrue(beginState.inputFile().valid());
 		suite.assertFalse(beginState.atEnd());
 		suite.assertTrue(beginState.end() == endState);
 		++beginState;
@@ -88,16 +89,20 @@ namespace chunkState
 		};
 		suite.assertEqual(beginState->inputLength(), 1024);
 		suite.assertTrue(beginState->file() == inputFiles.begin());
+		suite.assertTrue(beginState->inputFile().valid());
 		suite.assertFalse(beginState->atEnd());
 		suite.assertTrue(beginState->end() == endState);
 		++*beginState;
 		suite.assertFalse(beginState->atEnd());
+		suite.assertTrue(beginState->inputFile().valid());
 		suite.assertTrue(*beginState == midState1);
 		++*beginState;
 		suite.assertFalse(beginState->atEnd());
+		suite.assertTrue(beginState->inputFile().valid());
 		suite.assertTrue(*beginState == midState2);
 		++*beginState;
 		suite.assertTrue(beginState->atEnd());
+		suite.assertTrue(beginState->inputFile().valid());
 		suite.assertTrue(*beginState == endState);
 		suite.assertTrue(beginState->inputLength() == endState.inputLength());
 		suite.assertTrue(beginState->inputOffset() == endState.inputOffset());
@@ -118,6 +123,7 @@ namespace chunkState
 		};
 		suite.assertEqual(beginState->inputLength(), transferBlockSize);
 		suite.assertTrue(beginState->file() == inputFiles.begin() + 2);
+		suite.assertTrue(beginState->inputFile().valid());
 		suite.assertFalse(beginState->atEnd());
 		suite.assertTrue(beginState->end() == endState);
 		++*beginState;
