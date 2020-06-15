@@ -4,6 +4,7 @@ class testChunkState final : public testsuite
 {
 private:
 	void testDefaultConstruct() { chunkState::testDefaultConstruct(*this); }
+	void testNoFilesConstruct() { chunkState::testNoFilesConstruct(*this); }
 
 public:
 	testChunkState() = default;
@@ -16,6 +17,7 @@ public:
 	void registerTests() final
 	{
 		CRUNCHpp_TEST(testDefaultConstruct)
+		CRUNCHpp_TEST(testNoFilesConstruct)
 	}
 };
 

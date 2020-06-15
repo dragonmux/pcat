@@ -7,6 +7,7 @@
 namespace chunkState
 {
 	extern void testDefaultConstruct(testsuite &suite);
+	extern void testNoFilesConstruct(testsuite &suite);
 }
 
 #endif /*TEST_CHUNK_STATE__HXX*/
