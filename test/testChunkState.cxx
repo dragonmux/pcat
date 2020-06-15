@@ -75,6 +75,7 @@ public:
 	{
 		CRUNCHpp_TEST(testDefaultConstruct)
 		CRUNCHpp_TEST(testNoFilesConstruct)
+		CRUNCHpp_TEST(testFillAlignedChunk)
 	}
 };
 
