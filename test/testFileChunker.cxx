@@ -33,16 +33,23 @@ private:
 	fd_t outputFile{"chunks.test", O_RDWR | O_CREAT | O_NOCTTY, normalMode};
 	std::vector<fd_t> files{};
 
-	void testDefaultConstruct() { fileChunker::testDefaultConstruct(*this); }
+	void testDefaultConstruct()
+	{
+		pcat::outputFile = outputFile.dup();
+		fileChunker::testDefaultConstruct(*this);
+	}
 
-	/*void testFillAlignedChunk()
+	void testFillAlignedChunk()
 	{
 		inputFiles.clear();
 		inputFiles.emplace_back(files[4].dup());
+		if (!outputFile.resize(transferBlockSize))
+			fail("Failed to resize the output test file");
+		pcat::outputFile = outputFile.dup();
 		fileChunker::testFillAlignedChunk(*this);
 	}
 
-	void testFillUnalignedChunks()
+	/*void testFillUnalignedChunks()
 	{
 		inputFiles.clear();
 		inputFiles.emplace_back(files[0].dup());
@@ -68,7 +75,6 @@ public:
 			throw std::logic_error{"Failed to create the output test file"};
 		for (const auto &file : chunkFiles)
 			makeFile(file.first, file.second);
-		pcat::outputFile = outputFile.dup();
 	}
 
 	testFileChunker(const testFileChunker &) = delete;
@@ -88,7 +94,7 @@ public:
 	void registerTests() final
 	{
 		CRUNCHpp_TEST(testDefaultConstruct)
-		//CRUNCHpp_TEST(testFillAlignedChunk)
+		CRUNCHpp_TEST(testFillAlignedChunk)
 		//CRUNCHpp_TEST(testFillUnalignedChunks)
 	}
 };

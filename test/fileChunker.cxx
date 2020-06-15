@@ -32,35 +32,37 @@ namespace fileChunker
 		suite.assertTrue(fileChunker_t{}.begin() == fileChunker_t{}.end());
 	}
 
-	/*void testFillAlignedChunk(testsuite &suite)
+	void testFillAlignedChunk(testsuite &suite)
 	{
+		suite.assertEqual(outputFile.length(), transferBlockSize);
 		suite.assertFalse(inputFiles.begin() == inputFiles.end());
 		suite.assertEqual(inputFiles.size(), 1);
 		suite.assertEqual(inputFiles[0].length(), transferBlockSize);
-		fileChunker_t beginState
-		{
-			inputFiles.begin(), transferBlockSize, mappingOffset_t{0, transferBlockSize},
-			mappingOffset_t{0, transferBlockSize}
-		};
-		const fileChunker_t endState
-		{
-			inputFiles.end(), 0, mappingOffset_t{}, mappingOffset_t{transferBlockSize, 0}
-		};
-		suite.assertEqual(beginState.inputLength(), transferBlockSize);
-		suite.assertTrue(beginState.file() == inputFiles.begin());
-		suite.assertTrue(beginState.inputFile().valid());
-		suite.assertFalse(beginState.atEnd());
-		suite.assertTrue(beginState.end() == endState);
+		suite.assertFalse(fileChunker_t{}.begin() == fileChunker_t{}.end());
+
+		chunking_t beginState{};
+		const auto beginChunk{beginState.subchunkState()};
+		suite.assertEqual(beginChunk.inputLength(), transferBlockSize);
+		suite.assertTrue(beginChunk.inputOffset() == mappingOffset_t{0, transferBlockSize});
+		suite.assertTrue(beginChunk.outputOffset() == mappingOffset_t{0, transferBlockSize});
+		suite.assertTrue(beginChunk.end() == chunkState_t{inputFiles.end(), 0, {}, {transferBlockSize, 0}});
+		suite.assertTrue(beginChunk == *beginState);
+
+		const chunking_t endState{inputFiles.end()};
+		const auto endChunk{endState.subchunkState()};
+		suite.assertEqual(endChunk.inputLength(), 0);
+		suite.assertTrue(endChunk.inputOffset() == mappingOffset_t{});
+		suite.assertTrue(endChunk.outputOffset() == mappingOffset_t{transferBlockSize, 0});
+		suite.assertTrue(endChunk.end() == chunkState_t{inputFiles.end(), 0, {}, {transferBlockSize, 0}});
+		suite.assertTrue(endChunk == *endState);
+
 		++beginState;
-		suite.assertTrue(beginState.atEnd());
-		suite.assertTrue(beginState == endState);
-		suite.assertEqual(beginState.inputLength(), endState.inputLength());
-		suite.assertTrue(beginState.inputOffset() == endState.inputOffset());
-		suite.assertTrue(beginState.outputOffset() == endState.outputOffset());
-		suite.assertTrue(beginState.file() == inputFiles.end());
+		suite.assertTrue(*beginState == endChunk);
+		++beginState;
+		suite.assertTrue(*beginState == endChunk);
 	}
 
-	void testFillFirstUnalignedChunk(testsuite &suite)
+	/*void testFillFirstUnalignedChunk(testsuite &suite)
 	{
 		auto beginState{substrate::make_unique_nothrow<fileChunker_t>
 		(
