@@ -49,14 +49,17 @@ private:
 		fileChunker::testFillAlignedChunk(*this);
 	}
 
-	/*void testFillUnalignedChunks()
+	void testFillUnalignedChunks()
 	{
 		inputFiles.clear();
 		inputFiles.emplace_back(files[0].dup());
 		inputFiles.emplace_back(files[2].dup());
 		inputFiles.emplace_back(files[4].dup());
+		if (!outputFile.resize(transferBlockSize + 4096))
+			fail("Failed to resize the output test file");
+		pcat::outputFile = outputFile.dup();
 		fileChunker::testFillUnalignedChunks(*this);
-	}*/
+	}
 
 	void makeFile(const std::string_view fileName, const std::size_t size)
 	{
@@ -95,7 +98,7 @@ public:
 	{
 		CRUNCHpp_TEST(testDefaultConstruct)
 		CRUNCHpp_TEST(testFillAlignedChunk)
-		//CRUNCHpp_TEST(testFillUnalignedChunks)
+		CRUNCHpp_TEST(testFillUnalignedChunks)
 	}
 };
 
