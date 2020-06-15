@@ -17,6 +17,11 @@ namespace pcat
 	extern std::vector<fd_t> inputFiles;
 	extern fd_t outputFile;
 
+	constexpr off_t blockLength(const off_t length)
+		{ return std::min(transferBlockSize, length); }
+
+	using inputFilesIterator_t = typename decltype(inputFiles)::iterator;
+
 	extern int32_t chunkedCopy() noexcept;
 }
 
