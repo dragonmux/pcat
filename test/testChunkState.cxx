@@ -10,6 +10,7 @@ using namespace std::literals::string_view_literals;
 constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
 
 using substrate::fd_t;
+using substrate::normalMode;
 using pcat::transferBlockSize;
 using pcat::inputFiles;
 
@@ -52,7 +53,7 @@ private:
 
 	void makeFile(const std::string_view fileName, const std::size_t size)
 	{
-		const auto &file = files.emplace_back(fileName.data(), O_RDWR | O_CREAT | O_NOCTTY);
+		const auto &file = files.emplace_back(fileName.data(), O_RDWR | O_CREAT | O_NOCTTY, normalMode);
 		if (!file.valid() || !file.resize(size))
 		{
 			files.pop_back();
