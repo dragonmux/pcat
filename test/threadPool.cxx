@@ -63,5 +63,6 @@ namespace threadPool
 		suite.assertTrue(pool.queue(threads));
 		suite.assertTrue(pool.finish());
 		suite.assertFalse(pool.valid());
+		suite.assertFalse(pool.finish());
 	}
 } // namespace threadPool
