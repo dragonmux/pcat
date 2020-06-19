@@ -78,6 +78,18 @@ namespace pcat
 			haveWork.notify_one();
 		}
 
+		result_t clearResultQueue()
+		{
+			result_t result{};
+			while (!results.empty())
+			{
+				const auto thisResult = results.pop();
+				if (!result)
+					result = thisResult;
+			}
+			return result;
+		}
+
 	public:
 		threadPool_t(const workFunc_t function) : workerFunction{function}
 		{
@@ -99,11 +111,8 @@ namespace pcat
 
 		[[nodiscard]] result_t queue(args_t ...args)
 		{
-			result_t result{};
-			if (!waitingThreads || !results.empty())
-				result = results.pop();
 			lockedEnqueue(std::forward<args_t>(args)...);
-			return result;
+			return clearResultQueue();
 		}
 
 		[[nodiscard]] result_t finish()
@@ -115,15 +124,7 @@ namespace pcat
 			for (auto &thread : threads)
 				thread.join();
 			threads.clear();
-
-			result_t result{};
-			while (!results.empty())
-			{
-				const auto thisResult = results.pop();
-				if (!result)
-					result = thisResult;
-			}
-			return result;
+			return clearResultQueue();
 		}
 	};
 
