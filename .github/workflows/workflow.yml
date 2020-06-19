@@ -113,4 +113,4 @@ jobs:
       - name: Codecov
         if: success() && matrix.coverage
         run: bash <(curl -s https://codecov.io/bash) -x "$GCOV";
-        working-directory: ${{ env.GITHUB_WORKSPACE }}/pcat/build
+        working-directory: ${{ env.GITHUB_WORKSPACE }}/build
