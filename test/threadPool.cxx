@@ -59,9 +59,8 @@ namespace threadPool
 		for (std::size_t i{}; i < threads; ++i)
 			suite.assertFalse(pool.queue(threads - i));
 		suite.assertFalse(pool.ready());
-		const auto result =
-		/*suite.assertTrue(*/pool.queue(threads);//);
-		printf("result = %s\n", result ? "true" : "false");
+		suite.assertFalse(pool.queue(threads));
+		suite.assertTrue(pool.queue(threads));
 		suite.assertTrue(pool.finish());
 		suite.assertFalse(pool.valid());
 	}
