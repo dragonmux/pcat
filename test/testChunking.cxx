@@ -90,6 +90,27 @@ private:
 		checkCopyResult();
 	}
 
+	void testCopyUnaligned()
+	{
+		inputFiles.clear();
+		inputFiles.emplace_back(files[0].dup());
+		inputFiles.emplace_back(files[1].dup());
+		inputFiles.emplace_back(files[2].dup());
+		inputFiles.emplace_back(files[4].dup());
+		if (!resultFile.resize(transferBlockSize + 6144))
+			fail("Failed to resize the output test file");
+		outputFile = resultFile.dup();
+		assertEqual(outputFile.length(), transferBlockSize + 6144);
+		assertFalse(inputFiles.begin() == inputFiles.end());
+		assertEqual(inputFiles.size(), 4);
+		assertEqual(inputFiles[0].length(), 1024);
+		assertEqual(inputFiles[1].length(), 2048);
+		assertEqual(inputFiles[2].length(), 3072);
+		assertEqual(inputFiles[3].length(), transferBlockSize);
+		assertEqual(chunkedCopy(), 0);
+		checkCopyResult();
+	}
+
 	void makeFile(const std::string_view fileName, const std::size_t size, const random_t seed) noexcept
 	{
 		const auto &file = files.emplace_back(fileName.data(), O_RDWR | O_CREAT | O_NOCTTY, normalMode);
@@ -128,6 +149,7 @@ public:
 	{
 		CRUNCHpp_TEST(testCopyNone)
 		CRUNCHpp_TEST(testCopySingle)
+		CRUNCHpp_TEST(testCopyUnaligned)
 	}
 };
 
