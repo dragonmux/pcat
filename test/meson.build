@@ -61,7 +61,11 @@ testObjectMap = {
 	'testMMap' : {'test': ['mmap.cxx']},
 	'testChunkState': {'test': ['chunkState.cxx']},
 	'testFileChunker': {'test': ['fileChunker.cxx']},
-	'testChunking': {'test': ['chunking.cxx']}
+	'testChunking': {
+		'pcat': [
+			'src/chunking.cxx', 'substrate/impl/console.cxx'
+		]
+	}
 }
 
 foreach test : pcatTests

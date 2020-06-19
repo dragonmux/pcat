@@ -3,7 +3,8 @@
 #include <random>
 #include <utility>
 #include <substrate/utility>
-#include "testChunking.hxx"
+#include <crunch++.h>
+#include <chunking.hxx>
 
 using namespace std::literals::string_view_literals;
 constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
@@ -13,6 +14,7 @@ using substrate::fd_t;
 using substrate::normalMode;
 using pcat::transferBlockSize;
 using pcat::inputFiles;
+using pcat::chunkedCopy;
 
 constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_view, std::size_t>>(
 {
@@ -36,7 +38,8 @@ private:
 	void testCopyNone()
 	{
 		inputFiles.clear();
-		chunking::testCopyNone(*this);
+		pcat::outputFile = outputFile.dup();
+		assertEqual(chunkedCopy(), 0);
 	}
 
 	void testCopySingle()
@@ -46,7 +49,7 @@ private:
 		if (!outputFile.resize(transferBlockSize))
 			fail("Failed to resize the output test file");
 		pcat::outputFile = outputFile.dup();
-		chunking::testCopySingle(*this);
+		assertEqual(chunkedCopy(), 0);
 	}
 
 	void makeFile(const std::string_view fileName, const std::size_t size, const random_t seed) noexcept
