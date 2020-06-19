@@ -1,3 +1,4 @@
+#include <cassert>
 #include <string_view>
 #include <array>
 #include <random>
@@ -9,15 +10,16 @@
 using namespace std::literals::string_view_literals;
 constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
 
+std::vector<substrate::fd_t> pcat::inputFiles{};
+substrate::fd_t pcat::outputFile{};
+
 using random_t = typename std::random_device::result_type;
 using substrate::fd_t;
 using substrate::normalMode;
 using pcat::transferBlockSize;
 using pcat::inputFiles;
+using pcat::outputFile;
 using pcat::chunkedCopy;
-
-std::vector<substrate::fd_t> pcat::inputFiles{};
-substrate::fd_t pcat::outputFile{};
 
 constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_view, std::size_t>>(
 {
@@ -35,13 +37,15 @@ constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_vie
 class testChunking final : public testsuite
 {
 private:
-	fd_t outputFile{"chunks.test", O_RDWR | O_CREAT | O_NOCTTY, normalMode};
+	fd_t resultFile{"chunks.test", O_RDWR | O_CREAT | O_NOCTTY, normalMode};
 	std::vector<fd_t> files{};
 
 	void testCopyNone()
 	{
 		inputFiles.clear();
-		pcat::outputFile = outputFile.dup();
+		outputFile = resultFile.dup();
+		assertEqual(outputFile.length(), 0);
+		assertTrue(inputFiles.begin() == inputFiles.end());
 		assertEqual(chunkedCopy(), 0);
 	}
 
@@ -49,27 +53,31 @@ private:
 	{
 		inputFiles.clear();
 		inputFiles.emplace_back(files[4].dup());
-		if (!outputFile.resize(transferBlockSize))
+		if (!resultFile.resize(transferBlockSize))
 			fail("Failed to resize the output test file");
-		pcat::outputFile = outputFile.dup();
+		outputFile = resultFile.dup();
+		assertEqual(outputFile.length(), transferBlockSize);
+		assertFalse(inputFiles.begin() == inputFiles.end());
+		assertEqual(inputFiles.size(), 1);
+		assertEqual(inputFiles[0].length(), transferBlockSize);
 		assertEqual(chunkedCopy(), 0);
 	}
 
 	void makeFile(const std::string_view fileName, const std::size_t size, const random_t seed) noexcept
 	{
-		fd_t file{fileName.data(), O_WRONLY | O_NOCTTY};
+		const auto &file = files.emplace_back(fileName.data(), O_RDWR | O_CREAT | O_NOCTTY, normalMode);
 		std::minstd_rand engine{seed};
-		std::uniform_int_distribution<uint32_t> genRandom{};
+		std::uniform_int_distribution<uint8_t> genRandom{};
 		for (size_t i{}; i < size; ++i)
 			file.write(genRandom(engine));
-		files.emplace_back(fileName.data(), O_RDONLY | O_NOCTTY);
+		assert(file.head()); // NOLINT
 	}
 
 public:
 	testChunking()
 	{
 		std::random_device seed{};
-		if (!outputFile.valid())
+		if (!resultFile.valid())
 			throw std::logic_error{"Failed to create the output test file"};
 		for (const auto &file : chunkFiles)
 			makeFile(file.first, file.second, seed());
