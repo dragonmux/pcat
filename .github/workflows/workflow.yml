@@ -30,7 +30,7 @@ jobs:
         run: |
           echo ::set-env name=PATH::"$HOME/.local/bin:$PATH"
           echo ::set-env name=PKG_CONFIG_PATH::"$HOME/.local/lib/x86_64-linux-gnu/pkgconfig"
-          echo ::set-env name=GITHUB_WORKSPACE::"`pwd`"
+          echo ::set-env name=GITHUB_WORKSPACE::"$WORKSPACE"
       - name: Coverage environment
         env:
           COVERAGE: ${{ matrix.coverage }}
@@ -109,8 +109,8 @@ jobs:
       - name: Test
         run: ninja -C build test
       - name: Install
-        run: ninja -C build  install
+        run: ninja -C build install
       - name: Codecov
         if: success() && matrix.coverage
         run: bash <(curl -s https://codecov.io/bash) -x "$GCOV";
-
+        working-directory: ${{ env.GITHUB_WORKSPACE }}/pcat/build
