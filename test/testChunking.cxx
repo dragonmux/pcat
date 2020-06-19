@@ -67,8 +67,8 @@ private:
 	{
 		const auto &file = files.emplace_back(fileName.data(), O_RDWR | O_CREAT | O_NOCTTY, normalMode);
 		std::minstd_rand engine{seed};
-		std::uniform_int_distribution<uint8_t> genRandom{};
-		for (size_t i{}; i < size; ++i)
+		std::uniform_int_distribution<uint32_t> genRandom{};
+		for (size_t i{}; i < size; i += sizeof(uint32_t))
 			file.write(genRandom(engine));
 		assert(file.head()); // NOLINT
 	}
