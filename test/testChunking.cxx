@@ -10,6 +10,7 @@ constexpr static std::size_t operator ""_uz(const unsigned long long value) noex
 
 using random_t = typename std::random_device::result_type;
 using substrate::fd_t;
+using substrate::normalMode;
 
 constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_view, std::size_t>>(
 {
@@ -27,6 +28,7 @@ constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_vie
 class testChunking final : public testsuite
 {
 private:
+	fd_t outputFile{"chunks.test", O_RDWR | O_CREAT | O_NOCTTY, normalMode};
 	std::vector<fd_t> files{};
 
 	void testCopySingle() { chunking::testCopySingle(*this); }
@@ -42,12 +44,28 @@ private:
 	}
 
 public:
-	testChunking() = default;
+	testChunking()
+	{
+		std::random_device seed{};
+		if (!outputFile.valid())
+			throw std::logic_error{"Failed to create the output test file"};
+		for (const auto &file : chunkFiles)
+			makeFile(file.first, file.second, seed());
+	}
+
 	testChunking(const testChunking &) = delete;
 	testChunking(testChunking &&) = delete;
 	testChunking &operator =(const testChunking &) = delete;
 	testChunking &operator =(testChunking &&) = delete;
-	~testChunking() final = default;
+
+	~testChunking() final
+	{
+		pcat::inputFiles.clear();
+		files.clear();
+		for (const auto &file : chunkFiles)
+			unlink(file.first.data());
+		unlink("chunks.test");
+	}
 
 	void registerTests() final
 	{

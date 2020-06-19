@@ -6,6 +6,7 @@
 
 namespace chunking
 {
+	extern void testCopyNone(testsuite &suite);
 	extern void testCopySingle(testsuite &suite);
 }
 

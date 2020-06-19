@@ -22,7 +22,7 @@ endif
 pcatTests = [
 	'testFD', 'testConsole', 'testArgsTokenizer', 'testArgsParser',
 	'testThreadedQueue', 'testAffinity', 'testThreadPool', 'testMappingOffset',
-	'testMMap', 'testChunkState', 'testFileChunker'
+	'testMMap', 'testChunkState', 'testFileChunker', 'testChunking'
 ]
 
 testHelpers = static_library(
@@ -30,7 +30,8 @@ testHelpers = static_library(
 	[
 		'fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx',
 		'argsParser.cxx', 'threadedQueue.cxx', 'affinity.cxx', 'threadPool.cxx',
-		'mappingOffset.cxx', 'mmap.cxx', 'chunkState.cxx', 'fileChunker.cxx'
+		'mappingOffset.cxx', 'mmap.cxx', 'chunkState.cxx', 'fileChunker.cxx',
+		'chunking.cxx'
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
@@ -59,7 +60,8 @@ testObjectMap = {
 	'testMappingOffset' : {'test': ['mappingOffset.cxx']},
 	'testMMap' : {'test': ['mmap.cxx']},
 	'testChunkState': {'test': ['chunkState.cxx']},
-	'testFileChunker': {'test': ['fileChunker.cxx']}
+	'testFileChunker': {'test': ['fileChunker.cxx']},
+	'testChunking': {'test': ['chunking.cxx']}
 }
 
 foreach test : pcatTests
