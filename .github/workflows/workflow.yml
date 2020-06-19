@@ -38,7 +38,7 @@ jobs:
           echo "Coverage enabled for build? ${{ matrix.coverage }}"
           echo ::set-env name=COVERAGE::$([ $COVERAGE == "true" ] && echo -n 1 || echo -n 0)
           echo ::set-env name=BUILD_OPTS::$([ $COVERAGE == "true" ] && \
-            echo "--buildtype=debug -Db_lto=false -Db_sanitize=address,undefined" || echo "")
+            echo "--buildtype=debug -Db_lto=false -Db_sanitize=undefined" || echo "")
       - name: Setup GCC
         if: startsWith(matrix.compiler, 'gcc')
         shell: bash
