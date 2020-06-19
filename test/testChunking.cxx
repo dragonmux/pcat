@@ -11,14 +11,16 @@ constexpr static std::size_t operator ""_uz(const unsigned long long value) noex
 using random_t = typename std::random_device::result_type;
 using substrate::fd_t;
 using substrate::normalMode;
+using pcat::transferBlockSize;
+using pcat::inputFiles;
 
 constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_view, std::size_t>>(
 {
 	{"chunk1.test"sv, 1024_uz},
 	{"chunk2.test"sv, 2048_uz},
 	{"chunk3.test"sv, 3072_uz},
-	{"chunk4.test"sv, std::size_t(pcat::transferBlockSize) - 4096_uz},
-	{"chunk5.test"sv, std::size_t(pcat::transferBlockSize)}
+	{"chunk4.test"sv, std::size_t(transferBlockSize) - 4096_uz},
+	{"chunk5.test"sv, std::size_t(transferBlockSize)}
 })};
 
 #ifdef _WINDOWS
@@ -31,7 +33,21 @@ private:
 	fd_t outputFile{"chunks.test", O_RDWR | O_CREAT | O_NOCTTY, normalMode};
 	std::vector<fd_t> files{};
 
-	void testCopySingle() { chunking::testCopySingle(*this); }
+	void testCopyNone()
+	{
+		inputFiles.clear();
+		chunking::testCopyNone(*this);
+	}
+
+	void testCopySingle()
+	{
+		inputFiles.clear();
+		inputFiles.emplace_back(files[4].dup());
+		if (!outputFile.resize(transferBlockSize))
+			fail("Failed to resize the output test file");
+		pcat::outputFile = outputFile.dup();
+		chunking::testCopySingle(*this);
+	}
 
 	void makeFile(const std::string_view fileName, const std::size_t size, const random_t seed) noexcept
 	{
@@ -69,6 +85,7 @@ public:
 
 	void registerTests() final
 	{
+		CRUNCHpp_TEST(testCopyNone)
 		CRUNCHpp_TEST(testCopySingle)
 	}
 };
