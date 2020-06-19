@@ -30,8 +30,7 @@ testHelpers = static_library(
 	[
 		'fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx',
 		'argsParser.cxx', 'threadedQueue.cxx', 'affinity.cxx', 'threadPool.cxx',
-		'mappingOffset.cxx', 'mmap.cxx', 'chunkState.cxx', 'fileChunker.cxx',
-		'chunking.cxx'
+		'mappingOffset.cxx', 'mmap.cxx', 'chunkState.cxx', 'fileChunker.cxx'
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
