@@ -16,6 +16,7 @@ substrate::fd_t pcat::outputFile{};
 using random_t = typename std::random_device::result_type;
 using substrate::fd_t;
 using substrate::normalMode;
+using pcat::pageSize;
 using pcat::transferBlockSize;
 using pcat::inputFiles;
 using pcat::outputFile;
@@ -40,6 +41,31 @@ private:
 	fd_t resultFile{"chunks.test", O_RDWR | O_CREAT | O_NOCTTY, normalMode};
 	std::vector<fd_t> files{};
 
+	void checkCopyResult()
+	{
+		std::array<char, pageSize> inputBlock{};
+		std::array<char, pageSize> outputBlock{};
+		const auto outputLength{outputFile.length()};
+		off_t outputOffset{};
+		assertTrue(outputFile.head());
+		for (const auto &file : inputFiles)
+		{
+			assertTrue(file.head());
+			const auto inputLength{file.length()};
+			off_t inputOffset{};
+			assertTrue(inputLength <= (outputLength - outputOffset));
+			while (inputOffset < inputLength)
+			{
+				const auto amount{std::min(pageSize, inputLength - inputOffset)};
+				assertTrue(file.read(inputBlock.data(), amount));
+				assertTrue(outputFile.read(outputBlock.data(), amount));
+				assertEqual(outputBlock.data(), inputBlock.data(), amount);
+				inputOffset += amount;
+				outputOffset += amount;
+			}
+		}
+	}
+
 	void testCopyNone()
 	{
 		inputFiles.clear();
@@ -61,6 +87,7 @@ private:
 		assertEqual(inputFiles.size(), 1);
 		assertEqual(inputFiles[0].length(), transferBlockSize);
 		assertEqual(chunkedCopy(), 0);
+		checkCopyResult();
 	}
 
 	void makeFile(const std::string_view fileName, const std::size_t size, const random_t seed) noexcept
