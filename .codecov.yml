@@ -1,0 +1,10 @@
+coverage:
+  round: nearest
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: yes
+      loop: yes
+      method: yes
+      macro: no
