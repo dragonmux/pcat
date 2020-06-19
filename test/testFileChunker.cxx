@@ -35,6 +35,7 @@ private:
 
 	void testDefaultConstruct()
 	{
+		inputFiles.clear();
 		pcat::outputFile = outputFile.dup();
 		fileChunker::testDefaultConstruct(*this);
 	}
