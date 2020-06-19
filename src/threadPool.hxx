@@ -57,10 +57,10 @@ namespace pcat
 		void workerThread(const int32_t processor)
 		{
 			affinity.pinThreadTo(processor);
-			while (!finished)
+			while (!finished || workValid)
 			{
 				auto [valid, args] = waitWork();
-				// This checks for both if we don't have something to do and if we're supposed to be finsihing up
+				// This checks for both if we don't have something to do and if we're supposed to be finishing up
 				if (finished && !valid)
 					break;
 				auto result = invoke(std::move(args), std::make_index_sequence<sizeof...(args_t)>());
