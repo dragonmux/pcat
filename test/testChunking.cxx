@@ -16,6 +16,9 @@ using pcat::transferBlockSize;
 using pcat::inputFiles;
 using pcat::chunkedCopy;
 
+std::vector<substrate::fd_t> pcat::inputFiles{};
+substrate::fd_t pcat::outputFile{};
+
 constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_view, std::size_t>>(
 {
 	{"chunk1.test"sv, 1024_uz},
