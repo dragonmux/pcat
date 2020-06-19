@@ -74,7 +74,7 @@ jobs:
         with:
           repository: DX-MON/crunch
           path: crunch
-          ref: v1.0.0
+          ref: v1.0.1
           lfs: true
           submodules: true
       - name: Setup Meson + Ninja
