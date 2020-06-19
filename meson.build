@@ -42,7 +42,7 @@ pcat = executable(
 	pie: true
 )
 
-crunchMake = find_program('crunchMake', version: ['>= 1.0.0', '< 2.0.0'], required: false)
+crunchMake = find_program('crunchMake', version: ['>= 1.0.1', '< 2.0.0'], required: false)
 subdir('test', if_found: crunchMake)
 
 runClangTidy = find_program('runClangTidy.py')
