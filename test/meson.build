@@ -11,6 +11,9 @@ endif
 if cxx.get_id() != 'msvc'
 	commandExtra += ['-z', 'defs']
 endif
+if get_option('b_lto')
+	commandExtra += ['-flto']
+endif
 
 if sanitizer != 'none'
 	commandExtra += ['-fsanitize=' + sanitizer]
