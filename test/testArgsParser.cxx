@@ -1,4 +1,3 @@
-#include <args.hxx>
 #include "testArgsParser.hxx"
 
 class testParser final : public testsuite

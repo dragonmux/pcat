@@ -2,6 +2,7 @@
 #define TEST_ARGS_TOKENIZER__HXX
 
 #include <crunch++.h>
+#include <args/tokenizer.hxx>
 
 namespace tokenizer
 {
