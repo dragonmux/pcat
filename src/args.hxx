@@ -91,6 +91,21 @@ namespace pcat::args
 		[[nodiscard]] auto threads() const noexcept { return threads_; }
 	};
 
+	struct argPinning_t final : argNode_t
+	{
+	private:
+		std::vector<std::size_t> cores_{};
+
+	public:
+		argPinning_t() = delete;
+		argPinning_t(std::string_view corePins) noexcept;
+		[[nodiscard]] auto count() const noexcept { return cores_.size(); }
+		[[nodiscard]] auto empty() const noexcept { return cores_.empty(); }
+
+		[[nodiscard]] auto begin() const noexcept { return cores_.begin(); }
+		[[nodiscard]] auto end() const noexcept { return cores_.end(); }
+	};
+
 	template<argType_t argType> struct argOfType_t final : argNode_t
 	{
 	public:

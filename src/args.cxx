@@ -48,6 +48,29 @@ auto parseThreads(tokenizer_t &lexer)
 	return threadCount;
 }
 
+auto parsePinning(tokenizer_t &lexer)
+{
+	const auto &token{lexer.token()};
+	if (token.type() == tokenType_t::unknown)
+	{
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Core pinning option expects a list of positive integer core IDs to pin"
+			"threads to"sv);
+		throw std::exception{};
+	}
+	lexer.next();
+	auto pinning{substrate::make_unique<argPinning_t>(token.value())};
+	if (pinning->empty())
+	{
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Core pinning option expects a list of positive integer core IDs to pin"
+			"threads to"sv);
+		throw std::exception{};
+	}
+	lexer.next();
+	return pinning;
+}
+
 std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const option_t &option)
 {
 	lexer.next();
@@ -63,6 +86,8 @@ std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const option_t &option)
 			return substrate::make_unique<argAsync_t>();
 		case argType_t::threads:
 			return parseThreads(lexer);
+		case argType_t::pinning:
+			return parsePinning(lexer);
 		default:
 			throw std::exception{};
 	}
