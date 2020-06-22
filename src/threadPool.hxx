@@ -26,9 +26,7 @@ namespace pcat
 		std::atomic<std::size_t> waitingThreads{};
 		std::mutex workMutex{};
 		std::condition_variable haveWork{};
-		std::condition_variable queueClear{};
-		std::tuple<args_t...> workItem{args_t{}...};
-		bool workValid{false};
+		threadedQueue_t<std::tuple<args_t...>> work{};
 		std::atomic<bool> finished{false};
 		threadedQueue_t<result_t> results{};
 		std::vector<std::thread> threads{};
@@ -40,14 +38,10 @@ namespace pcat
 			std::unique_lock<std::mutex> lock{workMutex};
 			++waitingThreads;
 			// wait, but protect ourselves from accidental wake-ups..
-			haveWork.wait(lock, [this]() noexcept -> bool { return finished || workValid; });
+			haveWork.wait(lock, [this]() noexcept -> bool { return finished || !work.empty(); });
 			--waitingThreads;
-			if (workValid)
-			{
-				workValid = false;
-				queueClear.notify_all();
-				return {true, workItem};
-			}
+			if (!work.empty())
+				return {true, work.pop()};
 			return {false, {}};
 		}
 
@@ -57,7 +51,7 @@ namespace pcat
 		void workerThread(const int32_t processor)
 		{
 			affinity.pinThreadTo(processor);
-			while (!finished || workValid)
+			while (!(finished && work.empty()))
 			{
 				auto [valid, args] = waitWork();
 				// This checks for both if we don't have something to do and if we're supposed to be finishing up
@@ -66,16 +60,6 @@ namespace pcat
 				auto result = invoke(std::move(args), std::make_index_sequence<sizeof...(args_t)>());
 				results.push(std::move(result));
 			}
-		}
-
-		void lockedEnqueue(args_t &&...args)
-		{
-			std::unique_lock<std::mutex> lock{workMutex};
-			if (workValid)
-				queueClear.wait(lock, [this]() noexcept -> bool { return !workValid; });
-			workItem = {std::forward<args_t>(args)...};
-			workValid = true;
-			haveWork.notify_one();
 		}
 
 		result_t clearResultQueue()
@@ -111,7 +95,8 @@ namespace pcat
 
 		[[nodiscard]] result_t queue(args_t ...args)
 		{
-			lockedEnqueue(std::forward<args_t>(args)...);
+			work.emplace(std::forward<args_t>(args)...);
+			haveWork.notify_one();
 			return clearResultQueue();
 		}
 
