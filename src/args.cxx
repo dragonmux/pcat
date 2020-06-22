@@ -17,13 +17,35 @@ auto parseOutputFile(tokenizer_t &lexer)
 	const auto &token{lexer.token()};
 	if (token.type() == tokenType_t::unknown)
 	{
-		console.error("Output file option given but failed to specify output file name"sv); // NOLINT(readability-magic-numbers)
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Output file option given but failed to specify output file name"sv);
 		throw std::exception{};
 	}
 	lexer.next();
 	const auto fileName{token.value()};
 	lexer.next();
 	return substrate::make_unique<argOutputFile_t>(fileName);
+}
+
+auto parseThreads(tokenizer_t &lexer)
+{
+	const auto &token{lexer.token()};
+	if (token.type() == tokenType_t::unknown)
+	{
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Thread cap option must be given a positive non-zero integer value"sv);
+		throw std::exception{};
+	}
+	lexer.next();
+	auto threadCount{substrate::make_unique<argThreads_t>(token.value())};
+	if (!threadCount->threads())
+	{
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Thread cap option must be given a positive non-zero integer value"sv);
+		throw std::exception{};
+	}
+	lexer.next();
+	return threadCount;
 }
 
 std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const option_t &option)
@@ -39,6 +61,8 @@ std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const option_t &option)
 			return parseOutputFile(lexer);
 		case argType_t::async:
 			return substrate::make_unique<argAsync_t>();
+		case argType_t::threads:
+			return parseThreads(lexer);
 		default:
 			throw std::exception{};
 	}

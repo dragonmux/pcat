@@ -1,4 +1,7 @@
+#include <substrate/conversions>
 #include "../args.hxx"
+
+using substrate::toInt_t;
 
 namespace pcat::args
 {
@@ -16,4 +19,7 @@ namespace pcat::args
 		{ return bool{children_.emplace_back(std::move(node))}; }
 	catch (std::bad_alloc &)
 		{ return false; }
+
+	argThreads_t::argThreads_t(const std::string_view threads) noexcept : argNode_t{argType_t::threads}
+		{ threads_ = toInt_t<size_t>{threads.data(), threads.size()}.fromDec(); }
 }

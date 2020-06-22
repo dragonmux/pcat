@@ -80,6 +80,17 @@ namespace pcat::args
 		[[nodiscard]] constexpr auto fileName() const noexcept { return fileName_; }
 	};
 
+	struct argThreads_t final : argNode_t
+	{
+	private:
+		std::size_t threads_{};
+
+	public:
+		argThreads_t() = delete;
+		argThreads_t(std::string_view threads) noexcept;
+		[[nodiscard]] auto threads() const noexcept { return threads_; }
+	};
+
 	template<argType_t argType> struct argOfType_t final : argNode_t
 	{
 	public:
