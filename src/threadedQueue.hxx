@@ -34,7 +34,7 @@ namespace pcat
 			haveData.notify_one();
 		}
 
-		[[nodiscard]] T pop()
+		[[nodiscard]] auto pop()
 		{
 			std::unique_lock<std::mutex> lock{queueMutex};
 			if (!queueLength)

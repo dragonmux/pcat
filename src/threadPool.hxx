@@ -45,7 +45,7 @@ namespace pcat
 			return {false, {}};
 		}
 
-		template<std::size_t... indicies> result_t invoke(std::tuple<args_t...> &&args,
+		template<std::size_t... indicies> auto invoke(std::tuple<args_t...> &&args,
 			std::index_sequence<indicies...>) { return workerFunction(std::get<indicies>(std::move(args))...); }
 
 		void workerThread(const int32_t processor)
@@ -62,7 +62,7 @@ namespace pcat
 			}
 		}
 
-		result_t clearResultQueue()
+		auto clearResultQueue()
 		{
 			result_t result{};
 			while (!results.empty())
@@ -89,11 +89,11 @@ namespace pcat
 		threadPool_t &operator =(const threadPool_t &) = delete;
 		threadPool_t &operator =(threadPool_t &&) = delete;
 
-		[[nodiscard]] std::size_t numProcessors() const noexcept { return affinity.numProcessors(); }
-		[[nodiscard]] bool valid() const noexcept { return !threads.empty(); }
-		[[nodiscard]] bool ready() const noexcept { return waitingThreads == affinity.numProcessors(); }
+		[[nodiscard]] auto numProcessors() const noexcept { return affinity.numProcessors(); }
+		[[nodiscard]] auto valid() const noexcept { return !threads.empty(); }
+		[[nodiscard]] auto ready() const noexcept { return waitingThreads == affinity.numProcessors(); }
 
-		[[nodiscard]] result_t queue(args_t ...args)
+		[[nodiscard]] auto queue(args_t ...args)
 		{
 			work.emplace(std::forward<args_t>(args)...);
 			haveWork.notify_one();

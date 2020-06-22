@@ -41,7 +41,7 @@ namespace pcat
 			}
 		}
 
-		[[nodiscard]] std::size_t numProcessors() const noexcept { return processors.size(); }
+		[[nodiscard]] auto numProcessors() const noexcept { return processors.size(); }
 		[[nodiscard]] auto begin() const noexcept { return processors.begin(); }
 		[[nodiscard]] auto end() const noexcept { return processors.end(); }
 
