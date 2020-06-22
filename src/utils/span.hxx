@@ -96,11 +96,11 @@ namespace pcat::utils
 		constexpr static inline size_t extent = extent_v;
 
 	private:
-		[[no_unique_address]] impl::extentStorage_t<extent> _extent;
-		pointer _ptr;
+		[[no_unique_address]] impl::extentStorage_t<extent> _extent{0};
+		pointer _ptr{nullptr};
 
 	public:
-		constexpr span_t() noexcept : _extent(0), _ptr{nullptr} { }
+		constexpr span_t() noexcept = default;
 		constexpr span_t(const span_t &) noexcept = default;
 		constexpr span_t(pointer ptr, size_t count) noexcept : _extent{count}, _ptr{ptr} { }
 		constexpr span_t(pointer first, pointer last) noexcept : span_t(first, last - first) { }

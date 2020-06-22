@@ -19,7 +19,8 @@ namespace pcat::utils
 	template<typename iterator_t, typename container_t> struct normalIterator_t
 	{
 	protected:
-		iterator_t current; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+		// NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
+		iterator_t current{iterator_t{}};
 
 		using traits_t = iterator_traits<iterator_t>;
 
@@ -31,7 +32,7 @@ namespace pcat::utils
 		using reference = typename traits_t::reference;
 		using pointer = typename traits_t::pointer;
 
-		constexpr normalIterator_t() noexcept : current{iterator_t{}} { }
+		constexpr normalIterator_t() noexcept = default;
 		explicit normalIterator_t(const iterator_t &iter) noexcept : current{iter} { }
 
 		// We specifically allow iterator_t to const iterator_t conversion.
