@@ -51,4 +51,20 @@ namespace pcat::args::tokenizer
 			token_ = {tokenType_t::arg, {begin, size_t(offset - begin)}};
 		}
 	}
+
+	const char *typeToName(const tokenType_t type)
+	{
+		switch (type)
+		{
+		case tokenType_t::unknown:
+			return "unknown";
+		case tokenType_t::arg:
+			return "argument";
+		case tokenType_t::space:
+			return "implicit space";
+		case tokenType_t::equals:
+			return "equals sign";
+		}
+		return nullptr;
+	}
 } // namespace pcat::args::tokenizer

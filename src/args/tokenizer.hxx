@@ -59,6 +59,8 @@ namespace pcat::args::tokenizer
 			return token_;
 		}
 	};
+
+	extern const char *typeToName(tokenType_t type);
 } // namespace pcat::args::tokenizer
 
 #endif /*ARGS_TOKENIZER__HXX*/

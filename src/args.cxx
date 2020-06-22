@@ -12,22 +12,6 @@ using namespace std::literals::string_view_literals;
 
 std::unique_ptr<argsTree_t> args{};
 
-const char *typeToName(const tokenType_t type)
-{
-	switch (type)
-	{
-	case tokenType_t::unknown:
-		return "unknown";
-	case tokenType_t::arg:
-		return "argument";
-	case tokenType_t::space:
-		return "implicit space";
-	case tokenType_t::equals:
-		return "equals sign";
-	}
-	return nullptr;
-}
-
 auto parseOutputFile(tokenizer_t &lexer)
 {
 	const auto &token{lexer.token()};
