@@ -1,6 +1,7 @@
-#include <args/tokenizer.hxx>
+#include <string_view>
 #include "testArgsTokenizer.hxx"
 
+using namespace std::literals::string_view_literals;
 using pcat::args::tokenizer::tokenizer_t;
 using pcat::args::tokenizer::tokenType_t;
 
@@ -19,6 +20,14 @@ private:
 	void testAssigned() { tokenizer::testAssigned(*this); }
 	void testMultiple() { tokenizer::testMultiple(*this); }
 
+	void testTypeToName()
+	{
+		assertEqual(typeToName(tokenType_t::unknown), "unknown"sv);
+		assertEqual(typeToName(tokenType_t::arg), "argument"sv);
+		assertEqual(typeToName(tokenType_t::space), "implicit space"sv);
+		assertEqual(typeToName(tokenType_t::equals), "equals sign"sv);
+	}
+
 public:
 	testTokenizer() = default;
 	testTokenizer(const testTokenizer &) = delete;
@@ -33,6 +42,7 @@ public:
 		CRUNCHpp_TEST(testSimple)
 		CRUNCHpp_TEST(testAssigned)
 		CRUNCHpp_TEST(testMultiple)
+		CRUNCHpp_TEST(testTypeToName)
 	}
 };
 
