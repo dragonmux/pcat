@@ -28,7 +28,13 @@ namespace pcat
 		{"--help"sv, argType_t::help},
 		{"-h"sv, argType_t::help},
 		{"--output"sv, argType_t::outputFile},
-		{"-o"sv, argType_t::outputFile}
+		{"-o"sv, argType_t::outputFile},
+		{"--no-sync"sv, argType_t::async},
+		{"--async"sv, argType_t::async},
+		{"--threads"sv, argType_t::threads},
+		{"-t"sv, argType_t::threads},
+		{"--core-pins"sv, argType_t::pinning},
+		{"-c"sv, argType_t::pinning}
 	})};
 
 	std::vector<fd_t> inputFiles{};
