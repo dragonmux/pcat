@@ -38,6 +38,11 @@ Options:
 	                For a 2.5GiB transfer on the author's machine on a 6-spindle RAID, this
 	                tail lasts for 30s vs a typical program runtime of around 20s without
 	                this option.
+
+	                Additionally, it must be noted that use of this option prevents pcat
+	                properly reporting IO failures arising during this IO tail, and that
+	                as a result the program exit status cannot be used as an indication
+	                of a successfully completed concatenation.
 	--no-sync       Synonym for --async
 
 This utility is licensed under the GPLv3+
