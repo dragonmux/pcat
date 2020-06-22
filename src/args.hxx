@@ -32,7 +32,7 @@ namespace pcat::args
 		virtual ~argNode_t() noexcept = default;
 		argNode_t &operator =(const argNode_t &) = delete;
 		argNode_t &operator =(argNode_t &&) = delete;
-		[[nodiscard]] auto type() const noexcept { return type_; }
+		[[nodiscard]] constexpr auto type() const noexcept { return type_; }
 	};
 
 	struct argsTree_t final : argNode_t
@@ -60,12 +60,12 @@ namespace pcat::args
 
 	public:
 		argUnrecognised_t() = delete;
-		constexpr argUnrecognised_t(const std::string_view argument) : argNode_t{argType_t::unrecognised},
-			argument_{argument}, parameter_{} { }
-		constexpr argUnrecognised_t(const std::string_view argument, const std::string_view parameter) :
+		constexpr argUnrecognised_t(const std::string_view argument) noexcept :
+			argNode_t{argType_t::unrecognised}, argument_{argument}, parameter_{} { }
+		constexpr argUnrecognised_t(const std::string_view argument, const std::string_view parameter) noexcept :
 			argNode_t{argType_t::unrecognised}, argument_{argument}, parameter_{parameter} { }
-		[[nodiscard]] auto argument() const noexcept { return argument_; }
-		[[nodiscard]] auto parameter() const noexcept { return parameter_; }
+		[[nodiscard]] constexpr auto argument() const noexcept { return argument_; }
+		[[nodiscard]] constexpr auto parameter() const noexcept { return parameter_; }
 	};
 
 	struct argOutputFile_t final : argNode_t
@@ -75,9 +75,9 @@ namespace pcat::args
 
 	public:
 		argOutputFile_t() = delete;
-		constexpr argOutputFile_t(const std::string_view fileName) :
+		constexpr argOutputFile_t(const std::string_view fileName) noexcept :
 			argNode_t{argType_t::outputFile}, fileName_{fileName} { }
-		[[nodiscard]] auto fileName() const noexcept { return fileName_; }
+		[[nodiscard]] constexpr auto fileName() const noexcept { return fileName_; }
 	};
 
 	template<argType_t argType> struct argOfType_t final : argNode_t
@@ -100,8 +100,8 @@ namespace pcat::args
 		constexpr option_t(const std::string_view option, const argType_t type) noexcept :
 			option_{option}, type_{type} { }
 
-		[[nodiscard]] constexpr auto &name() const noexcept { return option_; }
-		[[nodiscard]] constexpr auto &option() const noexcept { return option_; }
+		[[nodiscard]] constexpr auto name() const noexcept { return option_; }
+		[[nodiscard]] constexpr auto option() const noexcept { return option_; }
 		[[nodiscard]] constexpr auto type() const noexcept { return type_; }
 	};
 } // namespace pcat::args
