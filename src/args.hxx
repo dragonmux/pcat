@@ -14,7 +14,10 @@ namespace pcat::args
 		unrecognised,
 		help,
 		version,
-		outputFile
+		outputFile,
+		async,
+		threads,
+		pinning
 	};
 
 	struct argNode_t
@@ -85,6 +88,7 @@ namespace pcat::args
 
 	using argHelp_t = argOfType_t<argType_t::help>;
 	using argVersion_t = argOfType_t<argType_t::version>;
+	using argAsync_t = argOfType_t<argType_t::async>;
 
 	struct option_t final
 	{

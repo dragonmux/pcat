@@ -37,6 +37,8 @@ std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const option_t &option)
 			return substrate::make_unique<argVersion_t>();
 		case argType_t::outputFile:
 			return parseOutputFile(lexer);
+		case argType_t::async:
+			return substrate::make_unique<argAsync_t>();
 		default:
 			throw std::exception{};
 	}
