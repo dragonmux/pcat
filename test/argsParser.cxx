@@ -46,7 +46,7 @@ constexpr static auto multipleOptions{substrate::make_array<option_t>(
 	{"--version"sv, argType_t::version},
 	{"--output"sv, argType_t::outputFile},
 	{"--async"sv, argType_t::async},
-	{"--async"sv, argType_t::threads}
+	{"--threads"sv, argType_t::threads}
 })};
 
 namespace parser
