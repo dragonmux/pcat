@@ -9,6 +9,7 @@ private:
 	void testMultiple() { parser::testMultiple(*this); }
 	void testUnknown() { parser::testUnknown(*this); }
 	void testInvalid() { parser::testInvalid(*this); }
+	void testShortOutputFile() { parser::testShortOutputFile(*this); }
 
 public:
 	testParser() = default;
@@ -26,6 +27,7 @@ public:
 		CRUNCHpp_TEST(testMultiple)
 		CRUNCHpp_TEST(testUnknown)
 		CRUNCHpp_TEST(testInvalid)
+		CRUNCHpp_TEST(testShortOutputFile)
 	}
 };
 

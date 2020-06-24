@@ -11,6 +11,7 @@ namespace parser
 	extern void testMultiple(testsuite &suite);
 	extern void testUnknown(testsuite &suite);
 	extern void testInvalid(testsuite &suite);
+	extern void testShortOutputFile(testsuite &suite);
 }
 
 #endif /*TEST_ARGS_PARSER__HXX*/

@@ -38,6 +38,7 @@ constexpr static auto multipleArgs{substrate::make_array<const char *>(
 })};
 constexpr static auto invalidAssignedArgs{substrate::make_array<const char *>({"test", "--value=", "file"})};
 constexpr static auto invalidEqualsArgs{substrate::make_array<const char *>({"test", "="})};
+constexpr static auto shortOutputFileArgs{substrate::make_array<const char *>({"test", "--output"})};
 constexpr static auto simpleOptions{substrate::make_array<option_t>({{"--help"sv, argType_t::help}})};
 constexpr static auto assignedOptions{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto multipleOptions{substrate::make_array<option_t>(
@@ -48,6 +49,7 @@ constexpr static auto multipleOptions{substrate::make_array<option_t>(
 	{"--async"sv, argType_t::async},
 	{"--threads"sv, argType_t::threads}
 })};
+constexpr static auto outputFileOption{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 
 namespace parser
 {
@@ -271,5 +273,13 @@ namespace parser
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
 		suite.assertTrue(args->begin() == args->end());
+	}
+
+	void testShortOutputFile(testsuite &suite)
+	{
+		args = {};
+		suite.assertFalse(parseArguments(shortOutputFileArgs.size(), shortOutputFileArgs.data(), outputFileOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
 	}
 } // namespace parser
