@@ -49,6 +49,8 @@ constexpr static auto invalidEqualsArgs{substrate::make_array<const char *>({"te
 constexpr static auto badOutputFileArgs{substrate::make_array<const char *>({"test", "--output"})};
 constexpr static auto badThreadsArgs{substrate::make_array<const char *>({"test", "--threads"})};
 constexpr static auto invalidThreadsArgs{substrate::make_array<const char *>({"test", "--threads", "0"})};
+constexpr static auto negativeThreadsArgs{substrate::make_array<const char *>({"test", "--threads", "-1"})};
+constexpr static auto nonNumericThreadsArgs{substrate::make_array<const char *>({"test", "--threads", "a1"})};
 constexpr static auto shortThreadsArgs{substrate::make_array<const char *>({"test", "--threads="})};
 constexpr static auto simpleOptions{substrate::make_array<option_t>({{"--help"sv, argType_t::help}})};
 constexpr static auto assignedOptions{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
@@ -347,6 +349,16 @@ namespace parser
 
 		args = {};
 		suite.assertFalse(parseArguments(shortThreadsArgs.size(), shortThreadsArgs.data(), badThreadsOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(parseArguments(negativeThreadsArgs.size(), negativeThreadsArgs.data(), badThreadsOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(parseArguments(nonNumericThreadsArgs.size(), nonNumericThreadsArgs.data(), badThreadsOption));
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
 	}
