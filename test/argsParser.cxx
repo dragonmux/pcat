@@ -12,6 +12,7 @@ using pcat::args::argHelp_t;
 using pcat::args::argVersion_t;
 using pcat::args::argOutputFile_t;
 using pcat::args::argAsync_t;
+using pcat::args::argThreads_t;
 using pcat::args::argUnrecognised_t;
 
 constexpr auto emptyArgs{substrate::make_array<const char *>({"test"})};
@@ -21,6 +22,8 @@ constexpr static auto stringFile{"file"sv};
 constexpr static auto stringVersion{"--version"sv};
 constexpr static auto stringValue{"--value"sv};
 constexpr static auto stringAsync{"--async"sv};
+constexpr static auto stringThreads{"--threads"sv};
+constexpr static auto stringThreadCount{"4"sv};
 constexpr static auto simpleArgs{substrate::make_array<const char *>({"test", "--help"})};
 constexpr static auto assignedArgs{substrate::make_array<const char *>({"test", "--output=file"})};
 constexpr static auto delimitedArgs{substrate::make_array<const char *>({"test", "--output", "file"})};
@@ -30,7 +33,8 @@ constexpr static auto multipleArgs{substrate::make_array<const char *>(
 	"--version",
 	"--output=file",
 	"--help",
-	"--async"
+	"--async",
+	"--threads=4"
 })};
 constexpr static auto invalidAssignedArgs{substrate::make_array<const char *>({"test", "--value=", "file"})};
 constexpr static auto invalidEqualsArgs{substrate::make_array<const char *>({"test", "="})};
@@ -41,7 +45,8 @@ constexpr static auto multipleOptions{substrate::make_array<option_t>(
 	{"--help"sv, argType_t::help},
 	{"--version"sv, argType_t::version},
 	{"--output"sv, argType_t::outputFile},
-	{"--async"sv, argType_t::async}
+	{"--async"sv, argType_t::async},
+	{"--async"sv, argType_t::threads}
 })};
 
 namespace parser
@@ -88,6 +93,17 @@ namespace parser
 		}
 	};
 
+	template<> struct assertNode_t<argThreads_t>
+	{
+		void operator()(testsuite &suite, const std::unique_ptr<argNode_t> &arg)
+		{
+			suite.assertNotNull(arg);
+			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::threads));
+			auto *const node = dynamic_cast<argThreads_t *>(arg.get());
+			suite.assertEqual(node->threads(), 4);
+		}
+	};
+
 	void testSimple(testsuite &suite)
 	{
 		args = {};
@@ -130,7 +146,7 @@ namespace parser
 		args = {};
 		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), multipleOptions));
 		suite.assertNotNull(args);
-		suite.assertEqual(args->count(), 4);
+		suite.assertEqual(args->count(), 5);
 		auto iterator = args->begin();
 		suite.assertTrue(iterator != args->end());
 		assertNode_t<argVersion_t>{}(suite, *iterator);
@@ -144,6 +160,9 @@ namespace parser
 		suite.assertTrue(iterator != args->end());
 		assertNode_t<argAsync_t>{}(suite, *iterator);
 		++iterator;
+		suite.assertTrue(iterator != args->end());
+		assertNode_t<argThreads_t>{}(suite, *iterator);
+		++iterator;
 		suite.assertTrue(iterator == args->end());
 		suite.assertNull(args->find(argType_t::unrecognised));
 	}
@@ -153,7 +172,7 @@ namespace parser
 		args = {};
 		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), nullptr, nullptr));
 		suite.assertNotNull(args);
-		suite.assertEqual(args->count(), 4);
+		suite.assertEqual(args->count(), 5);
 		auto iterator = args->begin();
 		const std::remove_pointer_t<decltype(iterator->get())> *arg{nullptr};
 		const argUnrecognised_t *node{nullptr};
@@ -197,6 +216,17 @@ namespace parser
 		suite.assertEqual(node->argument().size(), stringAsync.size());
 		suite.assertEqual(node->argument().data(), stringAsync.data(), stringAsync.size());
 		suite.assertNull(node->parameter().data());
+
+		++iterator;
+		suite.assertTrue(iterator != args->end());
+		arg = iterator->get();
+		suite.assertNotNull(arg);
+		suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::unrecognised));
+		node = dynamic_cast<decltype(node)>(arg);
+		suite.assertEqual(node->argument().size(), stringThreads.size());
+		suite.assertEqual(node->argument().data(), stringThreads.data(), stringThreads.size());
+		suite.assertEqual(node->parameter().size(), stringThreadCount.size());
+		suite.assertEqual(node->parameter().data(), stringThreadCount.data(), stringThreadCount.size());
 
 		++iterator;
 		suite.assertTrue(iterator == args->end());
