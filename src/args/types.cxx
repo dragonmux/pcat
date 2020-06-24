@@ -29,6 +29,8 @@ namespace pcat::args
 		{
 			const auto end{threads.find(',', begin)};
 			const auto core{threads.substr(begin, end - begin)};
+				if (end != std::string_view::npos && (end + 1) == threads.length())
+					throw std::exception{};
 			toInt_t<size_t> converter{core.data(), core.size()};
 			if (!converter.isDec())
 				throw std::exception{};
