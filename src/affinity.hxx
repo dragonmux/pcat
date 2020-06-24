@@ -27,6 +27,8 @@ namespace pcat
 	public:
 		affinity_t() : processors{}
 		{
+			//const auto *const pinning{dynamic_cast<args::argPinning_t *>(::args->find(argType_t::pinning))};
+			const auto *const threadCount{dynamic_cast<args::argThreads_t *>(::args->find(argType_t::threads))};
 			cpu_set_t affinity{};
 			if (sched_getaffinity(0, sizeof(cpu_set_t), &affinity) != 0)
 				throw std::system_error{errno, std::system_category()};
@@ -34,7 +36,8 @@ namespace pcat
 			{
 				if (CPU_ISSET(i, &affinity))
 				{
-					processors.push_back(i);
+					if (!threadCount || processors.size() < threadCount->threads())
+						processors.push_back(i);
 					CPU_CLR(i, &affinity);
 				}
 				else if (!CPU_COUNT(&affinity))
