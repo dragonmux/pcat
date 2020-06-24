@@ -9,8 +9,8 @@ private:
 	void testMultiple() { parser::testMultiple(*this); }
 	void testUnknown() { parser::testUnknown(*this); }
 	void testInvalid() { parser::testInvalid(*this); }
-	void testShortOutputFile() { parser::testShortOutputFile(*this); }
-	void testShortThreads() { parser::testShortThreads(*this); }
+	void testBadOutputFile() { parser::testBadOutputFile(*this); }
+	void testBadThreads() { parser::testBadThreads(*this); }
 
 public:
 	testParser() = default;
@@ -28,8 +28,8 @@ public:
 		CRUNCHpp_TEST(testMultiple)
 		CRUNCHpp_TEST(testUnknown)
 		CRUNCHpp_TEST(testInvalid)
-		CRUNCHpp_TEST(testShortOutputFile)
-		CRUNCHpp_TEST(testShortThreads)
+		CRUNCHpp_TEST(testBadOutputFile)
+		CRUNCHpp_TEST(testBadThreads)
 	}
 };
 

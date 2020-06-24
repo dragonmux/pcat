@@ -38,8 +38,8 @@ constexpr static auto multipleArgs{substrate::make_array<const char *>(
 })};
 constexpr static auto invalidAssignedArgs{substrate::make_array<const char *>({"test", "--value=", "file"})};
 constexpr static auto invalidEqualsArgs{substrate::make_array<const char *>({"test", "="})};
-constexpr static auto shortOutputFileArgs{substrate::make_array<const char *>({"test", "--output"})};
-constexpr static auto shortThreadsArgs{substrate::make_array<const char *>({"test", "--threads"})};
+constexpr static auto badOutputFileArgs{substrate::make_array<const char *>({"test", "--output"})};
+constexpr static auto badThreadsArgs{substrate::make_array<const char *>({"test", "--threads"})};
 constexpr static auto simpleOptions{substrate::make_array<option_t>({{"--help"sv, argType_t::help}})};
 constexpr static auto assignedOptions{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto multipleOptions{substrate::make_array<option_t>(
@@ -50,8 +50,8 @@ constexpr static auto multipleOptions{substrate::make_array<option_t>(
 	{"--async"sv, argType_t::async},
 	{"--threads"sv, argType_t::threads}
 })};
-constexpr static auto outputFileOption{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
-constexpr static auto threadsOption{substrate::make_array<option_t>({{"--threads"sv, argType_t::threads}})};
+constexpr static auto badFileOption{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
+constexpr static auto badThreadsOption{substrate::make_array<option_t>({{"--threads"sv, argType_t::threads}})};
 
 namespace parser
 {
@@ -277,18 +277,18 @@ namespace parser
 		suite.assertTrue(args->begin() == args->end());
 	}
 
-	void testShortOutputFile(testsuite &suite)
+	void testBadOutputFile(testsuite &suite)
 	{
 		args = {};
-		suite.assertFalse(parseArguments(shortOutputFileArgs.size(), shortOutputFileArgs.data(), outputFileOption));
+		suite.assertFalse(parseArguments(badOutputFileArgs.size(), badOutputFileArgs.data(), badFileOption));
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
 	}
 
-	void testShortThreads(testsuite &suite)
+	void testBadThreads(testsuite &suite)
 	{
 		args = {};
-		suite.assertFalse(parseArguments(shortThreadsArgs.size(), shortThreadsArgs.data(), threadsOption));
+		suite.assertFalse(parseArguments(badThreadsArgs.size(), badThreadsArgs.data(), badThreadsOption));
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
 	}
