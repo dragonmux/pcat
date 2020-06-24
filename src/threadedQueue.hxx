@@ -45,8 +45,8 @@ namespace pcat
 			return result;
 		}
 
-		[[nodiscard]] std::size_t empty() { return !queueLength; }
-		[[nodiscard]] std::size_t size() { return queueLength; }
+		[[nodiscard]] auto empty() const noexcept { return !queueLength; }
+		[[nodiscard]] std::size_t size() const noexcept { return queueLength; }
 	};
 } // namespace pcat
 
