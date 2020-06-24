@@ -55,18 +55,27 @@ namespace threadPool
 	void testQueueWait(testsuite &suite)
 	{
 		threadPool_t pool{busyWork};
+		puts("valid");
 		suite.assertTrue(pool.valid());
+		puts("ready");
 		suite.assertTrue(pool.ready());
+		puts("processors");
 		const auto threads{pool.numProcessors()};
 		suite.assertNotEqual(threads, 0);
+		puts("burst queue");
 		for (std::size_t i{}; i < threads; ++i)
 			[[maybe_unused]] const auto result = pool.queue(threads - i);
 		//suite.assertFalse(pool.ready());
+		puts("queue threads+1");
 		[[maybe_unused]] const auto result = pool.queue(threads);
 		std::this_thread::sleep_for(100ms);
+		puts("queue after work completions");
 		suite.assertTrue(pool.queue(threads));
+		puts("finish");
 		suite.assertTrue(pool.finish());
+		puts("invalid");
 		suite.assertFalse(pool.valid());
+		puts("already finished");
 		suite.assertFalse(pool.finish());
 	}
 } // namespace threadPool
