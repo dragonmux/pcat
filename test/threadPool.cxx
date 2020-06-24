@@ -8,6 +8,9 @@ using pcat::affinity_t;
 using pcat::threadPool_t;
 using namespace std::literals::chrono_literals;
 
+constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
+constexpr static auto totalLoopIterations = 1000000_uz;
+
 namespace threadPool
 {
 	bool dummyWork() { return true; }
@@ -16,11 +19,11 @@ namespace threadPool
 		volatile std::size_t counter{};
 		for (size_t i{}; i < iterations; ++i)
 		{
-			for (size_t j{}; j < 1000000; ++j)
+			for (size_t j{}; j < totalLoopIterations; ++j)
 				++counter;
 		}
 		std::this_thread::sleep_for(25ms);
-		return counter == size_t(iterations * 1000000U);
+		return counter == size_t(iterations * totalLoopIterations);
 	}
 
 	void testUnused(testsuite &suite)
