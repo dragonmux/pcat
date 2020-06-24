@@ -11,6 +11,7 @@ private:
 	void testInvalid() { parser::testInvalid(*this); }
 	void testBadOutputFile() { parser::testBadOutputFile(*this); }
 	void testBadThreads() { parser::testBadThreads(*this); }
+	void testBadPinning() { parser::testBadPinning(*this); }
 
 public:
 	testParser() = default;
@@ -30,6 +31,7 @@ public:
 		CRUNCHpp_TEST(testInvalid)
 		CRUNCHpp_TEST(testBadOutputFile)
 		CRUNCHpp_TEST(testBadThreads)
+		CRUNCHpp_TEST(testBadPinning)
 	}
 };
 

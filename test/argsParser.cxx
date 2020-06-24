@@ -49,9 +49,15 @@ constexpr static auto invalidEqualsArgs{substrate::make_array<const char *>({"te
 constexpr static auto badOutputFileArgs{substrate::make_array<const char *>({"test", "--output"})};
 constexpr static auto badThreadsArgs{substrate::make_array<const char *>({"test", "--threads"})};
 constexpr static auto invalidThreadsArgs{substrate::make_array<const char *>({"test", "--threads", "0"})};
+constexpr static auto shortThreadsArgs{substrate::make_array<const char *>({"test", "--threads="})};
 constexpr static auto negativeThreadsArgs{substrate::make_array<const char *>({"test", "--threads", "-1"})};
 constexpr static auto nonNumericThreadsArgs{substrate::make_array<const char *>({"test", "--threads", "a1"})};
-constexpr static auto shortThreadsArgs{substrate::make_array<const char *>({"test", "--threads="})};
+constexpr static auto badPinningArgs{substrate::make_array<const char *>({"test", "--core-pins"})};
+constexpr static auto invalidPinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "0,"})};
+constexpr static auto shortPinningArgs{substrate::make_array<const char *>({"test", "--core-pins="})};
+constexpr static auto negativePinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "-1"})};
+constexpr static auto nonNumericPinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "a1"})};
+constexpr static auto badlyDelimitedPinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "0;"})};
 constexpr static auto simpleOptions{substrate::make_array<option_t>({{"--help"sv, argType_t::help}})};
 constexpr static auto assignedOptions{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto multipleOptions{substrate::make_array<option_t>(
@@ -65,6 +71,7 @@ constexpr static auto multipleOptions{substrate::make_array<option_t>(
 })};
 constexpr static auto badFileOption{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto badThreadsOption{substrate::make_array<option_t>({{"--threads"sv, argType_t::threads}})};
+constexpr static auto badPinningOption{substrate::make_array<option_t>({{"--core-pins"sv, argType_t::pinning}})};
 
 namespace parser
 {
@@ -358,7 +365,46 @@ namespace parser
 		suite.assertEqual(args->count(), 0);
 
 		args = {};
-		suite.assertFalse(parseArguments(nonNumericThreadsArgs.size(), nonNumericThreadsArgs.data(), badThreadsOption));
+		suite.assertFalse(
+			parseArguments(nonNumericThreadsArgs.size(), nonNumericThreadsArgs.data(), badThreadsOption)
+		);
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+	}
+
+	void testBadPinning(testsuite &suite)
+	{
+		args = {};
+		suite.assertFalse(parseArguments(badPinningArgs.size(), badPinningArgs.data(), badPinningOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(parseArguments(invalidPinningArgs.size(), invalidPinningArgs.data(), badPinningOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(parseArguments(shortPinningArgs.size(), shortPinningArgs.data(), badPinningOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(parseArguments(negativePinningArgs.size(), negativePinningArgs.data(), badPinningOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(
+			parseArguments(nonNumericPinningArgs.size(), nonNumericPinningArgs.data(), badPinningOption)
+		);
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(
+			parseArguments(badlyDelimitedPinningArgs.size(), badlyDelimitedPinningArgs.data(), badPinningOption)
+		);
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
 	}

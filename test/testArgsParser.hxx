@@ -13,6 +13,7 @@ namespace parser
 	extern void testInvalid(testsuite &suite);
 	extern void testBadOutputFile(testsuite &suite);
 	extern void testBadThreads(testsuite &suite);
+	extern void testBadPinning(testsuite &suite);
 }
 
 #endif /*TEST_ARGS_PARSER__HXX*/
