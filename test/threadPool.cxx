@@ -60,7 +60,7 @@ namespace threadPool
 			[[maybe_unused]] const auto result = pool.queue(threads - i);
 		//suite.assertFalse(pool.ready());
 		[[maybe_unused]] const auto result = pool.queue(threads);
-		std::this_thread::sleep_for(50ms);
+		std::this_thread::sleep_for(100ms);
 		suite.assertTrue(pool.queue(threads));
 		suite.assertTrue(pool.finish());
 		suite.assertFalse(pool.valid());
