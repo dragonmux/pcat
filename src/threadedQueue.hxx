@@ -9,7 +9,7 @@
 
 namespace pcat
 {
-	template<typename T> struct threadedQueue_t
+	template<typename T> struct threadedQueue_t final
 	{
 	private:
 		std::queue<T> queue{};
