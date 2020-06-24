@@ -13,7 +13,10 @@ using pcat::args::argVersion_t;
 using pcat::args::argOutputFile_t;
 using pcat::args::argAsync_t;
 using pcat::args::argThreads_t;
+using pcat::args::argPinning_t;
 using pcat::args::argUnrecognised_t;
+
+constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
 
 constexpr auto emptyArgs{substrate::make_array<const char *>({"test"})};
 constexpr static auto stringHelp{"--help"sv};
@@ -24,6 +27,9 @@ constexpr static auto stringValue{"--value"sv};
 constexpr static auto stringAsync{"--async"sv};
 constexpr static auto stringThreads{"--threads"sv};
 constexpr static auto stringThreadCount{"4"sv};
+constexpr static auto stringCorePins{"--core-pins"sv};
+constexpr static auto stringCoreNumbers{"0,1,4,5"sv};
+constexpr static auto corePins{substrate::make_array<std::size_t>({0_uz, 1_uz, 4_uz, 5_uz})};
 constexpr static auto simpleArgs{substrate::make_array<const char *>({"test", "--help"})};
 constexpr static auto assignedArgs{substrate::make_array<const char *>({"test", "--output=file"})};
 constexpr static auto delimitedArgs{substrate::make_array<const char *>({"test", "--output", "file"})};
@@ -34,7 +40,9 @@ constexpr static auto multipleArgs{substrate::make_array<const char *>(
 	"--output=file",
 	"--help",
 	"--async",
-	"--threads=4"
+	"--threads=4",
+	"--core-pins",
+	"0,1,4,5"
 })};
 constexpr static auto invalidAssignedArgs{substrate::make_array<const char *>({"test", "--value=", "file"})};
 constexpr static auto invalidEqualsArgs{substrate::make_array<const char *>({"test", "="})};
@@ -50,7 +58,8 @@ constexpr static auto multipleOptions{substrate::make_array<option_t>(
 	{"--version"sv, argType_t::version},
 	{"--output"sv, argType_t::outputFile},
 	{"--async"sv, argType_t::async},
-	{"--threads"sv, argType_t::threads}
+	{"--threads"sv, argType_t::threads},
+	{"--core-pins"sv, argType_t::pinning}
 })};
 constexpr static auto badFileOption{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto badThreadsOption{substrate::make_array<option_t>({{"--threads"sv, argType_t::threads}})};
@@ -110,6 +119,20 @@ namespace parser
 		}
 	};
 
+	template<> struct assertNode_t<argPinning_t>
+	{
+		void operator()(testsuite &suite, const std::unique_ptr<argNode_t> &arg)
+		{
+			suite.assertNotNull(arg);
+			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::pinning));
+			auto *const node = dynamic_cast<argPinning_t *>(arg.get());
+			suite.assertEqual(node->count(), 4);
+			suite.assertFalse(node->empty());
+			suite.assertTrue(std::equal(node->begin(), node->end(), corePins.begin(),
+				[](const std::size_t a, const std::size_t b) noexcept -> bool { return a == b; }));
+		}
+	};
+
 	void testSimple(testsuite &suite)
 	{
 		args = {};
@@ -152,7 +175,7 @@ namespace parser
 		args = {};
 		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), multipleOptions));
 		suite.assertNotNull(args);
-		suite.assertEqual(args->count(), 5);
+		suite.assertEqual(args->count(), 6);
 		auto iterator = args->begin();
 		suite.assertTrue(iterator != args->end());
 		assertNode_t<argVersion_t>{}(suite, *iterator);
@@ -169,6 +192,9 @@ namespace parser
 		suite.assertTrue(iterator != args->end());
 		assertNode_t<argThreads_t>{}(suite, *iterator);
 		++iterator;
+		suite.assertTrue(iterator != args->end());
+		assertNode_t<argPinning_t>{}(suite, *iterator);
+		++iterator;
 		suite.assertTrue(iterator == args->end());
 		suite.assertNull(args->find(argType_t::unrecognised));
 	}
@@ -178,7 +204,7 @@ namespace parser
 		args = {};
 		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), nullptr, nullptr));
 		suite.assertNotNull(args);
-		suite.assertEqual(args->count(), 5);
+		suite.assertEqual(args->count(), 7);
 		auto iterator = args->begin();
 		const std::remove_pointer_t<decltype(iterator->get())> *arg{nullptr};
 		const argUnrecognised_t *node{nullptr};
@@ -233,6 +259,26 @@ namespace parser
 		suite.assertEqual(node->argument().data(), stringThreads.data(), stringThreads.size());
 		suite.assertEqual(node->parameter().size(), stringThreadCount.size());
 		suite.assertEqual(node->parameter().data(), stringThreadCount.data(), stringThreadCount.size());
+
+		++iterator;
+		suite.assertTrue(iterator != args->end());
+		arg = iterator->get();
+		suite.assertNotNull(arg);
+		suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::unrecognised));
+		node = dynamic_cast<decltype(node)>(arg);
+		suite.assertEqual(node->argument().size(), stringCorePins.size());
+		suite.assertEqual(node->argument().data(), stringCorePins.data(), stringCorePins.size());
+		suite.assertNull(node->parameter().data());
+
+		++iterator;
+		suite.assertTrue(iterator != args->end());
+		arg = iterator->get();
+		suite.assertNotNull(arg);
+		suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::unrecognised));
+		node = dynamic_cast<decltype(node)>(arg);
+		suite.assertEqual(node->argument().size(), stringCoreNumbers.size());
+		suite.assertEqual(node->argument().data(), stringCoreNumbers.data(), stringCoreNumbers.size());
+		suite.assertNull(node->parameter().data());
 
 		++iterator;
 		suite.assertTrue(iterator == args->end());
