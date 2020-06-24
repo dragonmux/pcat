@@ -23,21 +23,24 @@ namespace pcat::args
 	argThreads_t::argThreads_t(const std::string_view threads) noexcept : argNode_t{argType_t::threads}
 		{ threads_ = toInt_t<size_t>{threads.data(), threads.size()}.fromDec(); }
 
-	argPinning_t::argPinning_t(const std::string_view threads) noexcept try : argNode_t{argType_t::pinning}, cores_{}
+	argPinning_t::argPinning_t(const std::string_view threads) noexcept : argNode_t{argType_t::pinning}, cores_{}
 	{
-		for (size_t begin{}; begin < threads.length();)
+		try
 		{
-			const auto end{threads.find(',', begin)};
-			const auto core{threads.substr(begin, end - begin)};
+			for (size_t begin{}; begin < threads.length();)
+			{
+				const auto end{threads.find(',', begin)};
+				const auto core{threads.substr(begin, end - begin)};
 				if (end != std::string_view::npos && (end + 1) == threads.length())
 					throw std::exception{};
-			toInt_t<size_t> converter{core.data(), core.size()};
-			if (!converter.isDec())
-				throw std::exception{};
-			cores_.emplace_back(converter.fromDec());
-			begin = end == std::string_view::npos ? threads.length() : end + 1;
+				toInt_t<size_t> converter{core.data(), core.size()};
+				if (!converter.isDec())
+					throw std::exception{};
+				cores_.emplace_back(converter.fromDec());
+				begin = end == std::string_view::npos ? threads.length() : end + 1;
+			}
 		}
+		catch (const std::exception &)
+			{ cores_.clear(); }
 	}
-	catch (const std::exception &)
-		{ cores_.clear(); }
 } // namespace pcat::args
