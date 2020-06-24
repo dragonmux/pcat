@@ -10,6 +10,7 @@ private:
 	void testUnknown() { parser::testUnknown(*this); }
 	void testInvalid() { parser::testInvalid(*this); }
 	void testShortOutputFile() { parser::testShortOutputFile(*this); }
+	void testShortThreads() { parser::testShortThreads(*this); }
 
 public:
 	testParser() = default;
@@ -28,6 +29,7 @@ public:
 		CRUNCHpp_TEST(testUnknown)
 		CRUNCHpp_TEST(testInvalid)
 		CRUNCHpp_TEST(testShortOutputFile)
+		CRUNCHpp_TEST(testShortThreads)
 	}
 };
 
