@@ -54,15 +54,28 @@ testObjectMap = {
 		]
 	},
 	'testThreadedQueue': {'test': ['threadedQueue.cxx']},
-	'testAffinity': {'test': ['affinity.cxx']},
-	'testThreadPool' : {'test': ['threadPool.cxx']},
+	'testAffinity': {
+		'test': ['affinity.cxx'],
+		'pcat': [
+			'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
+			'substrate/impl/console.cxx'
+		]
+	},
+	'testThreadPool' : {
+		'test': ['threadPool.cxx'],
+		'pcat': [
+			'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
+			'substrate/impl/console.cxx'
+		]
+	},
 	'testMappingOffset' : {'test': ['mappingOffset.cxx']},
 	'testMMap' : {'test': ['mmap.cxx']},
 	'testChunkState': {'test': ['chunkState.cxx']},
 	'testFileChunker': {'test': ['fileChunker.cxx']},
 	'testChunking': {
 		'pcat': [
-			'src/chunking.cxx', 'substrate/impl/console.cxx'
+			'src/chunking.cxx', 'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
+			'substrate/impl/console.cxx'
 		]
 	}
 }

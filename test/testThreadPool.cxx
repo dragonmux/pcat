@@ -1,3 +1,5 @@
+#include <substrate/utility>
+#include <args.hxx>
 #include "testThreadPool.hxx"
 
 class testThreadPool final : public testsuite
@@ -8,7 +10,8 @@ private:
 	void testQueueWait() { threadPool::testQueueWait(*this); }
 
 public:
-	testThreadPool() = default;
+	testThreadPool() { args = substrate::make_unique<pcat::args::argsTree_t>(); }
+
 	testThreadPool(const testThreadPool &) = delete;
 	testThreadPool(testThreadPool &&) = delete;
 	~testThreadPool() final = default;

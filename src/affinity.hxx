@@ -6,6 +6,7 @@
 #include <system_error>
 #include <stdexcept>
 #include <sched.h>
+#include "args.hxx"
 
 namespace pcat
 {
@@ -41,7 +42,14 @@ namespace pcat
 			}
 		}
 
-		[[nodiscard]] auto numProcessors() const noexcept { return processors.size(); }
+		[[nodiscard]] auto numProcessors() const noexcept
+		{
+			const auto *const threadCount{dynamic_cast<args::argThreads_t *>(::args->find(argType_t::threads))};
+			if (threadCount)
+				return std::min(processors.size(), threadCount->threads());
+			return processors.size();
+		}
+
 		[[nodiscard]] auto begin() const noexcept { return processors.begin(); }
 		[[nodiscard]] auto end() const noexcept { return processors.end(); }
 

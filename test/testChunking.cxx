@@ -6,6 +6,7 @@
 #include <substrate/utility>
 #include <crunch++.h>
 #include <chunking.hxx>
+#include <args.hxx>
 
 using namespace std::literals::string_view_literals;
 constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
@@ -124,6 +125,7 @@ private:
 public:
 	testChunking()
 	{
+		args = substrate::make_unique<pcat::args::argsTree_t>();
 		std::random_device seed{};
 		if (!resultFile.valid())
 			throw std::logic_error{"Failed to create the output test file"};

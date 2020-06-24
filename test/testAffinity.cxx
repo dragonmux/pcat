@@ -1,3 +1,5 @@
+#include <substrate/utility>
+#include <args.hxx>
 #include "testAffinity.hxx"
 
 class testAffinity final : public testsuite
@@ -9,7 +11,8 @@ private:
 	void testPinning() { affinity::testPinning(*this); }
 
 public:
-	testAffinity() = default;
+	testAffinity() { args = substrate::make_unique<pcat::args::argsTree_t>(); }
+
 	testAffinity(const testAffinity &) = delete;
 	testAffinity(testAffinity &&) = delete;
 	~testAffinity() final = default;
