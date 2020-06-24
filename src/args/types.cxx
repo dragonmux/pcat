@@ -28,7 +28,7 @@ namespace pcat::args
 		for (size_t begin{}; begin < threads.length();)
 		{
 			const auto end{threads.find(',', begin)};
-			const auto core{threads.substr(begin, end)};
+			const auto core{threads.substr(begin, end - begin)};
 			toInt_t<size_t> converter{core.data(), core.size()};
 			if (!converter.isDec())
 				throw std::exception{};
@@ -38,4 +38,4 @@ namespace pcat::args
 	}
 	catch (const std::exception &)
 		{ cores_.clear(); }
-}
+} // namespace pcat::args
