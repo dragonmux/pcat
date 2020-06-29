@@ -71,11 +71,6 @@ namespace affinity
 
 	void testThreadCap(testsuite &suite)
 	{
-		suite.assertNotNull(args);
-		suite.assertTrue(args->add(substrate::make_unique<argThreads_t>("1"sv)));
-		affinity = substrate::make_unique_nothrow<affinity_t>();
-
-		suite.assertNotNull(affinity);
 		const auto processor
 		{
 			[&]() noexcept -> uint32_t
@@ -91,8 +86,15 @@ namespace affinity
 				return UINT32_MAX;
 			}()
 		};
-		suite.assertNotEqual(processor, UINT32_MAX);
 
+		suite.assertNotEqual(processor, UINT32_MAX);
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+		suite.assertTrue(args->add(substrate::make_unique<argThreads_t>("1"sv)));
+		suite.assertEqual(args->count(), 1);
+		affinity = substrate::make_unique_nothrow<affinity_t>();
+
+		suite.assertNotNull(affinity);
 		suite.assertEqual(affinity->numProcessors(), 1);
 		suite.assertTrue(affinity->begin() != affinity->end());
 		suite.assertEqual(*affinity->begin(), processor);
