@@ -128,12 +128,16 @@ namespace affinity
 		args = substrate::make_unique_nothrow<pcat::args::argsTree_t>();
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
-		const std::string pinning{substrate::fromInt_t{processor}};
+		const std::string pinningStr{substrate::fromInt_t{processor}};
+		const auto pinning{std::string_view{pinningStr}.substr(0, pinningStr.length() - 1)};
 		suite.assertTrue(args->add(substrate::make_unique<argPinning_t>(pinning)));
 		suite.assertEqual(args->count(), 1);
 		affinity = substrate::make_unique_nothrow<affinity_t>();
 
 		suite.assertNotNull(affinity);
+		suite.assertEqual(affinity->numProcessors(), 1);
+		suite.assertTrue(affinity->begin() != affinity->end());
+		suite.assertEqual(*affinity->begin(), processor);
 	}
 
 	void testPinSecondCore(testsuite &suite)
@@ -167,11 +171,15 @@ namespace affinity
 		args = substrate::make_unique_nothrow<pcat::args::argsTree_t>();
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
-		const std::string pinning{substrate::fromInt_t{processor}};
+		const std::string pinningStr{substrate::fromInt_t{processor}};
+		const auto pinning{std::string_view{pinningStr}.substr(0, pinningStr.length() - 1)};
 		suite.assertTrue(args->add(substrate::make_unique<argPinning_t>(pinning)));
 		suite.assertEqual(args->count(), 1);
 		affinity = substrate::make_unique_nothrow<affinity_t>();
 
 		suite.assertNotNull(affinity);
+		suite.assertEqual(affinity->numProcessors(), 1);
+		suite.assertTrue(affinity->begin() != affinity->end());
+		suite.assertEqual(*affinity->begin(), processor);
 	}
 } // namespace affinity
