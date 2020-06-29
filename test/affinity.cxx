@@ -2,6 +2,7 @@
 #include <memory>
 #include <string_view>
 #include <substrate/utility>
+#include <substrate/conversions>
 #include <affinity.hxx>
 #include <args.hxx>
 #include "testAffinity.hxx"
@@ -9,6 +10,7 @@
 using namespace std::literals::string_view_literals;
 using pcat::affinity_t;
 using pcat::args::argThreads_t;
+using pcat::args::argPinning_t;
 
 namespace affinity
 {
@@ -16,6 +18,7 @@ namespace affinity
 
 	void testConstruct(testsuite &suite)
 	{
+		suite.assertNotNull(args);
 		suite.assertNull(affinity);
 		affinity = substrate::make_unique_nothrow<affinity_t>();
 		suite.assertNotNull(affinity);
@@ -23,6 +26,7 @@ namespace affinity
 
 	void testProcessorCount(testsuite &suite)
 	{
+		suite.assertNotNull(args);
 		suite.assertNotNull(affinity);
 		cpu_set_t affinitySet{};
 		suite.assertEqual(sched_getaffinity(0, sizeof(cpu_set_t), &affinitySet), 0);
@@ -33,6 +37,7 @@ namespace affinity
 
 	void testIteration(testsuite &suite)
 	{
+		suite.assertNotNull(args);
 		suite.assertNotNull(affinity);
 		cpu_set_t affinitySet{};
 		suite.assertEqual(sched_getaffinity(0, sizeof(cpu_set_t), &affinitySet), 0);
@@ -49,6 +54,7 @@ namespace affinity
 
 	void testPinning(testsuite &suite)
 	{
+		suite.assertNotNull(args);
 		suite.assertNotNull(affinity);
 		for (const auto processor : *affinity)
 		{
@@ -98,5 +104,35 @@ namespace affinity
 		suite.assertEqual(affinity->numProcessors(), 1);
 		suite.assertTrue(affinity->begin() != affinity->end());
 		suite.assertEqual(*affinity->begin(), processor);
+	}
+
+	void testUserPinning(testsuite &suite)
+	{
+		const auto processor
+		{
+			[&]() noexcept -> uint32_t
+			{
+				cpu_set_t affinitySet{};
+				suite.assertEqual(sched_getaffinity(0, sizeof(cpu_set_t), &affinitySet), 0);
+				for (uint32_t i{0}; i < CPU_SETSIZE; ++i)
+				{
+					if (CPU_ISSET(i, &affinitySet))
+						return i;
+				}
+				static_assert(CPU_SETSIZE < UINT32_MAX);
+				return UINT32_MAX;
+			}()
+		};
+
+		suite.assertNotEqual(processor, UINT32_MAX);
+		args = substrate::make_unique_nothrow<pcat::args::argsTree_t>();
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+		const std::string pinning{substrate::fromInt_t{processor}};
+		suite.assertTrue(args->add(substrate::make_unique<argPinning_t>(pinning)));
+		suite.assertEqual(args->count(), 1);
+		affinity = substrate::make_unique_nothrow<affinity_t>();
+
+		suite.assertNotNull(affinity);
 	}
 } // namespace affinity

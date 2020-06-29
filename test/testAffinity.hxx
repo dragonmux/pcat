@@ -10,6 +10,7 @@ namespace affinity
 	extern void testIteration(testsuite &suite);
 	extern void testPinning(testsuite &suite);
 	extern void testThreadCap(testsuite &suite);
+	extern void testUserPinning(testsuite &suite);
 }
 
 #endif /*TEST_AFFINITY__HXX*/

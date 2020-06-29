@@ -10,9 +10,10 @@ private:
 	void testIteration() { affinity::testIteration(*this); }
 	void testPinning() { affinity::testPinning(*this); }
 	void testThreadCap() { affinity::testThreadCap(*this); }
+	void testUserPinning() { affinity::testUserPinning(*this); }
 
 public:
-	testAffinity() { args = substrate::make_unique<pcat::args::argsTree_t>(); }
+	testAffinity() noexcept { args = substrate::make_unique_nothrow<pcat::args::argsTree_t>(); }
 	testAffinity(const testAffinity &) = delete;
 	testAffinity(testAffinity &&) = delete;
 	~testAffinity() final = default;
@@ -26,6 +27,7 @@ public:
 		CRUNCHpp_TEST(testIteration)
 		CRUNCHpp_TEST(testPinning)
 		CRUNCHpp_TEST(testThreadCap)
+		CRUNCHpp_TEST(testUserPinning)
 	}
 };
 
