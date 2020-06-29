@@ -77,7 +77,7 @@ namespace pcat
 	public:
 		threadPool_t(const workFunc_t function) : workerFunction{function}
 		{
-			for (const uint32_t processor : affinity)
+			for (const uint32_t processor : affinity.indexSequence())
 				threads.emplace_back(std::thread{[this](const int32_t processor) -> void
 					{ workerThread(processor); }, processor});
 			while (!ready())

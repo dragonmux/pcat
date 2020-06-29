@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <sched.h>
 #include "args.hxx"
+#include "indexSequence.hxx"
 
 namespace pcat
 {
@@ -50,6 +51,7 @@ namespace pcat
 		[[nodiscard]] auto numProcessors() const noexcept { return processors.size(); }
 		[[nodiscard]] auto begin() const noexcept { return processors.begin(); }
 		[[nodiscard]] auto end() const noexcept { return processors.end(); }
+		[[nodiscard]] auto indexSequence() const noexcept { return indexSequence_t{0, numProcessors()}; }
 
 		void pinThreadTo(std::thread &thread, const uint32_t index) const
 			{ pinTo(thread.native_handle(), index); }
