@@ -1,10 +1,14 @@
 #include <future>
 #include <memory>
+#include <string_view>
 #include <substrate/utility>
 #include <affinity.hxx>
+#include <args.hxx>
 #include "testAffinity.hxx"
 
+using namespace std::literals::string_view_literals;
 using pcat::affinity_t;
+using pcat::args::argThreads_t;
 
 namespace affinity
 {
@@ -63,6 +67,31 @@ namespace affinity
 			catch (const std::out_of_range &) { return true; }
 			return false;
 		}).get());
-		affinity.reset();
+	}
+
+	void testThreadCap(testsuite &suite)
+	{
+		suite.assertNotNull(args);
+		suite.assertTrue(args->add(substrate::make_unique<argThreads_t>("1"sv)));
+		affinity = substrate::make_unique_nothrow<affinity_t>();
+
+		suite.assertNotNull(affinity);
+		const auto processor{[&]() noexcept -> uint32_t
+		{
+			cpu_set_t affinitySet{};
+			suite.assertEqual(sched_getaffinity(0, sizeof(cpu_set_t), &affinitySet), 0);
+			for (uint32_t i{0}; i < CPU_SETSIZE; ++i)
+			{
+				if (CPU_ISSET(i, &affinitySet))
+					return i;
+			}
+			static_assert(CPU_SETSIZE < UINT32_MAX);
+			return UINT32_MAX;
+		}()};
+		suite.assertNotEqual(processor, UINT32_MAX);
+
+		suite.assertEqual(affinity->numProcessors(), 1);
+		suite.assertTrue(affinity->begin() != affinity->end());
+		suite.assertEqual(*affinity->begin(), processor);
 	}
 } // namespace affinity
