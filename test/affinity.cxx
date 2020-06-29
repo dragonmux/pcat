@@ -110,7 +110,7 @@ namespace affinity
 	{
 		const auto processor
 		{
-			[&]() noexcept -> uint32_t
+			[&]() -> uint32_t
 			{
 				cpu_set_t affinitySet{};
 				suite.assertEqual(sched_getaffinity(0, sizeof(cpu_set_t), &affinitySet), 0);
