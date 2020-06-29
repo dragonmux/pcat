@@ -135,4 +135,43 @@ namespace affinity
 
 		suite.assertNotNull(affinity);
 	}
+
+	void testPinSecondCore(testsuite &suite)
+	{
+		const auto processor
+		{
+			[&]() -> uint32_t
+			{
+				cpu_set_t affinitySet{};
+				suite.assertEqual(sched_getaffinity(0, sizeof(cpu_set_t), &affinitySet), 0);
+				if (CPU_COUNT(&affinitySet) < 2)
+					suite.skip("This test can only be run on a multi-core machine with at "
+						"least 2 cores in the allowed affinity set");
+				bool ready{false};
+				for (uint32_t i{0}; i < CPU_SETSIZE; ++i)
+				{
+					if (CPU_ISSET(i, &affinitySet))
+					{
+						if (ready)
+							return i;
+						CPU_CLR(i, &affinitySet);
+						ready = true;
+					}
+				}
+				static_assert(CPU_SETSIZE < UINT32_MAX);
+				return UINT32_MAX;
+			}()
+		};
+
+		suite.assertNotEqual(processor, UINT32_MAX);
+		args = substrate::make_unique_nothrow<pcat::args::argsTree_t>();
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+		const std::string pinning{substrate::fromInt_t{processor}};
+		suite.assertTrue(args->add(substrate::make_unique<argPinning_t>(pinning)));
+		suite.assertEqual(args->count(), 1);
+		affinity = substrate::make_unique_nothrow<affinity_t>();
+
+		suite.assertNotNull(affinity);
+	}
 } // namespace affinity

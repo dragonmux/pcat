@@ -11,6 +11,7 @@ private:
 	void testPinning() { affinity::testPinning(*this); }
 	void testThreadCap() { affinity::testThreadCap(*this); }
 	void testUserPinning() { affinity::testUserPinning(*this); }
+	void testPinSecondCore() { affinity::testPinSecondCore(*this); }
 
 public:
 	testAffinity() noexcept { args = substrate::make_unique_nothrow<pcat::args::argsTree_t>(); }
@@ -28,6 +29,7 @@ public:
 		CRUNCHpp_TEST(testPinning)
 		CRUNCHpp_TEST(testThreadCap)
 		CRUNCHpp_TEST(testUserPinning)
+		CRUNCHpp_TEST(testPinSecondCore)
 	}
 };
 
