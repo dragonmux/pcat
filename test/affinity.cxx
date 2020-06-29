@@ -76,18 +76,21 @@ namespace affinity
 		affinity = substrate::make_unique_nothrow<affinity_t>();
 
 		suite.assertNotNull(affinity);
-		const auto processor{[&]() noexcept -> uint32_t
+		const auto processor
 		{
-			cpu_set_t affinitySet{};
-			suite.assertEqual(sched_getaffinity(0, sizeof(cpu_set_t), &affinitySet), 0);
-			for (uint32_t i{0}; i < CPU_SETSIZE; ++i)
+			[&]() noexcept -> uint32_t
 			{
-				if (CPU_ISSET(i, &affinitySet))
-					return i;
-			}
-			static_assert(CPU_SETSIZE < UINT32_MAX);
-			return UINT32_MAX;
-		}()};
+				cpu_set_t affinitySet{};
+				suite.assertEqual(sched_getaffinity(0, sizeof(cpu_set_t), &affinitySet), 0);
+				for (uint32_t i{0}; i < CPU_SETSIZE; ++i)
+				{
+					if (CPU_ISSET(i, &affinitySet))
+						return i;
+				}
+				static_assert(CPU_SETSIZE < UINT32_MAX);
+				return UINT32_MAX;
+			}()
+		};
 		suite.assertNotEqual(processor, UINT32_MAX);
 
 		suite.assertEqual(affinity->numProcessors(), 1);
