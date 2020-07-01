@@ -33,5 +33,15 @@ namespace indexSequence
 		const auto emptySequence{substrate::make_unique_nothrow<indexSequence_t>(0_uz, 0_uz)};
 		suite.assertNotNull(emptySequence);
 		suite.assertTrue(emptySequence->begin() == emptySequence->end());
+
+		indexSequence_t sequence{0_uz, 5_uz};
+		suite.assertTrue(sequence.begin() != sequence.end());
+		auto iterator{sequence.begin()};
+		for (size_t i = 0; i < 5; ++i)
+		{
+			suite.assertEqual(*iterator, i);
+			++iterator;
+		}
+		suite.assertTrue(iterator == sequence.end());
 	}
 }
