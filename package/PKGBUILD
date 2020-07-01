@@ -3,9 +3,34 @@
 pkgname=pcat
 pkgver=0.1.0
 pkgrel=1
-pkgdesc="A fast, parallel, file concatenation utility modelled after coreutils `cat`"
+pkgdesc='A fast, parallel, file concatenation utility modelled after coreutils `cat`'
 arch=('x86_64')
 license=('GPL3')
 url="https://github.com/DX-MON/pcat"
 depends=()
-makedepends=('crunch' 'ninja' 'meson')
+makedepends=('crunch++' 'ninja' 'meson')
+provides=()
+source=("https://github.com/DX-MON/pcat/releases/v${pkgver}/${pkgname}-${pkgver}.tar.xz"{,.asc})
+sha256sums=('c1dbd94b5fab418beaa973c017068f06678eeab21db5cf587525b9860636f8e9' 'SKIP')
+validgpgkeys=(
+	'5E30DFF73626CA96F83DDF5E0137BA904EBDB4CD' # "Rachel Mant <dx-mon@users.sourceforge.net>"
+)
+
+build()
+{
+	cd ${pkgname}-${pkgver}
+	meson build --prefix=/usr
+	ninja -C build
+}
+
+check()
+{
+	cd ${pkgname}-${pkgver}
+	ninja -C build test
+}
+
+package()
+{
+	cd ${pkgname}-${pkgver}
+	DESTDIR="${pkgdir}" ninja -C build install
+}
