@@ -3,8 +3,8 @@
 class testIndexSequence final : public testsuite
 {
 private:
-	void testIteration() { indexSequence::testIteration(*this); }
 	void testIterator() { indexSequence::testIterator(*this); }
+	void testIteration() { indexSequence::testIteration(*this); }
 
 public:
 	testIndexSequence() noexcept = default;
@@ -16,8 +16,8 @@ public:
 
 	void registerTests() final
 	{
-		CRUNCHpp_TEST(testIteration)
 		CRUNCHpp_TEST(testIterator)
+		CRUNCHpp_TEST(testIteration)
 	}
 };
 

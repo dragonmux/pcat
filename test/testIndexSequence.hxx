@@ -5,8 +5,8 @@
 
 namespace indexSequence
 {
-	extern void testIteration(testsuite &suite);
 	extern void testIterator(testsuite &suite);
+	extern void testIteration(testsuite &suite);
 }
 
 #endif /*TEST_INDEX_SEQUENCE__HXX*/

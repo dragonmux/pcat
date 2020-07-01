@@ -14,7 +14,6 @@ namespace pcat
 		constexpr indexIterator_t(const std::size_t value) noexcept : index{value} { }
 
 		[[nodiscard]] constexpr auto operator *() const noexcept { return index; }
-		[[nodiscard]] constexpr auto operator ->() const noexcept { return index; }
 
 		constexpr auto operator ++() noexcept
 		{
