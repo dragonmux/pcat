@@ -14,7 +14,7 @@ namespace pcat
 	int32_t copyChunk(chunkState_t chunk)
 	{
 		const auto &outputOffset = chunk.outputOffset();
-		const auto outputLength{outputOffset.length()};
+		[[maybe_unused]] const auto outputLength{outputOffset.length()};
 		const mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
 			outputOffset.adjustedLength(), PROT_WRITE};
 		if (!outputChunk.valid())
