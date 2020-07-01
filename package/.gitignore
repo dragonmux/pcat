@@ -1,0 +1,9 @@
+*.tar.xz
+*.asc
+*.sig
+*.sha256sum
+*.deb
+*.rpm
+*.dsc
+*.buildinfo
+*.changes
