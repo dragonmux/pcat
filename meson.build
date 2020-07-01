@@ -10,7 +10,7 @@ project(
 		'strip=true'
 	],
 	license: 'GPL3+',
-	version: '0.0.1',
+	version: '0.1.0',
 	meson_version: '>= 0.52'
 )
 

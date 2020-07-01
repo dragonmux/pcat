@@ -1,0 +1,11 @@
+# Maintainer: Rachel Mant <dx-mon@users.sourceforge.net>
+
+pkgname=pcat
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="A fast, parallel, file concatenation utility modelled after coreutils `cat`"
+arch=('x86_64')
+license=('GPL3')
+url="https://github.com/DX-MON/pcat"
+depends=()
+makedepends=('crunch' 'ninja' 'meson')
