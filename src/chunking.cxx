@@ -5,12 +5,15 @@
 #include "mmap.hxx"
 #include "threadPool.hxx"
 #include "fileChunker.hxx"
+#include "args.hxx"
 
 using namespace std::literals::string_view_literals;
 using substrate::console;
 
 namespace pcat
 {
+	static std::atomic<bool> sync{true};
+
 	int32_t copyChunk(chunkState_t chunk)
 	{
 		const auto &outputOffset = chunk.outputOffset();
@@ -68,7 +71,7 @@ namespace pcat
 			++chunk;
 		}
 
-		if (!outputChunk.sync())
+		if (sync && !outputChunk.sync())
 		{
 			const auto error = errno;
 			console.error("Failed to synchronise the mapping for region "sv, outputOffset.offset(),
@@ -84,6 +87,7 @@ namespace pcat
 		threadPool_t copyThreads{copyChunk};
 		fileChunker_t chunker{};
 		assert(copyThreads.ready());
+		sync = !::args->find(argType_t::async);
 
 		for (const chunkState_t &chunk : chunker)
 		{
