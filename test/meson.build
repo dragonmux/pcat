@@ -102,6 +102,7 @@ foreach test : pcatTests
 		test,
 		crunchpp,
 		args: [test],
-		workdir: meson.current_build_dir()
+		workdir: meson.current_build_dir(),
+		is_parallel: false
 	)
 endforeach
