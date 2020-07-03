@@ -1,0 +1,23 @@
+#!/bin/bash -e
+
+if [ $# -ne 1 ]; then
+	echo "Must provide the name of the dist archive to package"
+	exit 1
+fi
+
+pkgFile=$1
+debFile=${pkgFile/.tar/.orig.tar}
+debFile=${debFile/-/_}
+pkgName=${pkgFile%.tar.*}
+debBase=${debFile%.orig.tar.*}
+
+cp $pkgFile $debFile
+tar xJf $debFile
+
+cp -a debian ${pkgName}
+cd ${pkgName}
+debuild -d
+
+cd ..
+rm -rf ${pkgName}
+rm -f ${debFile} ${debBase}-1_amd64.build ${debBase}_amd64.build
