@@ -1,0 +1,11 @@
+Source: pcat
+Maintainer: Rachel Mant <dx-mon@users.sourceforge.net>
+Section: devel
+Priority: optional
+Standards-Version: 4.3.0
+Build-Depends: debhelper (>= 10), meson, ninja, crunch, gcc (>= 4:8)
+
+Package: pcat
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A fast, parallel, file concatenation utility modelled after coreutils `cat`
