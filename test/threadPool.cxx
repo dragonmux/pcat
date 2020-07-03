@@ -1,4 +1,6 @@
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 #include <chrono>
 #include <substrate/utility>
 #include <threadPool.hxx>
@@ -10,6 +12,9 @@ using namespace std::literals::chrono_literals;
 
 constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
 constexpr static auto totalLoopIterations = 1000000_uz;
+
+std::mutex workMutex;
+std::condition_variable workCond;
 
 namespace threadPool
 {
@@ -23,6 +28,7 @@ namespace threadPool
 				++counter;
 		}
 		std::this_thread::sleep_for(25ms);
+		workCond.notify_all();
 		return counter == size_t(iterations * totalLoopIterations);
 	}
 
@@ -68,8 +74,13 @@ namespace threadPool
 		//suite.assertFalse(pool.ready());
 		puts("queue threads+1");
 		[[maybe_unused]] const auto result = pool.queue(threads);
-		std::this_thread::sleep_for(100ms);
+		//std::this_thread::sleep_for(100ms);
 		puts("queue after work completions");
+		[]() noexcept
+		{
+			auto lock{std::unique_lock{workMutex}};
+			workCond.wait(lock);
+		}();
 		suite.assertTrue(pool.queue(threads));
 		puts("finish");
 		suite.assertTrue(pool.finish());
