@@ -12,4 +12,4 @@ cp pcat.spec ~/rpmbuild/SPECS
 rpmbuild -ba --sign ~/rpmbuild/SPECS/pcat.spec
 
 cp ~/rpmbuild/RPMS/x86_64/pcat-*.rpm /data/pcat/package
-cp ~/rpmbuild/SRPMS/pcat-*.src.rpm /data/pcat/pacakge
+cp ~/rpmbuild/SRPMS/pcat-*.src.rpm /data/pcat/package
