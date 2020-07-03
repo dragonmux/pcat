@@ -8,7 +8,7 @@
 
 | **pcat** \[**-h**|**\--help**]
 | **pcat** \[**-v**|**\--version**]
-| **pcat** \[_options_] **-o** outputFile _FILES_
+| **pcat** \[_options_] **-o**|**\--output** outputFile _FILES_
 
 # DESCRIPTION
 
@@ -17,6 +17,8 @@ CPU core pinning to allow for greatly reduced runtimes and higher throuput on a
 large parallel filesystem such as one might find in a supercomputer.
 
 # OPTIONS
+
+## General
 
 -v, \--version
 
