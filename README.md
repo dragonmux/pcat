@@ -3,6 +3,7 @@
 [![Build Status](https://github.com/DX-MON/pcat/workflows/GitHub%20Actions/badge.svg)](https://github.com/DX-MON/pcat/actions)
 [![codecov](https://codecov.io/gh/DX-MON/pcat/branch/master/graph/badge.svg)](https://codecov.io/gh/DX-MON/pcat)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/DX-MON/pcat.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DX-MON/pcat/alerts/)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
 
 pcat is a `cat`-like utility designend for fast, parallel, file concatenation, with a HPC focus in mind.
 
