@@ -74,7 +74,6 @@ namespace threadPool
 		//suite.assertFalse(pool.ready());
 		puts("queue threads+1");
 		[[maybe_unused]] const auto result = pool.queue(threads);
-		//std::this_thread::sleep_for(100ms);
 		puts("queue after work completions");
 		[]() noexcept
 		{
