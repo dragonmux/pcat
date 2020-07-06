@@ -61,11 +61,8 @@ namespace threadPool
 	void testQueueWait(testsuite &suite)
 	{
 		threadPool_t pool{busyWork};
-		puts("valid");
 		suite.assertTrue(pool.valid());
-		puts("ready");
 		suite.assertTrue(pool.ready());
-		puts("processors");
 		const auto threads{pool.numProcessors()};
 		suite.assertNotEqual(threads, 0);
 		puts("burst queue");
