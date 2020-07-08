@@ -51,6 +51,7 @@ jobs:
         working-directory: ${{ runner.temp }}
       - name: Setup CodeQL
         uses: github/codeql-action/init@v1
+        with:
           languages: cpp
       - name: Version tools
         shell: bash
