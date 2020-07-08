@@ -2,8 +2,15 @@
 #define MMAP__HXX
 
 #include <cstdint>
+#ifndef _WINDOWS
 #include <unistd.h>
 #include <sys/mman.h>
+#else
+#include <io.h>
+#define _WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#undef _WIN32_LEAN_AND_MEAN
+#endif
 #include <stdexcept>
 #include <cstring>
 #include <cassert>
@@ -15,6 +22,9 @@ namespace pcat
 	{
 	private:
 		off_t _len{0};
+#ifdef _WINDOWS
+		HANDLE _mapping{INVALID_HANDLE_VALUE};
+#endif
 		void *_addr{nullptr};
 
 		[[nodiscard]] void *index(const off_t idx) const
@@ -33,6 +43,7 @@ namespace pcat
 
 	public:
 		constexpr mmap_t() noexcept = default;
+#ifndef _WINDOWS
 		mmap_t(const fd_t &fd, const off_t len, const int32_t prot, const int32_t flags = MAP_SHARED,
 			void *addr = nullptr) noexcept : _len{len}, _addr{[&]() noexcept -> void *
 			{
@@ -48,10 +59,6 @@ namespace pcat
 				// NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
 				return ptr == MAP_FAILED ? nullptr : ptr;
 			}()} { }
-		mmap_t(const mmap_t &) = delete;
-		mmap_t(mmap_t &&map) = delete;
-		mmap_t &operator =(const mmap_t &) = delete;
-		mmap_t &operator =(mmap_t &&map) = delete;
 
 		~mmap_t() noexcept
 		{
@@ -60,6 +67,47 @@ namespace pcat
 		}
 
 		[[nodiscard]] constexpr bool valid() const noexcept { return _addr; }
+#else
+		mmap_t(const fd_t &fd, const off_t len, const DWORD prot, const int32_t flags = 0,
+			void *addr = nullptr) noexcept : _len{len}, _mapping{[&]() noexcept -> HANDLE
+			{
+				const auto file = static_cast<HANDLE>(_get_osfhandle(fd));
+				static_assert(sizeof(DWORD) == 4);
+				return CreateFileMappingA(file, nullptr, prot, DWORD(len >> 32), DWORD(len), nullptr);
+			}()}, _addr([&]() noexcept -> void *
+			{
+				if (!_mapping)
+					return nullptr;
+				return MapViewOfFile(_mapping, protToAccess(prot), 0, 0, 0);
+			}()} { }
+		mmap_t(const fd_t &fd, const off_t offset, const off_t length, const DWORD prot,
+			const int32_t flags = 0, void *addr = nullptr) noexcept : _len{len},
+			_mapping{[&]() noexcept -> HANDLE
+			{
+				const auto file = static_cast<HANDLE>(_get_osfhandle(fd));
+				static_assert(sizeof(DWORD) == 4);
+				return CreateFileMappingA(file, nullptr, prot, DWORD(len >> 32), DWORD(len), nullptr);
+			}()}, _addr([&]() noexcept -> void *
+			{
+				if (!_mapping)
+					return nullptr;
+				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32), DWORD(offset), 0);
+			}()} { }
+
+		~mmap_t() noexcept
+		{
+			if (_addr)
+				UnmapViewOfFile(_addr);
+			if (_mapping)
+				CloseHandle(_mapping);
+		}
+
+		[[nodiscard]] constexpr bool valid() const noexcept { return _mapping && _addr; }
+#endif
+		mmap_t(const mmap_t &) = delete;
+		mmap_t(mmap_t &&map) = delete;
+		mmap_t &operator =(const mmap_t &) = delete;
+		mmap_t &operator =(mmap_t &&map) = delete;
 
 		void swap(mmap_t &map) noexcept
 		{
