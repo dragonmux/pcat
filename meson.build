@@ -24,6 +24,14 @@ if cxx.has_argument('-fPIC')
 	fPIC += ['-fPIC']
 endif
 
+if target_machine.system() == 'windows'
+	add_project_arguments(
+		'-wd4996',
+		'-Zc:__cplusplus',
+		language: 'cpp'
+	)
+endif
+
 pcatSrcs = [
 	'src/pcat.cxx', 'src/chunking.cxx', 'src/args.cxx', 'src/args/types.cxx',
 	'src/args/tokenizer.cxx', 'substrate/impl/console.cxx'
@@ -39,7 +47,7 @@ pcat = executable(
 	gnu_symbol_visibility: 'inlineshidden',
 	implicit_include_directories: false,
 	install: true,
-	pie: true
+	pie: target_machine.system() != 'windows'
 )
 
 crunchMake = find_program('crunchMake', version: ['>= 1.0.1', '< 2.0.0'], required: false)
