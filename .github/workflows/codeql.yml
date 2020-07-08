@@ -62,8 +62,6 @@ jobs:
           meson --version
           ninja --version
       - name: Build
-        #uses: github/codeql-action/autobuild@v1
-        #$CODEQL_DIST
         run: |
           meson build
           ninja -C build
