@@ -58,15 +58,14 @@ jobs:
         run: |
           $CC --version
           $CXX --version
-          [ $COVERAGE -ne 0 ] && $GCOV --version || true
+          g++ --version
           meson --version
           ninja --version
       - name: Build
-        uses: github/codeql-action/autobuild@v1
-        # ℹ️ Command-line programs to run using the OS shell.
-        # 📚 https://git.io/JvXDl
-        #run: |
-        #  make bootstrap
-        #  make release
+        #uses: github/codeql-action/autobuild@v1
+        #$CODEQL_DIST
+        run: |
+          meson build
+          ninja -C build
       - name: CodeQL Analysis
         uses: github/codeql-action/analyze@v1
