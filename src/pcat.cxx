@@ -34,7 +34,8 @@ namespace pcat
 		{"--threads"sv, argType_t::threads},
 		{"-t"sv, argType_t::threads},
 		{"--core-pins"sv, argType_t::pinning},
-		{"-c"sv, argType_t::pinning}
+		{"-c"sv, argType_t::pinning},
+		{"--algorithm"sv, argType_t::algorithm}
 	})};
 
 	std::vector<fd_t> inputFiles{};

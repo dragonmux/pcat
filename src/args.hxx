@@ -17,7 +17,8 @@ namespace pcat::args
 		outputFile,
 		async,
 		threads,
-		pinning
+		pinning,
+		algorithm
 	};
 
 	struct argNode_t
@@ -104,6 +105,23 @@ namespace pcat::args
 
 		[[nodiscard]] auto begin() const noexcept { return cores_.begin(); }
 		[[nodiscard]] auto end() const noexcept { return cores_.end(); }
+	};
+
+	struct argAlgorithm_t final : argNode_t
+	{
+	private:
+		enum
+		{
+			blockLinear,
+			chunkSpans,
+			invalid
+		} algorithm_{blockLinear};
+
+	public:
+		argAlgorithm_t() = delete;
+		argAlgorithm_t(std::string_view algorithm) noexcept;
+		[[nodiscard]] auto valid() const noexcept { return algorithm_ != invalid; }
+		[[nodiscard]] auto algorithm() const noexcept { return algorithm_; }
 	};
 
 	template<argType_t argType> struct argOfType_t final : argNode_t

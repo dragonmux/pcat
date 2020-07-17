@@ -71,6 +71,27 @@ auto parsePinning(tokenizer_t &lexer)
 	return pinning;
 }
 
+auto parseAlgorithm(tokenizer_t &lexer)
+{
+	const auto &token{lexer.token()};
+	if (token.type() == tokenType_t::unknown)
+	{
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Algorithm selection option expects the name of an algorithm to follow"sv);
+		throw std::exception{};
+	}
+	lexer.next();
+	auto algorithm{substrate::make_unique<argAlgorithm_t>(token.value())};
+	if (!algorithm->valid())
+	{
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		console.error("Algorithm selection option expects the name of a valid algorithm to follow"sv);
+		throw std::exception{};
+	}
+	lexer.next();
+	return algorithm;
+}
+
 std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const option_t &option)
 {
 	lexer.next();
@@ -88,6 +109,8 @@ std::unique_ptr<argNode_t> makeNode(tokenizer_t &lexer, const option_t &option)
 			return parseThreads(lexer);
 		case argType_t::pinning:
 			return parsePinning(lexer);
+		case argType_t::algorithm:
+			return parseAlgorithm(lexer);
 		default:
 			throw std::exception{};
 	}

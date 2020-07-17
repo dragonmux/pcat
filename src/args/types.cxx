@@ -1,6 +1,7 @@
 #include <substrate/conversions>
 #include "../args.hxx"
 
+using namespace std::literals::string_view_literals;
 using substrate::toInt_t;
 
 namespace pcat::args
@@ -42,5 +43,15 @@ namespace pcat::args
 		}
 		catch (const std::exception &)
 			{ cores_.clear(); }
+	}
+
+	argAlgorithm_t::argAlgorithm_t(const std::string_view algorithm) noexcept : argNode_t{argType_t::algorithm}
+	{
+		if (algorithm == "blockLinear"sv)
+			algorithm_ = blockLinear;
+		else if (algorithm == "chunkSpans"sv)
+			algorithm_ = chunkSpans;
+		else
+			algorithm_ = invalid;
 	}
 } // namespace pcat::args
