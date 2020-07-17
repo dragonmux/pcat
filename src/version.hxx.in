@@ -1,4 +1,4 @@
-/* version.hxx - progrma version information */
+/* version.hxx - program version information */
 @AUTOGEN_HEADER@
 #ifndef VERSION__HXX
 #define VERSION__HXX
