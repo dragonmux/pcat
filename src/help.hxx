@@ -25,6 +25,12 @@ Options:
 	                When specified, this option must have the same number of cores specified
 	                as threads given with -t/--threads. The same effect can be acomplished
 	                using numactl, but this is provided for convenience and flexibility.
+	--algorithm     Selects between block chunking algorithms as different storage configurations
+	                react differently to different access patterns.
+	                'blockLinear' (default) configures pcat to chunk the inputs up in a linear
+	                manner, queueing them as it does for consumption by the worker threads.
+	                'chunkSpans' configures pcat to chunk the file up into threads equal amounts
+	                and have each thread linearly work through a unique chunk of the file.
 
 	--async         Specifies to omit issuing msync() on each completed block, thereby
 	                putting the program into asynchronous operation.
