@@ -3,8 +3,8 @@
 #include <utility>
 #include <stdexcept>
 #include <substrate/utility>
-#include <chunking.hxx>
-#include "testChunkState.hxx"
+#include <algorithm/blockLinear/chunking.hxx>
+#include "testFileChunker.hxx"
 
 using namespace std::literals::string_view_literals;
 constexpr static std::size_t operator ""_uz(const unsigned long long value) noexcept { return value; }
@@ -27,19 +27,27 @@ constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_vie
 #define O_NOCTTY O_BINARY
 #endif
 
-class testChunkState final : public testsuite
+class testFileChunker final : public testsuite
 {
 private:
+	fd_t outputFile{"chunks.test", O_RDWR | O_CREAT | O_NOCTTY, normalMode};
 	std::vector<fd_t> files{};
 
-	void testDefaultConstruct() { chunkState::testDefaultConstruct(*this); }
-	void testNoFilesConstruct() { chunkState::testNoFilesConstruct(*this); }
+	void testDefaultConstruct()
+	{
+		inputFiles.clear();
+		pcat::outputFile = outputFile.dup();
+		fileChunker::testDefaultConstruct(*this);
+	}
 
 	void testFillAlignedChunk()
 	{
 		inputFiles.clear();
 		inputFiles.emplace_back(files[4].dup());
-		chunkState::testFillAlignedChunk(*this);
+		if (!outputFile.resize(transferBlockSize))
+			fail("Failed to resize the output test file");
+		pcat::outputFile = outputFile.dup();
+		fileChunker::testFillAlignedChunk(*this);
 	}
 
 	void testFillUnalignedChunks()
@@ -48,7 +56,10 @@ private:
 		inputFiles.emplace_back(files[0].dup());
 		inputFiles.emplace_back(files[2].dup());
 		inputFiles.emplace_back(files[4].dup());
-		chunkState::testFillUnalignedChunks(*this);
+		if (!outputFile.resize(transferBlockSize + 4096))
+			fail("Failed to resize the output test file");
+		pcat::outputFile = outputFile.dup();
+		fileChunker::testFillUnalignedChunks(*this);
 	}
 
 	void makeFile(const std::string_view fileName, const std::size_t size)
@@ -62,32 +73,34 @@ private:
 	}
 
 public:
-	testChunkState()
+	testFileChunker()
 	{
+		if (!outputFile.valid())
+			throw std::logic_error{"Failed to create the output test file"};
 		for (const auto &file : chunkFiles)
 			makeFile(file.first, file.second);
 	}
 
-	testChunkState(const testChunkState &) = delete;
-	testChunkState(testChunkState &&) = delete;
-	testChunkState &operator =(const testChunkState &) = delete;
-	testChunkState &operator =(testChunkState &&) = delete;
+	testFileChunker(const testFileChunker &) = delete;
+	testFileChunker(testFileChunker &&) = delete;
+	testFileChunker &operator =(const testFileChunker &) = delete;
+	testFileChunker &operator =(testFileChunker &&) = delete;
 
-	~testChunkState() final
+	~testFileChunker() final
 	{
 		pcat::inputFiles.clear();
 		files.clear();
 		for (const auto &file : chunkFiles)
 			unlink(file.first.data());
+		unlink("chunks.test");
 	}
 
 	void registerTests() final
 	{
 		CRUNCHpp_TEST(testDefaultConstruct)
-		CRUNCHpp_TEST(testNoFilesConstruct)
 		CRUNCHpp_TEST(testFillAlignedChunk)
 		CRUNCHpp_TEST(testFillUnalignedChunks)
 	}
 };
 
-CRUNCHpp_TESTS(testChunkState)
+CRUNCHpp_TESTS(testFileChunker)

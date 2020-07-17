@@ -1,16 +1,16 @@
 #include <cerrno>
 #include <string_view>
 #include <substrate/console>
-#include "chunking.hxx"
+#include "algorithm/blockLinear/chunking.hxx"
 #include "mmap.hxx"
 #include "threadPool.hxx"
-#include "fileChunker.hxx"
+#include "algorithm/blockLinear/fileChunker.hxx"
 #include "args.hxx"
 
 using namespace std::literals::string_view_literals;
 using substrate::console;
 
-namespace pcat
+namespace pcat::algorithm::blockLinear
 {
 	static std::atomic<bool> sync{true};
 

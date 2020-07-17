@@ -13,7 +13,7 @@
 #include <version.hxx>
 #include "args.hxx"
 #include "help.hxx"
-#include "chunking.hxx"
+#include "algorithm/blockLinear/chunking.hxx"
 
 using namespace std::literals::string_view_literals;
 using substrate::console;
@@ -169,7 +169,7 @@ int main(int argCount, char **argList)
 		pcat::closeFiles();
 		return 1;
 	}
-	else if (std::int32_t error{pcat::chunkedCopy()}; error)
+	else if (std::int32_t error{pcat::algorithm::blockLinear::chunkedCopy()}; error)
 	{
 		// NOLINTNEXTLINE(readability-magic-numbers)
 		console.error("Copying data to output file failed, exiting. Reason: "sv,

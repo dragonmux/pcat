@@ -2,7 +2,7 @@
 #define TEST_CHUNK_STATE__HXX
 
 #include <crunch++.h>
-#include <chunkState.hxx>
+#include <algorithm/blockLinear/chunkState.hxx>
 
 namespace chunkState
 {

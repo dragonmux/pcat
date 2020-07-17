@@ -21,8 +21,6 @@ namespace pcat
 		{ return std::min(transferBlockSize, length); }
 
 	using inputFilesIterator_t = typename decltype(inputFiles)::iterator;
-
-	extern int32_t chunkedCopy() noexcept;
 }
 
 #endif /*CHUNKING__HXX*/

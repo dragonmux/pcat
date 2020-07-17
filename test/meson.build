@@ -22,8 +22,7 @@ endif
 pcatTests = [
 	'testFD', 'testConsole', 'testArgsTokenizer', 'testArgsParser',
 	'testThreadedQueue', 'testAffinity', 'testThreadPool', 'testMappingOffset',
-	'testMMap', 'testChunkState', 'testFileChunker', 'testChunking',
-	'testIndexSequence'
+	'testMMap', 'testIndexSequence'
 ]
 
 testHelpers = static_library(
@@ -31,8 +30,7 @@ testHelpers = static_library(
 	[
 		'fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx',
 		'argsParser.cxx', 'threadedQueue.cxx', 'affinity.cxx', 'threadPool.cxx',
-		'mappingOffset.cxx', 'mmap.cxx', 'chunkState.cxx', 'fileChunker.cxx',
-		'indexSequence.cxx'
+		'mappingOffset.cxx', 'mmap.cxx', 'indexSequence.cxx'
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
@@ -72,14 +70,6 @@ testObjectMap = {
 	},
 	'testMappingOffset' : {'test': ['mappingOffset.cxx']},
 	'testMMap' : {'test': ['mmap.cxx']},
-	'testChunkState': {'test': ['chunkState.cxx']},
-	'testFileChunker': {'test': ['fileChunker.cxx']},
-	'testChunking': {
-		'pcat': [
-			'src/chunking.cxx', 'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
-			'substrate/impl/console.cxx'
-		]
-	},
 	'testIndexSequence': {'test': ['indexSequence.cxx']}
 }
 
@@ -106,3 +96,5 @@ foreach test : pcatTests
 		is_parallel: false
 	)
 endforeach
+
+subdir('algorithm/blockLinear')

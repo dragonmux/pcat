@@ -2,7 +2,7 @@
 #define TEST_FILE_CHUNKER__HXX
 
 #include <crunch++.h>
-#include <fileChunker.hxx>
+#include <algorithm/blockLinear/fileChunker.hxx>
 
 namespace fileChunker
 {

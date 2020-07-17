@@ -5,7 +5,7 @@
 #include <utility>
 #include <substrate/utility>
 #include <crunch++.h>
-#include <chunking.hxx>
+#include <algorithm/blockLinear/chunking.hxx>
 #include <args.hxx>
 
 using namespace std::literals::string_view_literals;
@@ -21,7 +21,7 @@ using pcat::pageSize;
 using pcat::transferBlockSize;
 using pcat::inputFiles;
 using pcat::outputFile;
-using pcat::chunkedCopy;
+using pcat::algorithm::blockLinear::chunkedCopy;
 
 constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_view, std::size_t>>(
 {
