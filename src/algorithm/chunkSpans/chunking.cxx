@@ -126,9 +126,27 @@ namespace pcat::algorithm::chunkSpans
 
 	int32_t chunkedCopy() noexcept try
 	{
-		//threadPool_t copyThreads{copyChunk};
+		const auto length{outputFile.length()};
+		threadPool_t copyThreads{copyChunk};
 		fileChunker_t chunker{};
 		//assert(copyThreads.ready());
+
+		if ((transferBlockSize * copyThreads.numProcessors()) >= length)
+		{
+			console.info("Using the short file form of the algorithm"sv);
+			return 0;
+		}
+
+		console.info("Copying "sv, outputFile.length(), " bytes using "sv,
+			copyThreads.numProcessors(), " threads"sv);
+
+		const auto chunksPerSpan{outputFile.length() / (transferBlockSize * copyThreads.numProcessors())};
+		console.info("Each thread must process "sv, chunksPerSpan, " chunks ("sv,
+			chunksPerSpan * transferBlockSize, " bytes) + "sv,
+			outputFile.length() - (chunksPerSpan * transferBlockSize * copyThreads.numProcessors()),
+			" additional bytes on the final span"sv);
+
+		return 0;
 
 		for (const chunkState_t &chunk : chunker)
 		{
