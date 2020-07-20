@@ -40,6 +40,7 @@ namespace pcat
 
 	std::vector<fd_t> inputFiles{};
 	fd_t outputFile{};
+	std::atomic<bool> sync{true};
 
 	inline int32_t printHelp() noexcept
 	{
@@ -133,6 +134,7 @@ namespace pcat
 	int32_t chunkedCopy() noexcept try
 	{
 		const auto algorithm{dynamic_cast<args::argAlgorithm_t *>(::args->find(argType_t::algorithm))};
+		sync = !::args->find(argType_t::async);
 		if (!algorithm || algorithm->algorithm() == args::algorithm_t::blockLinear)
 			return pcat::algorithm::blockLinear::chunkedCopy();
 		else if (algorithm->algorithm() == args::algorithm_t::chunkSpans)

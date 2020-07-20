@@ -33,7 +33,6 @@ namespace pcat::algorithm::chunkSpans
 		threadPool_t copyThreads{copyChunk};
 		fileChunker_t chunker{};
 		assert(copyThreads.ready());
-		sync = !::args->find(argType_t::async);
 
 		for (const chunkState_t &chunk : chunker)
 		{

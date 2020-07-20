@@ -2,6 +2,7 @@
 #define CHUNKING__HXX
 
 #include <vector>
+#include <atomic>
 #include <sys/types.h>
 #include <substrate/fd>
 #include <substrate/units>
@@ -16,6 +17,7 @@ namespace pcat
 	constexpr static off_t transferBlockSize = 1_MiB;
 	extern std::vector<fd_t> inputFiles;
 	extern fd_t outputFile;
+	extern std::atomic<bool> sync;
 
 	constexpr off_t blockLength(const off_t length)
 		{ return std::min(transferBlockSize, length); }

@@ -5,15 +5,12 @@
 #include "mmap.hxx"
 #include "threadPool.hxx"
 #include "algorithm/blockLinear/fileChunker.hxx"
-#include "args.hxx"
 
 using namespace std::literals::string_view_literals;
 using substrate::console;
 
 namespace pcat::algorithm::blockLinear
 {
-	static std::atomic<bool> sync{true};
-
 	int32_t copyChunk(chunkState_t chunk)
 	{
 		const auto &outputOffset = chunk.outputOffset();
@@ -87,7 +84,6 @@ namespace pcat::algorithm::blockLinear
 		threadPool_t copyThreads{copyChunk};
 		fileChunker_t chunker{};
 		assert(copyThreads.ready());
-		sync = !::args->find(argType_t::async);
 
 		for (const chunkState_t &chunk : chunker)
 		{
