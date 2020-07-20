@@ -24,6 +24,7 @@ namespace pcat::algorithm::blockLinear
 				inputLength = file == inputFiles.end() ? 0 : file->length();
 				inputOffset = {};
 			}
+			inputOffset.length(blockLength(inputLength - inputOffset));
 		};
 
 	public:
@@ -45,7 +46,6 @@ namespace pcat::algorithm::blockLinear
 				inputOffset = state.inputOffset();
 			}
 			nextInputBlock();
-			inputOffset.length(blockLength(inputLength - inputOffset));
 			outputOffset += outputOffset.length();
 			outputOffset.length(blockLength(outputLength - outputOffset));
 		}
