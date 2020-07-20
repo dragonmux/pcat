@@ -1,10 +1,8 @@
-#include <cerrno>
 #include <string_view>
 #include <substrate/console>
-#include "chunking.hxx"
+#include "copyChunk.hxx"
 #include "threadPool.hxx"
 #include "algorithm/blockLinear/fileChunker.hxx"
-#include "copyChunk.hxx"
 
 using namespace std::literals::string_view_literals;
 using substrate::console;

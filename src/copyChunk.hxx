@@ -1,6 +1,7 @@
 #ifndef COPY_CHUNK__HXX
 #define COPY_CHUNK__HXX
 
+#include <cerrno>
 #include <string_view>
 #include <substrate/console>
 #include "chunking.hxx"
