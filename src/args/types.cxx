@@ -48,10 +48,10 @@ namespace pcat::args
 	argAlgorithm_t::argAlgorithm_t(const std::string_view algorithm) noexcept : argNode_t{argType_t::algorithm}
 	{
 		if (algorithm == "blockLinear"sv)
-			algorithm_ = blockLinear;
+			algorithm_ = algorithm_t::blockLinear;
 		else if (algorithm == "chunkSpans"sv)
-			algorithm_ = chunkSpans;
+			algorithm_ = algorithm_t::chunkSpans;
 		else
-			algorithm_ = invalid;
+			algorithm_ = algorithm_t::invalid;
 	}
 } // namespace pcat::args

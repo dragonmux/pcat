@@ -21,6 +21,13 @@ namespace pcat::args
 		algorithm
 	};
 
+	enum class algorithm_t : uint8_t
+	{
+		blockLinear,
+		chunkSpans,
+		invalid
+	};
+
 	struct argNode_t
 	{
 	private:
@@ -110,17 +117,12 @@ namespace pcat::args
 	struct argAlgorithm_t final : argNode_t
 	{
 	private:
-		enum
-		{
-			blockLinear,
-			chunkSpans,
-			invalid
-		} algorithm_{blockLinear};
+		algorithm_t algorithm_{algorithm_t::blockLinear};
 
 	public:
 		argAlgorithm_t() = delete;
 		argAlgorithm_t(std::string_view algorithm) noexcept;
-		[[nodiscard]] auto valid() const noexcept { return algorithm_ != invalid; }
+		[[nodiscard]] auto valid() const noexcept { return algorithm_ != algorithm_t::invalid; }
 		[[nodiscard]] auto algorithm() const noexcept { return algorithm_; }
 	};
 
