@@ -111,6 +111,19 @@ namespace pcat::algorithm::chunkSpans
 	{
 	}
 
+	/*!
+	 * The idea with this is that, we take the total length of the file,
+	 * the number of threads and divide them together if there are more than
+	 * (transferBlockSize * threads) bytes to move, otherwise splitting
+	 * the blocks up into transferBlockSize chunks.
+	 *
+	 * The result should be up to threads chunks which are then scheduled
+	 * off one onto each thread, and copied linearly within that thread.
+	 * The goal is to create a mostly linear access order for sub-chunks
+	 * of the input files to reduce IO Wait issues on Lustre + GPFS, and
+	 * significantly boost the speed of copying in that way.
+	 */
+
 	int32_t chunkedCopy() noexcept try
 	{
 		//threadPool_t copyThreads{copyChunk};
