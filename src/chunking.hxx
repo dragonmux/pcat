@@ -24,11 +24,11 @@ namespace pcat
 
 	using inputFilesIterator_t = typename decltype(inputFiles)::iterator;
 
-	namespace algorithm::blockLinear
-		{ extern int32_t chunkedCopy() noexcept; }
-
-	namespace algorithm::chunkSpans
-		{ extern int32_t chunkedCopy() noexcept; }
+	namespace algorithm
+	{
+		namespace blockLinear { extern int32_t chunkedCopy() noexcept; }
+		namespace chunkSpans { extern int32_t chunkedCopy() noexcept; }
+	}
 } // namespace pcat
 
 #endif /*CHUNKING__HXX*/
