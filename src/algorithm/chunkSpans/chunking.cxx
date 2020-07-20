@@ -158,8 +158,6 @@ namespace pcat::algorithm::chunkSpans
 		[[nodiscard]] chunking_t begin() const noexcept { return {spanLength_}; }
 		// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 		[[nodiscard]] chunking_t end() const noexcept { return {spanLength_, inputFiles.end()}; }
-
-		[[nodiscard]] auto spanLength() const noexcept { return spanLength_; }
 	};
 
 	/*!
@@ -195,19 +193,13 @@ namespace pcat::algorithm::chunkSpans
 
 		for (const chunkState_t &chunk : chunker)
 		{
-			/*if (const auto result{copyThreads.queue(chunk)}; result)
+			if (const auto result{copyThreads.queue(chunk)}; result)
 			{
 				console.error("Copying failed: "sv, std::strerror(result));
 				return result;
-			}*/
-			console.info("Copying "sv, chunk.inputLength(), " bytes at ", chunk.inputOffset().offset(),
-				" to output region of ", chunk.outputOffset().length(), " bytes at ", chunk.outputOffset().offset(),
-				" using file ", int32_t{chunk.inputFile()});
-			if (const auto result{copyChunk(chunk)}; result)
-				return result;
+			}
 		}
-		//return copyThreads.finish();
-		return 0;
+		return copyThreads.finish();
 	}
 	catch (std::system_error &error)
 	{
