@@ -135,6 +135,8 @@ namespace pcat
 		const auto algorithm{dynamic_cast<args::argAlgorithm_t *>(::args->find(argType_t::algorithm))};
 		if (!algorithm || algorithm->algorithm() == args::algorithm_t::blockLinear)
 			return pcat::algorithm::blockLinear::chunkedCopy();
+		else if (algorithm->algorithm() == args::algorithm_t::chunkSpans)
+			return pcat::algorithm::chunkSpans::chunkedCopy();
 		else if (algorithm->algorithm() == args::algorithm_t::invalid)
 		{
 			errno = EINVAL;

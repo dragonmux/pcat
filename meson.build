@@ -33,8 +33,10 @@ if target_machine.system() == 'windows'
 endif
 
 pcatSrcs = [
-	'src/pcat.cxx', 'src/algorithm/blockLinear/chunking.cxx', 'src/args.cxx', 'src/args/types.cxx',
-	'src/args/tokenizer.cxx', 'substrate/impl/console.cxx'
+	'src/pcat.cxx', 'src/args.cxx', 'src/args/types.cxx', 'src/args/tokenizer.cxx',
+	'substrate/impl/console.cxx',
+	'src/algorithm/blockLinear/chunking.cxx',
+	'src/algorithm/chunkSpans/chunking.cxx'
 ]
 
 subdir('src')

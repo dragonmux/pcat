@@ -24,6 +24,9 @@ namespace pcat
 
 	namespace algorithm::blockLinear
 		{ extern int32_t chunkedCopy() noexcept; }
+
+	namespace algorithm::chunkSpans
+		{ extern int32_t chunkedCopy() noexcept; }
 } // namespace pcat
 
 #endif /*CHUNKING__HXX*/
