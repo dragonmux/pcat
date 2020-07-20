@@ -129,6 +129,25 @@ namespace pcat
 			unlockFile(file);
 		inputFiles.clear();
 	}
+
+	int32_t chunkedCopy() noexcept try
+	{
+		const auto algorithm{dynamic_cast<args::argAlgorithm_t *>(::args->find(argType_t::algorithm))};
+		if (!algorithm || algorithm->algorithm() == args::algorithm_t::blockLinear)
+			return pcat::algorithm::blockLinear::chunkedCopy();
+		else if (algorithm->algorithm() == args::algorithm_t::invalid)
+		{
+			errno = EINVAL;
+			return 1;
+		}
+		return 0;
+	}
+	catch (const std::bad_cast &error)
+	{
+		console.error("Failed to cast argument to proper type: "sv, error.what());
+		errno = EPERM;
+		return 1;
+	}
 } // namespace pcat
 
 int main(int argCount, char **argList)
@@ -169,7 +188,7 @@ int main(int argCount, char **argList)
 		pcat::closeFiles();
 		return 1;
 	}
-	else if (std::int32_t error{pcat::algorithm::blockLinear::chunkedCopy()}; error)
+	else if (std::int32_t error{pcat::chunkedCopy()}; error)
 	{
 		// NOLINTNEXTLINE(readability-magic-numbers)
 		console.error("Copying data to output file failed, exiting. Reason: "sv,
