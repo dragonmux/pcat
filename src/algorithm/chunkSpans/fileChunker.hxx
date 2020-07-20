@@ -15,7 +15,7 @@ namespace pcat::algorithm::chunkSpans
 		const off_t outputLength{outputFile.length()};
 		mappingOffset_t outputOffset{};
 
-		constexpr off_t spanOf(const off_t length)
+		[[nodiscard]] constexpr off_t spanOf(const off_t length) const noexcept
 			{ return std::min(off_t(spanLength), length); }
 
 		constexpr void nextInputBlock() noexcept
