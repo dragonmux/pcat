@@ -3,7 +3,7 @@
 #include <utility>
 #include <stdexcept>
 #include <substrate/utility>
-#include <algorithm/blockLinear/chunking.hxx>
+#include <chunking.hxx>
 #include "testFileChunker.hxx"
 
 using namespace std::literals::string_view_literals;

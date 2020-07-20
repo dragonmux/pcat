@@ -5,7 +5,7 @@
 #include <utility>
 #include <substrate/utility>
 #include <crunch++.h>
-#include <algorithm/blockLinear/chunking.hxx>
+#include <chunking.hxx>
 #include <args.hxx>
 
 using namespace std::literals::string_view_literals;

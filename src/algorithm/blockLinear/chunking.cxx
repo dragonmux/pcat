@@ -1,7 +1,7 @@
 #include <cerrno>
 #include <string_view>
 #include <substrate/console>
-#include "algorithm/blockLinear/chunking.hxx"
+#include "chunking.hxx"
 #include "mmap.hxx"
 #include "threadPool.hxx"
 #include "algorithm/blockLinear/fileChunker.hxx"

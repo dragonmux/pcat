@@ -13,7 +13,7 @@
 #include <version.hxx>
 #include "args.hxx"
 #include "help.hxx"
-#include "algorithm/blockLinear/chunking.hxx"
+#include "chunking.hxx"
 
 using namespace std::literals::string_view_literals;
 using substrate::console;
