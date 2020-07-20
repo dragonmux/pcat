@@ -66,8 +66,10 @@ namespace pcat::algorithm::chunkSpans
 		};
 
 	public:
-		chunking_t() noexcept { outputOffset.length(blockLength(outputLength - outputOffset)); }
-		chunking_t(const inputFilesIterator_t file_) noexcept : file{file_}, outputOffset{outputLength} { }
+		chunking_t(const std::size_t spanLength) noexcept
+			{ outputOffset.length(blockLength(outputLength - outputOffset)); }
+		chunking_t(const std::size_t spanLength, const inputFilesIterator_t file_) noexcept :
+			file{file_}, outputOffset{outputLength} { }
 		[[nodiscard]] constexpr chunkState_t subchunkState() const noexcept
 			{ return {file, inputLength, inputOffset, outputOffset}; }
 		chunkState_t operator *() const noexcept { return subchunkState(); }
@@ -101,10 +103,18 @@ namespace pcat::algorithm::chunkSpans
 	// begin() and end() are non-static to fufill the requirements of for-each looping
 	struct fileChunker_t final
 	{
+	private:
+		std::size_t spanLength_;
+
+	public:
+		constexpr fileChunker_t(const std::size_t spanLength) : spanLength_{spanLength} { }
+
 		// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-		chunking_t begin() noexcept { return {}; }
+		[[nodiscard]] chunking_t begin() const noexcept { return {spanLength_}; }
 		// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-		chunking_t end() noexcept { return {inputFiles.end()}; }
+		[[nodiscard]] chunking_t end() const noexcept { return {spanLength_, inputFiles.end()}; }
+
+		[[nodiscard]] auto spanLength() const noexcept { return spanLength_; }
 	};
 
 	int32_t copyChunk(chunkState_t chunk)
@@ -131,8 +141,7 @@ namespace pcat::algorithm::chunkSpans
 	{
 		const auto length{asUnsigned(outputFile.length())};
 		threadPool_t copyThreads{copyChunk};
-		fileChunker_t chunker{};
-		//assert(copyThreads.ready());
+		assert(copyThreads.ready());
 
 		if ((transferBlockSize * copyThreads.numProcessors()) >= length)
 		{
@@ -140,14 +149,15 @@ namespace pcat::algorithm::chunkSpans
 			return 0;
 		}
 
+		const auto chunksPerSpan{outputFile.length() / (transferBlockSize * copyThreads.numProcessors())};
+		fileChunker_t chunker{chunksPerSpan * transferBlockSize};
+
 		console.info("Copying "sv, outputFile.length(), " bytes using "sv,
 			copyThreads.numProcessors(), " threads"sv);
 
-		const auto chunksPerSpan{outputFile.length() / (transferBlockSize * copyThreads.numProcessors())};
-		console.info("Each thread must process "sv, chunksPerSpan, " chunks ("sv,
-			chunksPerSpan * transferBlockSize, " bytes) + "sv,
-			outputFile.length() - (chunksPerSpan * transferBlockSize * copyThreads.numProcessors()),
-			" additional bytes on the final span"sv);
+		console.info("Each thread must process "sv, chunksPerSpan, " chunks ("sv, chunker.spanLength(),
+			" bytes) + "sv, outputFile.length() - (chunksPerSpan * transferBlockSize *
+			copyThreads.numProcessors()), " additional bytes on the final span"sv);
 
 		return 0;
 
