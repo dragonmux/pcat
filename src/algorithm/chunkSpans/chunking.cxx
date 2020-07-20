@@ -124,9 +124,12 @@ namespace pcat::algorithm::chunkSpans
 	 * significantly boost the speed of copying in that way.
 	 */
 
+	template<typename int_t> constexpr inline std::make_unsigned_t<int_t>
+		asUnsigned(int_t value) noexcept { return value; }
+
 	int32_t chunkedCopy() noexcept try
 	{
-		const auto length{outputFile.length()};
+		const auto length{asUnsigned(outputFile.length())};
 		threadPool_t copyThreads{copyChunk};
 		fileChunker_t chunker{};
 		//assert(copyThreads.ready());
