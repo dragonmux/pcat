@@ -139,13 +139,13 @@ int main(int argCount, char **argList)
 		console.error("Failed to parse arguments"sv); // NOLINT(readability-magic-numbers)
 		return 1;
 	}
-	if (args->find(argType_t::version) && args->find(argType_t::help))
+	else if (args->find(argType_t::version) && args->find(argType_t::help))
 	{
 		// NOLINTNEXTLINE(readability-magic-numbers)
 		console.error("Can only specify one of --help and --version, not both."sv);
 		return 1;
 	}
-	if (args->find(argType_t::version))
+	else if (args->find(argType_t::version))
 		return pcat::versionInfo::printVersion();
 	else if (args->find(argType_t::help))
 		return pcat::printHelp();
