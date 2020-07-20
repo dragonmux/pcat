@@ -105,4 +105,4 @@ namespace pcat::algorithm::blockLinear
 		console.error("Copying failed: "sv, error.what());
 		return error.code().value();
 	}
-} // namespace pcat
+} // namespace pcat::algorithm::blockLinear

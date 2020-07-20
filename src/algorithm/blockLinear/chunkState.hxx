@@ -1,10 +1,10 @@
-#ifndef CHUNK_STATE__HXX
-#define CHUNK_STATE__HXX
+#ifndef ALGORITHM_BLOCK_LINEAR_CHUNK_STATE__HXX
+#define ALGORITHM_BLOCK_LINEAR_CHUNK_STATE__HXX
 
 #include <cassert>
 #include "mappingOffset.hxx"
 
-namespace pcat
+namespace pcat::algorithm::blockLinear
 {
 	struct chunkState_t final
 	{
@@ -72,6 +72,6 @@ namespace pcat
 		}
 		bool operator !=(const chunkState_t &other) const noexcept { return !(*this == other); }
 	};
-} // namespace pcat
+} // namespace pcat::algorithm::blockLinear
 
-#endif /*CHUNK_STATE__HXX*/
+#endif /*ALGORITHM_BLOCK_LINEAR_CHUNK_STATE__HXX*/

@@ -1,9 +1,9 @@
-#ifndef FILE_CHUNKER__HXX
-#define FILE_CHUNKER__HXX
+#ifndef ALGORITHM_BLOCK_LINEAR_FILE_CHUNKER__HXX
+#define ALGORITHM_BLOCK_LINEAR_FILE_CHUNKER__HXX
 
 #include "chunkState.hxx"
 
-namespace pcat
+namespace pcat::algorithm::blockLinear
 {
 	struct chunking_t final
 	{
@@ -67,6 +67,6 @@ namespace pcat
 		// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 		chunking_t end() noexcept { return {inputFiles.end()}; }
 	};
-} // namespace pcat
+} // namespace pcat::algorithm::blockLinear
 
-#endif /*FILE_CHUNKER__HXX*/
+#endif /*ALGORITHM_BLOCK_LINEAR_FILE_CHUNKER__HXX*/

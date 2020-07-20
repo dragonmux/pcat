@@ -4,9 +4,9 @@
 std::vector<substrate::fd_t> pcat::inputFiles{};
 substrate::fd_t pcat::outputFile{};
 
-using pcat::fileChunker_t;
-using pcat::chunking_t;
-using pcat::chunkState_t;
+using pcat::algorithm::blockLinear::fileChunker_t;
+using pcat::algorithm::blockLinear::chunking_t;
+using pcat::algorithm::blockLinear::chunkState_t;
 using pcat::mappingOffset_t;
 using pcat::transferBlockSize;
 using pcat::inputFiles;

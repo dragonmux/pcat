@@ -3,7 +3,7 @@
 
 std::vector<substrate::fd_t> pcat::inputFiles{};
 
-using pcat::chunkState_t;
+using pcat::algorithm::blockLinear::chunkState_t;
 using pcat::mappingOffset_t;
 using pcat::transferBlockSize;
 using pcat::inputFiles;
