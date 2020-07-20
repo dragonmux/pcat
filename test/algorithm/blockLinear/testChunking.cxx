@@ -13,6 +13,7 @@ constexpr static std::size_t operator ""_uz(const unsigned long long value) noex
 
 std::vector<substrate::fd_t> pcat::inputFiles{};
 substrate::fd_t pcat::outputFile{};
+std::atomic<bool> pcat::sync{true};
 
 using random_t = typename std::random_device::result_type;
 using substrate::fd_t;
