@@ -68,6 +68,14 @@ namespace pcat::algorithm::chunkSpans
 			nextInputBlock();
 			inputOffset_.length(std::min(transferBlockSize, std::min(remainder, inputLength_)));
 		}
+
+		bool operator ==(const chunkState_t &other) const noexcept
+		{
+			return file_ == other.file_ &&
+				inputOffset_ == other.inputOffset_ &&
+				outputOffset_ == other.outputOffset_;
+		}
+		bool operator !=(const chunkState_t &other) const noexcept { return !(*this == other); }
 	};
 
 	struct chunking_t final
@@ -155,6 +163,70 @@ namespace pcat::algorithm::chunkSpans
 
 	int32_t copyChunk(chunkState_t chunk)
 	{
+		const auto &outputOffset = chunk.outputOffset();
+		[[maybe_unused]] const auto outputLength{outputOffset.length()};
+		const mmap_t outputChunk{outputFile, outputOffset.adjustedOffset(),
+			outputOffset.adjustedLength(), PROT_WRITE};
+		if (!outputChunk.valid())
+		{
+			const auto error = errno;
+			console.error("Failed to map destination file transfer chunk: "sv, std::strerror(error));
+			return error;
+		}
+		else if (!outputChunk.advise<MADV_SEQUENTIAL, MADV_DONTDUMP>())
+		{
+			const auto error = errno;
+			console.error("Failed to advise the source map: "sv, std::strerror(error));
+			return error;
+		}
+
+		auto offset{outputOffset.adjustment()};
+		while (!chunk.atEnd())
+		{
+			const auto &inputFile = chunk.inputFile();
+			const auto &inputOffset = chunk.inputOffset();
+			const mmap_t inputChunk{inputFile, inputOffset.adjustedOffset(),
+				inputOffset.adjustedLength(), PROT_READ, MAP_PRIVATE};
+			if (!inputChunk.valid())
+			{
+				const auto error = errno;
+				console.error("Failed to map source file transfer chunk: "sv, std::strerror(error));
+				return error;
+			}
+			else if (!inputChunk.advise<MADV_SEQUENTIAL, MADV_WILLNEED, MADV_DONTDUMP>())
+			{
+				const auto error = errno;
+				console.error("Failed to advise the source map: "sv, std::strerror(error));
+				return error;
+			}
+
+			try
+			{
+				outputChunk.copyTo(
+					offset,
+					inputChunk.address(inputOffset.adjustment()),
+					inputOffset.length()
+				);
+			}
+			catch (const std::out_of_range &error)
+			{
+				console.error("Failure while copying data block: "sv, error.what());
+				return EINVAL;
+			}
+			offset += inputOffset.length();
+			assert(offset <= outputLength);
+			++chunk;
+		}
+
+		if (sync && !outputChunk.sync())
+		{
+			const auto error = errno;
+			console.error("Failed to synchronise the mapping for region "sv, outputOffset.offset(),
+				':', outputOffset.length(), " at address "sv, outputChunk.address(0));
+			console.error("Failure reason: "sv, std::strerror(error));
+			return error;
+		}
+		return 0;
 	}
 
 	/*!
@@ -187,18 +259,6 @@ namespace pcat::algorithm::chunkSpans
 
 		const auto chunksPerSpan{outputFile.length() / (transferBlockSize * copyThreads.numProcessors())};
 		fileChunker_t chunker{chunksPerSpan * transferBlockSize};
-		const auto spanLength{chunksPerSpan * transferBlockSize};
-
-		console.info("Copying "sv, outputFile.length(), " bytes using "sv,
-			copyThreads.numProcessors(), " threads"sv);
-		console.info("Each thread must process "sv, chunksPerSpan, " chunks ("sv, chunker.spanLength(),
-			" bytes) + "sv, outputFile.length() - (spanLength * copyThreads.numProcessors()),
-			" additional bytes on the final span"sv);
-
-		const auto endState{*chunker.end()};
-		console.info("End state is "sv, endState.inputLength(), " bytes at ", endState.inputOffset().offset(),
-			" with output region of ", endState.outputOffset().length(), " bytes at ",
-			endState.outputOffset().offset(), " using file ", int32_t{endState.inputFile()});
 
 		for (const chunkState_t &chunk : chunker)
 		{
@@ -211,13 +271,8 @@ namespace pcat::algorithm::chunkSpans
 			console.info("Copying "sv, chunk.inputLength(), " bytes at ", chunk.inputOffset().offset(),
 				" to output region of ", chunk.outputOffset().length(), " bytes at ", chunk.outputOffset().offset(),
 				" using file ", int32_t{chunk.inputFile()});
-			/*if (auto result{copyChunk(chunk)}; !result)
-				return result;*/
-			if (!chunk.inputLength())
-			{
-				console.error("Algorithmic failure, impossible input state");
-				break;
-			}
+			if (const auto result{copyChunk(chunk)}; result)
+				return result;
 		}
 		//return copyThreads.finish();
 		return 0;
