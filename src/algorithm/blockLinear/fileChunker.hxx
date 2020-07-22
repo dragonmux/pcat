@@ -63,9 +63,9 @@ namespace pcat::algorithm::blockLinear
 	struct fileChunker_t final
 	{
 		// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-		chunking_t begin() const noexcept { return {}; }
+		[[nodiscard]] chunking_t begin() const noexcept { return {}; }
 		// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-		chunking_t end() const noexcept { return {inputFiles.end()}; }
+		[[nodiscard]] chunking_t end() const noexcept { return {inputFiles.end()}; }
 	};
 } // namespace pcat::algorithm::blockLinear
 
