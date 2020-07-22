@@ -33,6 +33,7 @@ constexpr static auto stringCorePins{"--core-pins"sv};
 constexpr static auto stringCoreNumbers{"0,1,4,5"sv};
 constexpr static auto stringAlgorithm{"--algorithm"sv};
 constexpr static auto stringBlockLinear{"blockLinear"sv};
+constexpr static auto stringChunkSpans{"chunkSpans"sv};
 constexpr static auto corePins{substrate::make_array<std::size_t>({0_uz, 1_uz, 4_uz, 5_uz})};
 constexpr static auto simpleArgs{substrate::make_array<const char *>({"test", "--help"})};
 constexpr static auto assignedArgs{substrate::make_array<const char *>({"test", "--output=file"})};
@@ -67,6 +68,9 @@ constexpr static auto badlyDelimitedPinningArgs{substrate::make_array<const char
 constexpr static auto badAlgorithmArgs{substrate::make_array<const char *>({"test", "--algorithm"})};
 constexpr static auto invalidAlgorithmArgs{substrate::make_array<const char *>({"test", "--algorithm", "flump"})};
 constexpr static auto shortAlgorithmArgs{substrate::make_array<const char *>({"test", "--algorithm="})};
+constexpr static auto chunkSpansAlgorithmArgs{
+	substrate::make_array<const char *>({"test", "--algorithm=chunkSpans"})
+};
 constexpr static auto simpleOptions{substrate::make_array<option_t>({{"--help"sv, argType_t::help}})};
 constexpr static auto assignedOptions{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto multipleOptions{substrate::make_array<option_t>(
@@ -155,14 +159,13 @@ namespace parser
 
 	template<> struct assertNode_t<argAlgorithm_t>
 	{
-		void operator()(testsuite &suite, const std::unique_ptr<argNode_t> &arg)
+		void operator()(testsuite &suite, const std::unique_ptr<argNode_t> &arg, const algorithm_t algorithm)
 		{
 			suite.assertNotNull(arg);
 			suite.assertEqual(static_cast<uint8_t>(arg->type()), static_cast<uint8_t>(argType_t::algorithm));
 			auto *const node = dynamic_cast<argAlgorithm_t *>(arg.get());
 			suite.assertTrue(node->valid());
-			suite.assertEqual(static_cast<uint8_t>(node->algorithm()),
-				static_cast<uint8_t>(algorithm_t::blockLinear));
+			suite.assertEqual(static_cast<uint8_t>(node->algorithm()), static_cast<uint8_t>(algorithm));
 		}
 	};
 
@@ -229,7 +232,7 @@ namespace parser
 		assertNode_t<argPinning_t>{}(suite, *iterator);
 		++iterator;
 		suite.assertTrue(iterator != args->end());
-		assertNode_t<argAlgorithm_t>{}(suite, *iterator);
+		assertNode_t<argAlgorithm_t>{}(suite, *iterator, algorithm_t::blockLinear);
 		++iterator;
 		suite.assertTrue(iterator == args->end());
 		suite.assertNull(args->find(argType_t::unrecognised));
@@ -454,6 +457,22 @@ namespace parser
 		);
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
+	}
+
+	void testChunkSpansAlgorithm(testsuite &suite)
+	{
+		args = {};
+		suite.assertTrue(
+			parseArguments(chunkSpansAlgorithmArgs.size(), chunkSpansAlgorithmArgs.data(), badAlgorithmOption)
+		);
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 1);
+		auto iterator = args->begin();
+		suite.assertTrue(iterator != args->end());
+		assertNode_t<argAlgorithm_t>{}(suite, *iterator, algorithm_t::chunkSpans);
+		++iterator;
+		suite.assertTrue(iterator == args->end());
+		suite.assertNull(args->find(argType_t::unrecognised));
 	}
 
 	void testBadAlgorithm(testsuite &suite)

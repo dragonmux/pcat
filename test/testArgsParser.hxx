@@ -14,6 +14,7 @@ namespace parser
 	extern void testBadOutputFile(testsuite &suite);
 	extern void testBadThreads(testsuite &suite);
 	extern void testBadPinning(testsuite &suite);
+	extern void testChunkSpansAlgorithm(testsuite &suite);
 	extern void testBadAlgorithm(testsuite &suite);
 }
 
