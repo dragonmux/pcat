@@ -14,7 +14,7 @@ namespace pcat::algorithm::blockLinear
 		mappingOffset_t inputOffset_{};
 		mappingOffset_t outputOffset_{};
 
-		constexpr void nextInputBlock() noexcept
+		constexpr void nextInputBlock(const off_t remainder) noexcept
 		{
 			inputOffset_ += inputOffset_.length();
 			if (inputOffset_.offset() == inputLength_)
@@ -24,6 +24,7 @@ namespace pcat::algorithm::blockLinear
 				inputLength_ = file_ == inputFiles.end() ? 0 : file_->length();
 				inputOffset_ = {};
 			}
+			inputOffset_.length(std::min(remainder, inputLength_));
 		};
 
 	public:
@@ -57,11 +58,10 @@ namespace pcat::algorithm::blockLinear
 		{
 			if (atEnd())
 				return;
-			const off_t remainder = outputOffset_.length() - inputOffset_.length();
+			const off_t remainder{outputOffset_.length() - inputOffset_.length()};
 			outputOffset_ += inputOffset_.length();
 			outputOffset_.length(remainder);
-			nextInputBlock();
-			inputOffset_.length(std::min(remainder, inputLength_));
+			nextInputBlock(remainder);
 		}
 
 		bool operator ==(const chunkState_t &other) const noexcept
