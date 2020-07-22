@@ -83,7 +83,7 @@ jobs:
         run: |
           wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip
           sudo pip3 install --upgrade pip setuptools wheel
-          pip3 install --user meson
+          pip3 install --user 'meson~=0.54.3'
           unzip ninja-linux.zip -d ~/.local/bin
           rm ninja-linux.zip
         working-directory: ${{ runner.temp }}
