@@ -98,3 +98,4 @@ foreach test : pcatTests
 endforeach
 
 subdir('algorithm/blockLinear')
+subdir('algorithm/chunkSpans')
