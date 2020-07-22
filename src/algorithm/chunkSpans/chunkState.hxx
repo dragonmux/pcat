@@ -72,6 +72,6 @@ namespace pcat::algorithm::chunkSpans
 		}
 		bool operator !=(const chunkState_t &other) const noexcept { return !(*this == other); }
 	};
-} // namespace pcat::algorithm::blockLinear
+} // namespace pcat::algorithm::chunkSpans
 
 #endif /*ALGORITHM_CHUNK_SPANS_CHUNK_STATE__HXX*/
