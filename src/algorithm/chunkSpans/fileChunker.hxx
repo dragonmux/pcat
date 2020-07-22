@@ -40,7 +40,7 @@ namespace pcat::algorithm::chunkSpans
 			{ return {file, inputLength, inputOffset, outputOffset}; }
 		chunkState_t operator *() const noexcept { return subchunkState(); }
 
-		constexpr void operator ++() noexcept
+		void operator ++() noexcept
 		{
 			if (outputOffset == outputLength)
 				return;
