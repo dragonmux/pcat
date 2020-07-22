@@ -64,6 +64,7 @@ constexpr static auto shortPinningArgs{substrate::make_array<const char *>({"tes
 constexpr static auto negativePinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "-1"})};
 constexpr static auto nonNumericPinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "a1"})};
 constexpr static auto badlyDelimitedPinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "0;"})};
+constexpr static auto badAlgorithmArgs{substrate::make_array<const char *>({"test", "--algorithm"})};
 constexpr static auto simpleOptions{substrate::make_array<option_t>({{"--help"sv, argType_t::help}})};
 constexpr static auto assignedOptions{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto multipleOptions{substrate::make_array<option_t>(
@@ -79,6 +80,7 @@ constexpr static auto multipleOptions{substrate::make_array<option_t>(
 constexpr static auto badFileOption{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto badThreadsOption{substrate::make_array<option_t>({{"--threads"sv, argType_t::threads}})};
 constexpr static auto badPinningOption{substrate::make_array<option_t>({{"--core-pins"sv, argType_t::pinning}})};
+constexpr static auto badAlgorithmOption{substrate::make_array<option_t>({{"--algorithm"sv, argType_t::algorithm}})};
 
 namespace parser
 {
@@ -450,5 +452,11 @@ namespace parser
 		);
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
+	}
+
+	void testBadAlgorithm(testsuite &suite)
+	{
+		args = {};
+		suite.assertFalse(parseArguments(badAlgorithmArgs.size(), badAlgorithmArgs.data(), badAlgorithmOption));
 	}
 } // namespace parser
