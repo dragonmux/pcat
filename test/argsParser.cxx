@@ -65,6 +65,8 @@ constexpr static auto negativePinningArgs{substrate::make_array<const char *>({"
 constexpr static auto nonNumericPinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "a1"})};
 constexpr static auto badlyDelimitedPinningArgs{substrate::make_array<const char *>({"test", "--core-pins", "0;"})};
 constexpr static auto badAlgorithmArgs{substrate::make_array<const char *>({"test", "--algorithm"})};
+constexpr static auto invalidAlgorithmArgs{substrate::make_array<const char *>({"test", "--algorithm", "flump"})};
+constexpr static auto shortAlgorithmArgs{substrate::make_array<const char *>({"test", "--algorithm="})};
 constexpr static auto simpleOptions{substrate::make_array<option_t>({{"--help"sv, argType_t::help}})};
 constexpr static auto assignedOptions{substrate::make_array<option_t>({{"--output"sv, argType_t::outputFile}})};
 constexpr static auto multipleOptions{substrate::make_array<option_t>(
@@ -458,5 +460,19 @@ namespace parser
 	{
 		args = {};
 		suite.assertFalse(parseArguments(badAlgorithmArgs.size(), badAlgorithmArgs.data(), badAlgorithmOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(
+			parseArguments(invalidAlgorithmArgs.size(), invalidAlgorithmArgs.data(), badAlgorithmOption)
+		);
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
+
+		args = {};
+		suite.assertFalse(parseArguments(shortAlgorithmArgs.size(), shortAlgorithmArgs.data(), badAlgorithmOption));
+		suite.assertNotNull(args);
+		suite.assertEqual(args->count(), 0);
 	}
 } // namespace parser
