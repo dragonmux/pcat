@@ -41,7 +41,7 @@ foreach test : blockLinearTests
 	)
 
 	test(
-		test,
+		'blockLinear-@0@'.format(test),
 		crunchpp,
 		args: [test],
 		workdir: meson.current_build_dir(),
