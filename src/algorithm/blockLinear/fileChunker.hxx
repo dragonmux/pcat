@@ -19,7 +19,7 @@ namespace pcat::algorithm::blockLinear
 			inputOffset += inputOffset.length();
 			if (inputOffset.offset() == inputLength)
 			{
-				assert(file < inputFiles.end()); // NOLINT
+				assert(file != inputFiles.end()); // NOLINT
 				++file;
 				inputLength = file == inputFiles.end() ? 0 : file->length();
 				inputOffset = {};
