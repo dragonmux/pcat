@@ -59,7 +59,7 @@ namespace pcat::algorithm::chunkSpans
 			else if (outputLength - outputOffset - spanLength < spanLength)
 				outputOffset.length(outputLength - outputOffset);
 			else
-				outputOffset.length(spanLength);
+				outputOffset.length(spanOf(outputLength - outputOffset));
 		}
 
 		bool operator ==(const chunking_t &other) const noexcept
