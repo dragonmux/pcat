@@ -1,11 +1,11 @@
 chunkSpansTests = [
-	'testChunkState'#, 'testFileChunker', 'testChunking'
+	'testChunkState', 'testFileChunker'#, 'testChunking'
 ]
 
 algorithmTestHelpers = static_library(
 	'testHelpers',
 	[
-		'chunkState.cxx'#, 'fileChunker.cxx'
+		'chunkState.cxx', 'fileChunker.cxx'
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
@@ -15,8 +15,8 @@ algorithmTestHelpers = static_library(
 )
 
 testObjectMap = {
-	'testChunkState': {'test': ['chunkState.cxx']}#,
-	#'testFileChunker': {'test': ['fileChunker.cxx']},
+	'testChunkState': {'test': ['chunkState.cxx']},
+	'testFileChunker': {'test': ['fileChunker.cxx']}#,
 	#'testChunking': {
 	#	'pcat': [
 	#		'src/algorithm/chunkSpans/chunking.cxx', 'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
