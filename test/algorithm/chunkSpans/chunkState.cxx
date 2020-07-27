@@ -174,22 +174,22 @@ namespace chunkState
 		};
 		const chunkState_t midState3
 		{
-			inputFiles.begin() + 3, transferBlockSize - 4096, mappingOffset_t{0, transferBlockSize - 4096},
+			inputFiles.begin() + 3, transferBlockSize, mappingOffset_t{0, transferBlockSize},
 			mappingOffset_t{6144, spanSize - 6144}
 		};
 		const chunkState_t midState4
 		{
-			inputFiles.begin() + 4, transferBlockSize, mappingOffset_t{0, transferBlockSize},
-			mappingOffset_t{transferBlockSize + 2048, spanSize - transferBlockSize - 2048}
+			inputFiles.begin() + 4, transferBlockSize - 4096, mappingOffset_t{0, transferBlockSize - 4096},
+			mappingOffset_t{transferBlockSize + 6144, spanSize - transferBlockSize - 6144}
 		};
 		const chunkState_t midState5
 		{
-			inputFiles.begin() + 5, hugefileSize, mappingOffset_t{0, hugefileSize},
+			inputFiles.begin() + 5, hugefileSize, mappingOffset_t{0, transferBlockSize},
 			mappingOffset_t{(transferBlockSize * 2) + 2048, hugefileOffset}
 		};
 		const chunkState_t endState
 		{
-			inputFiles.begin() + 5, hugefileSize, mappingOffset_t{hugefileOffset, hugefileSize - hugefileOffset},
+			inputFiles.begin() + 5, hugefileSize, mappingOffset_t{hugefileOffset, 0},
 			mappingOffset_t{spanSize, 0}
 		};
 		suite.assertEqual(beginState->inputLength(), 1024);
@@ -217,12 +217,13 @@ namespace chunkState
 		suite.assertFalse(beginState->atEnd());
 		suite.assertTrue(beginState->inputFile().valid());
 		suite.assertTrue(*beginState == midState5);
-		++*beginState;
+		for (uint8_t i{0}; i < 6; ++i)
+			++*beginState;
 		suite.assertTrue(beginState->atEnd());
 		suite.assertTrue(*beginState == endState);
 		suite.assertEqual(beginState->inputLength(), endState.inputLength());
 		suite.assertTrue(beginState->inputOffset() == endState.inputOffset());
 		suite.assertTrue(beginState->outputOffset() == endState.outputOffset());
-		suite.assertTrue(beginState->file() == inputFiles.end());
+		suite.assertTrue(beginState->file() == inputFiles.begin() + 5);
 	}
 } // namespace chunkState

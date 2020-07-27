@@ -100,6 +100,7 @@ public:
 		CRUNCHpp_TEST(testNoFilesConstruct)
 		CRUNCHpp_TEST(testFillAlignedChunk)
 		CRUNCHpp_TEST(testFillUnalignedChunks)
+		CRUNCHpp_TEST(testFillLargeSpanChunk)
 	}
 };
 
