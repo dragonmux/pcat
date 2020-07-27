@@ -9,6 +9,7 @@ namespace fileChunker
 	extern void testDefaultConstruct(testsuite &suite);
 	extern void testFillAlignedChunk(testsuite &suite);
 	extern void testFillUnalignedChunks(testsuite &suite);
+	extern void testFillLargeSpanChunk(testsuite &suite);
 }
 
 #endif /*TEST_FILE_CHUNKER__HXX*/

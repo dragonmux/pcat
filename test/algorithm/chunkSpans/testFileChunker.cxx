@@ -20,7 +20,8 @@ constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_vie
 	{"chunk2.test"sv, 2048_uz},
 	{"chunk3.test"sv, 3072_uz},
 	{"chunk4.test"sv, std::size_t(transferBlockSize) - 4096_uz},
-	{"chunk5.test"sv, std::size_t(transferBlockSize)}
+	{"chunk5.test"sv, std::size_t(transferBlockSize)},
+	{"chunk6.test"sv, std::size_t(transferBlockSize * 32U) - 2048_uz}
 })};
 
 #ifdef _WINDOWS
@@ -56,10 +57,27 @@ private:
 		inputFiles.emplace_back(files[0].dup());
 		inputFiles.emplace_back(files[2].dup());
 		inputFiles.emplace_back(files[4].dup());
+		// NOLINTNEXTLINE(readability-magic-numbers)
 		if (!outputFile.resize(transferBlockSize + 4096))
 			fail("Failed to resize the output test file");
 		pcat::outputFile = outputFile.dup();
 		fileChunker::testFillUnalignedChunks(*this);
+	}
+
+	void testFillLargeSpanChunk()
+	{
+		inputFiles.clear();
+		inputFiles.emplace_back(files[0].dup());
+		inputFiles.emplace_back(files[1].dup());
+		inputFiles.emplace_back(files[2].dup());
+		inputFiles.emplace_back(files[4].dup());
+		inputFiles.emplace_back(files[3].dup());
+		inputFiles.emplace_back(files[5].dup());
+		// NOLINTNEXTLINE(readability-magic-numbers)
+		if (!outputFile.resize(transferBlockSize * 34U))
+			fail("Failed to resize the output test file");
+		pcat::outputFile = outputFile.dup();
+		fileChunker::testFillLargeSpanChunk(*this);
 	}
 
 	void makeFile(const std::string_view fileName, const std::size_t size)
@@ -100,6 +118,7 @@ public:
 		CRUNCHpp_TEST(testDefaultConstruct)
 		CRUNCHpp_TEST(testFillAlignedChunk)
 		CRUNCHpp_TEST(testFillUnalignedChunks)
+		CRUNCHpp_TEST(testFillLargeSpanChunk)
 	}
 };
 
