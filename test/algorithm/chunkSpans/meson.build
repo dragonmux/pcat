@@ -1,5 +1,5 @@
 chunkSpansTests = [
-	'testChunkState', 'testFileChunker'#, 'testChunking'
+	'testChunkState', 'testFileChunker', 'testChunking'
 ]
 
 algorithmTestHelpers = static_library(
@@ -16,13 +16,13 @@ algorithmTestHelpers = static_library(
 
 testObjectMap = {
 	'testChunkState': {'test': ['chunkState.cxx']},
-	'testFileChunker': {'test': ['fileChunker.cxx']}#,
-	#'testChunking': {
-	#	'pcat': [
-	#		'src/algorithm/chunkSpans/chunking.cxx', 'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
-	#		'substrate/impl/console.cxx'
-	#	]
-	#}
+	'testFileChunker': {'test': ['fileChunker.cxx']},
+	'testChunking': {
+		'pcat': [
+			'src/algorithm/chunkSpans/chunking.cxx', 'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
+			'substrate/impl/console.cxx'
+		]
+	}
 }
 
 foreach test : chunkSpansTests
