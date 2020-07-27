@@ -67,6 +67,7 @@ namespace pcat::algorithm::chunkSpans
 		bool operator ==(const chunkState_t &other) const noexcept
 		{
 			return file_ == other.file_ &&
+				inputLength_ == other.inputLength_ &&
 				inputOffset_ == other.inputOffset_ &&
 				outputOffset_ == other.outputOffset_;
 		}
