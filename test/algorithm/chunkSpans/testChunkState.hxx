@@ -10,6 +10,7 @@ namespace chunkState
 	extern void testNoFilesConstruct(testsuite &suite);
 	extern void testFillAlignedChunk(testsuite &suite);
 	extern void testFillUnalignedChunks(testsuite &suite);
+	extern void testFillLargeSpanChunk(testsuite &suite);
 }
 
 #endif /*TEST_CHUNK_STATE__HXX*/
