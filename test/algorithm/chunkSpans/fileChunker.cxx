@@ -105,6 +105,19 @@ namespace fileChunker
 		suite.assertTrue(*beginState == endChunk);
 	}
 
+	void assertChunkState(testsuite &suite, const chunkState_t &chunk, const pcat::inputFilesIterator_t file,
+		const mappingOffset_t inputOffset, const mappingOffset_t outputOffset, const off_t spanSize,
+		const off_t hugefileSize)
+	{
+		suite.assertTrue(chunk.file() == file);
+		suite.assertEqual(chunk.inputLength(), file->length());
+		suite.assertTrue(chunk.inputOffset() == inputOffset);
+		suite.assertTrue(chunk.outputOffset() == outputOffset);
+		suite.assertTrue(chunk.end() == chunkState_t{inputFiles.begin() + 5, hugefileSize,
+			{inputOffset.offset() + spanSize, inputOffset.length() - spanSize},
+			{outputOffset.offset() + spanSize, 0}});
+	}
+
 	void testFillLargeSpanChunk(testsuite &suite)
 	{
 		constexpr off_t spanSize{transferBlockSize * 8};
@@ -141,5 +154,33 @@ namespace fileChunker
 		suite.assertTrue(endChunk.outputOffset() == mappingOffset_t{totalHugeSize, 0});
 		suite.assertTrue(endChunk.end() == chunkState_t{inputFiles.end(), 0, {}, {totalHugeSize, 0}});
 
+		++beginState;
+		assertChunkState(suite, *beginState, inputFiles.begin() + 5,
+			{hugefileOffset, hugefileSize - hugefileOffset},
+			{spanSize, 0}, spanSize, hugefileSize
+		);
+
+		++beginState;
+		assertChunkState(suite, *beginState, inputFiles.begin() + 5,
+			{hugefileOffset + spanSize, hugefileSize - hugefileOffset - spanSize},
+			{spanSize * 2, 0}, spanSize, hugefileSize
+		);
+
+		++beginState;
+		// This is the 4th (and therefore final) span to process so, this checks
+		// that the chunkSpans algorithm is correctly pulling in the extra transferBlocks * 2
+		// blocks into this span
+		const auto chunk{*beginState};
+		suite.assertTrue(chunk.file() == inputFiles.begin() + 5);
+		suite.assertEqual(chunk.inputLength(), inputFiles[5].length());
+		suite.assertTrue(chunk.inputOffset() == mappingOffset_t{hugefileOffset + (spanSize * 2),
+			hugefileSize - hugefileOffset - (spanSize * 2)});
+		suite.assertTrue(chunk.outputOffset() == mappingOffset_t{spanSize * 3, 0});
+		suite.assertTrue(endChunk.end() == chunkState_t{inputFiles.end(), 0, {}, {totalHugeSize, 0}});
+
+		++beginState;
+		suite.assertTrue(*beginState == endChunk);
+		++beginState;
+		suite.assertTrue(*beginState == endChunk);
 	}
 } // namespace fileChunker
