@@ -22,7 +22,7 @@ endif
 pcatTests = [
 	'testFD', 'testConsole', 'testArgsTokenizer', 'testArgsParser',
 	'testThreadedQueue', 'testAffinity', 'testThreadPool', 'testMappingOffset',
-	'testMMap', 'testIndexSequence'
+	'testMMap', 'testIndexSequence', 'testPcat'
 ]
 
 testHelpers = static_library(
@@ -30,7 +30,7 @@ testHelpers = static_library(
 	[
 		'fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx',
 		'argsParser.cxx', 'threadedQueue.cxx', 'affinity.cxx', 'threadPool.cxx',
-		'mappingOffset.cxx', 'mmap.cxx', 'indexSequence.cxx'
+		'mappingOffset.cxx', 'mmap.cxx', 'indexSequence.cxx', 'version.cxx'
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
@@ -70,7 +70,11 @@ testObjectMap = {
 	},
 	'testMappingOffset' : {'test': ['mappingOffset.cxx']},
 	'testMMap' : {'test': ['mmap.cxx']},
-	'testIndexSequence': {'test': ['indexSequence.cxx']}
+	'testIndexSequence': {'test': ['indexSequence.cxx']},
+	'testPcat': {
+		'test': ['version.cxx'],
+		'pcat': ['substrate/impl/console.cxx']
+	}
 }
 
 foreach test : pcatTests
@@ -81,7 +85,7 @@ foreach test : pcatTests
 	custom_target(
 		test,
 		command: [
-			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I../src'
+			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I../src', '-I@0@/src'.format(buildDir)
 		] + commandExtra + testLibs,
 		input: [test + '.cxx'] + pcatObjs + testObjs,
 		output: test + '.so',

@@ -18,6 +18,7 @@ cxx = meson.get_compiler('cpp')
 sanitizer = get_option('b_sanitize')
 substrate = include_directories('substrate')
 threading = dependency('threads')
+buildDir = meson.current_build_dir()
 
 fPIC = []
 if cxx.has_argument('-fPIC')
