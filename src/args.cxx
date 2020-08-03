@@ -1,6 +1,5 @@
 #include <substrate/console>
 #include <substrate/utility>
-#include "utils/span.hxx"
 #include "args.hxx"
 #include "args/tokenizer.hxx"
 
@@ -158,8 +157,7 @@ bool parseArgument(tokenizer_t &lexer, const span_t<const option_t> &options, ar
 // representation if matched, allowing the parser to build a neat tree of all
 // the arguments for further use by the caller
 bool parseArguments(const size_t argCount, const char *const *const argList,
-	const option_t *const optionsBegin,
-	const option_t *const optionsEnd) try
+	const span_t<const option_t> options) try
 {
 	if (argCount < 2 || !argList)
 		return false;
@@ -167,7 +165,6 @@ bool parseArguments(const size_t argCount, const char *const *const argList,
 	// tokenizing directly at the second.
 	tokenizer_t lexer{argCount - 1, argList + 1};
 	const auto &token{lexer.token()};
-	const span_t options{optionsBegin, optionsEnd};
 	args = substrate::make_unique<argsTree_t>();
 
 	while (token.valid())

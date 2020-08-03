@@ -5,6 +5,7 @@
 #include <array>
 #include <memory>
 #include <string_view>
+#include "utils/span.hxx"
 
 namespace pcat::args
 {
@@ -166,13 +167,6 @@ extern std::unique_ptr<pcat::args::argsTree_t> args;
 using pcat::args::argType_t;
 
 extern bool parseArguments(size_t argCount, const char *const *argList,
-	const pcat::args::option_t *optionsBegin,
-	const pcat::args::option_t *optionsEnd);
-
-template<size_t optionCount> bool parseArguments(const size_t argCount, const char *const *const argList,
-	const std::array<pcat::args::option_t, optionCount> &options)
-{
-	return parseArguments(argCount, argList, options.begin(), options.end());
-}
+	pcat::utils::span_t<const pcat::args::option_t> options);
 
 #endif /*ARGS__HXX*/
