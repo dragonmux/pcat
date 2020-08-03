@@ -9,7 +9,9 @@
 #include <substrate/fd>
 #include <substrate/utility>
 #include <substrate/console>
-#include <sys/file.h>
+#ifndef _WINDOWS
+#	include <sys/file.h>
+#endif
 #include <version.hxx>
 #include "args.hxx"
 #include "help.hxx"
@@ -48,6 +50,7 @@ namespace pcat
 		return 0;
 	}
 
+#ifndef _WINDOWS
 	bool lockFile(const fd_t &file) noexcept
 	{
 		struct flock lock{};
@@ -71,6 +74,7 @@ namespace pcat
 		return fcntl(file, F_SETLK, &lock) == 0 && // NOLINT(cppcoreguidelines-pro-type-vararg)
 			flock(file, LOCK_UN) == 0;
 	}
+#endif
 
 	bool checkFile(const std::string_view fileName) noexcept
 	{
@@ -78,9 +82,11 @@ namespace pcat
 		// If the file wasn't able to be opened, or is not stat()-able, discard it.
 		if (!file.valid() || file.length() <= 0)
 			return false;
+#ifndef _WINDOWS
 		// Change it from just open, to exclusive access so it can't be removed or changed from under us.
 		if (!lockFile(file))
 			return false;
+#endif
 		inputFiles.emplace_back(std::move(file));
 		return true;
 	}
@@ -126,8 +132,10 @@ namespace pcat
 
 	void closeFiles() noexcept
 	{
+#ifndef _WINDOWS
 		for (const auto &file : inputFiles)
 			unlockFile(file);
+#endif
 		inputFiles.clear();
 	}
 
