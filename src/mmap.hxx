@@ -7,9 +7,9 @@
 #	include <sys/mman.h>
 #else
 #	include <io.h>
-#	define _WIN32_LEAN_AND_MEAN
+#	define WIN32_LEAN_AND_MEAN
 #	include <windows.h>
-#	undef _WIN32_LEAN_AND_MEAN
+#	undef WIN32_LEAN_AND_MEAN
 #	undef min
 #	undef max
 #endif
