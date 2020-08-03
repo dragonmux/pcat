@@ -102,7 +102,7 @@ namespace pcat
 					processorInfo = {count};
 				}
 				else
-					throw std::system_error{error, std::system_category()};
+					throw std::system_error{static_cast<int>(error), std::system_category()};
 			}
 
 			for (const auto &processor : processorInfo)
