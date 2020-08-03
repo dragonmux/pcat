@@ -13,8 +13,8 @@ namespace pcat
 	using substrate::operator ""_KiB;
 	using substrate::operator ""_MiB;
 
-	constexpr static off_t pageSize = 4_KiB;
-	constexpr static off_t transferBlockSize = 1_MiB;
+	constexpr static auto pageSize{off_t(4_KiB)};
+	constexpr static auto transferBlockSize{off_t(1_MiB)};
 	extern std::vector<fd_t> inputFiles;
 	extern fd_t outputFile;
 	extern std::atomic<bool> sync;
