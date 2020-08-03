@@ -20,6 +20,18 @@
 
 namespace pcat
 {
+	using substrate::off_t;
+
+#ifdef _WINDOWS
+	const DWORD PROT_READ{PAGE_READONLY};
+	const DWORD PROT_WRITE{PAGE_READWRITE};
+	const int32_t MAP_PRIVATE{0};
+
+	const auto MADV_SEQUENTIAL{0};
+	const auto MADV_WILLNEED{0};
+	const auto MADV_DONTDUMP{0};
+#endif
+
 	struct mmap_t final
 	{
 	private:
@@ -40,6 +52,20 @@ namespace pcat
 			}
 			throw std::out_of_range("mmap_t index out of range");
 		}
+
+#ifdef _WINDOWS
+		constexpr DWORD protToAccess(const DWORD prot) const noexcept
+		{
+			DWORD access{};
+			if (prot & PAGE_READONLY)
+				access |= FILE_MAP_READ;
+			if (prot & PAGE_READWRITE)
+				access |= FILE_MAP_WRITE;
+			if (prot & PAGE_WRITECOPY)
+				access |= FILE_MAP_WRITE;
+			return access;
+		}
+#endif
 
 		using fd_t = substrate::fd_t;
 
@@ -73,27 +99,27 @@ namespace pcat
 		mmap_t(const fd_t &fd, const off_t len, const DWORD prot, const int32_t flags = 0,
 			void *addr = nullptr) noexcept : _len{len}, _mapping{[&]() noexcept -> HANDLE
 			{
-				const auto file = static_cast<HANDLE>(_get_osfhandle(fd));
+				const auto file = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
 				static_assert(sizeof(DWORD) == 4);
-				return CreateFileMappingA(file, nullptr, prot, DWORD(len >> 32), DWORD(len), nullptr);
-			}()}, _addr([&]() noexcept -> void *
+				return CreateFileMappingA(file, nullptr, prot, DWORD(len >> 32U), DWORD(len), nullptr);
+			}()}, _addr{[&]() noexcept -> void *
 			{
 				if (!_mapping)
 					return nullptr;
 				return MapViewOfFile(_mapping, protToAccess(prot), 0, 0, 0);
 			}()} { }
 		mmap_t(const fd_t &fd, const off_t offset, const off_t length, const DWORD prot,
-			const int32_t flags = 0, void *addr = nullptr) noexcept : _len{len},
+			const int32_t flags = 0, void *addr = nullptr) noexcept : _len{length},
 			_mapping{[&]() noexcept -> HANDLE
 			{
-				const auto file = static_cast<HANDLE>(_get_osfhandle(fd));
+				const auto file = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
 				static_assert(sizeof(DWORD) == 4);
-				return CreateFileMappingA(file, nullptr, prot, DWORD(len >> 32), DWORD(len), nullptr);
-			}()}, _addr([&]() noexcept -> void *
+				return CreateFileMappingA(file, nullptr, prot, DWORD(length >> 32U), DWORD(length), nullptr);
+			}()}, _addr{[&]() noexcept -> void *
 			{
 				if (!_mapping)
 					return nullptr;
-				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32), DWORD(offset), 0);
+				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32U), DWORD(offset), 0);
 			}()} { }
 
 		~mmap_t() noexcept
@@ -121,6 +147,7 @@ namespace pcat
 		[[nodiscard]] void *address(const off_t offset) { return index(offset); }
 		[[nodiscard]] const void *address(const off_t offset) const { return index(offset); }
 
+#ifndef _WINDOWS
 		[[nodiscard]] bool sync(const int32_t flags = MS_SYNC | MS_INVALIDATE) const noexcept
 			{ return sync(_len, flags); }
 
@@ -129,6 +156,11 @@ namespace pcat
 
 		[[nodiscard]] bool advise(const int32_t adviceFlags) const noexcept
 			{ return madvise(_addr, _len, adviceFlags) == 0; }
+#else
+		[[nodiscard]] bool sync() const noexcept { return sync(_len); }
+		[[nodiscard]] bool sync(const off_t length) const noexcept { return FlushViewOfFile(_addr, length); }
+		[[nodiscard]] bool advise(const int32_t) const noexcept { return true; }
+#endif
 
 		template<int32_t adviceFlag, int32_t... adviceFlags> [[nodiscard]] bool advise() const noexcept
 		{
