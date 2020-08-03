@@ -93,11 +93,11 @@ namespace parser
 	void testEmpty(testsuite &suite)
 	{
 		args = {};
-		suite.assertFalse(parseArguments(0, nullptr, nullptr, nullptr));
+		suite.assertFalse(parseArguments(0, nullptr, {nullptr, nullptr}));
 		suite.assertNull(args);
-		suite.assertFalse(parseArguments(2, nullptr, nullptr, nullptr));
+		suite.assertFalse(parseArguments(2, nullptr, {nullptr, nullptr}));
 		suite.assertNull(args);
-		suite.assertFalse(parseArguments(emptyArgs.size(), emptyArgs.data(), nullptr, nullptr));
+		suite.assertFalse(parseArguments(emptyArgs.size(), emptyArgs.data(), {nullptr, nullptr}));
 		suite.assertNull(args);
 	}
 
@@ -241,7 +241,7 @@ namespace parser
 	void testUnknown(testsuite &suite)
 	{
 		args = {};
-		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), nullptr, nullptr));
+		suite.assertTrue(parseArguments(multipleArgs.size(), multipleArgs.data(), {nullptr, nullptr}));
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 9);
 		auto iterator = args->begin();
@@ -378,7 +378,7 @@ namespace parser
 		suite.assertNull(args->find(argType_t::outputFile));
 
 		args = {};
-		suite.assertFalse(parseArguments(invalidEqualsArgs.size(), invalidEqualsArgs.data(), nullptr, nullptr));
+		suite.assertFalse(parseArguments(invalidEqualsArgs.size(), invalidEqualsArgs.data(), {nullptr, nullptr}));
 		suite.assertNotNull(args);
 		suite.assertEqual(args->count(), 0);
 		suite.assertTrue(args->begin() == args->end());
