@@ -34,8 +34,8 @@ namespace pcat::algorithm::chunkSpans
 			file_{file}, inputLength_{inputLength}, inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
 		constexpr chunkState_t(const chunkState_t &) noexcept = default;
 		constexpr chunkState_t(chunkState_t &&) noexcept = default;
-		constexpr chunkState_t &operator =(const chunkState_t &) noexcept = default;
-		constexpr chunkState_t &operator =(chunkState_t &&) noexcept = default;
+		chunkState_t &operator =(const chunkState_t &) noexcept = default;
+		chunkState_t &operator =(chunkState_t &&) noexcept = default;
 		~chunkState_t() noexcept = default;
 		[[nodiscard]] constexpr const inputFilesIterator_t &file() const noexcept { return file_; }
 		[[nodiscard]] constexpr off_t inputLength() const noexcept { return inputLength_; }
