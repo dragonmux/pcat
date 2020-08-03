@@ -29,6 +29,7 @@ if target_machine.system() == 'windows'
 	add_project_arguments(
 		'-wd4996',
 		'-Zc:__cplusplus',
+		'-D_WINDOWS',
 		language: 'cpp'
 	)
 endif
