@@ -24,7 +24,7 @@ namespace pcat
 	private:
 		std::vector<uint32_t> processors;
 
-		void pinTo(const pthread_t thread, const uint32_t index) const
+		void pinTo(const pthread_t thread, const std::size_t index) const
 		{
 			if (index >= processors.size())
 				throw std::out_of_range{"index into thread affinity object too large"};
@@ -60,9 +60,9 @@ namespace pcat
 		[[nodiscard]] auto end() const noexcept { return processors.end(); }
 		[[nodiscard]] auto indexSequence() const noexcept { return indexSequence_t{0, numProcessors()}; }
 
-		void pinThreadTo(std::thread &thread, const uint32_t index) const
+		void pinThreadTo(std::thread &thread, const std::size_t index) const
 			{ pinTo(thread.native_handle(), index); }
-		void pinThreadTo(const uint64_t index) const { pinTo(pthread_self(), index); }
+		void pinThreadTo(const std::size_t index) const { pinTo(pthread_self(), index); }
 	};
 #else
 	using substrate::fixedVector_t;
@@ -73,7 +73,7 @@ namespace pcat
 	private:
 		std::vector<std::pair<uint16_t, uint8_t>> processors;
 
-		void pinTo(const HANDLE thread, const uint32_t index) const
+		void pinTo(const HANDLE thread, const std::size_t index) const
 		{
 			if (index >= processors.size())
 				throw std::out_of_range{"index into thread affinity object too large"};
@@ -130,9 +130,9 @@ namespace pcat
 		[[nodiscard]] auto end() const noexcept { return processors.end(); }
 		[[nodiscard]] auto indexSequence() const noexcept { return indexSequence_t{0, numProcessors()}; }
 
-		void pinThreadTo(std::thread &thread, const uint32_t index) const
+		void pinThreadTo(std::thread &thread, const std::size_t index) const
 			{ pinTo(thread.native_handle(), index); }
-		void pinThreadTo(const uint64_t index) const { pinTo(GetCurrentThread(), index); }
+		void pinThreadTo(const std::size_t index) const { pinTo(GetCurrentThread(), index); }
 	};
 #endif /*_WINDOWS*/
 } // namespace pcat
