@@ -30,11 +30,11 @@ namespace pcat::algorithm::blockLinear
 	public:
 		chunking_t() noexcept { outputOffset.length(blockLength(outputLength - outputOffset)); }
 		chunking_t(const inputFilesIterator_t file_) noexcept : file{file_}, outputOffset{outputLength} { }
-		[[nodiscard]] constexpr chunkState_t subchunkState() const noexcept
+		[[nodiscard]] chunkState_t subchunkState() const noexcept
 			{ return {file, inputLength, inputOffset, outputOffset}; }
 		chunkState_t operator *() const noexcept { return subchunkState(); }
 
-		constexpr void operator ++() noexcept
+		void operator ++() noexcept
 		{
 			if (outputOffset == outputLength)
 				return;

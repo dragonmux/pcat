@@ -36,7 +36,7 @@ namespace pcat::algorithm::chunkSpans
 			{ outputOffset.length(spanOf(outputLength - outputOffset)); }
 		chunking_t(const std::size_t spanLength_, const inputFilesIterator_t file_) noexcept :
 			spanLength{spanLength_}, file{file_}, outputOffset{outputLength} { }
-		[[nodiscard]] constexpr chunkState_t subchunkState() const noexcept
+		[[nodiscard]] chunkState_t subchunkState() const noexcept
 			{ return {file, inputLength, inputOffset, outputOffset}; }
 		chunkState_t operator *() const noexcept { return subchunkState(); }
 
