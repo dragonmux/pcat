@@ -30,6 +30,7 @@ if target_machine.system() == 'windows'
 		'-wd4996',
 		'-Zc:__cplusplus',
 		'-D_WINDOWS',
+		'-DSUBSTRATE_BUILD_INTERNAL',
 		language: 'cpp'
 	)
 endif
