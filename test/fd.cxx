@@ -88,7 +88,7 @@ namespace fd
 		fd_t file{"fd.test", O_RDONLY};
 		suite.assertTrue(file.valid());
 		suite.assertEqual(file.tell(), 0);
-		const off_t length{file.length()};
+		const auto length{file.length()};
 		suite.assertEqual(length, 78); // NOLINT(readability-magic-numbers)
 		suite.assertTrue(file.tail());
 		suite.assertEqual(file.tell(), length);
