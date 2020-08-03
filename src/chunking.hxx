@@ -10,6 +10,7 @@
 namespace pcat
 {
 	using substrate::fd_t;
+	using substrate::off_t;
 	using substrate::operator ""_KiB;
 	using substrate::operator ""_MiB;
 
