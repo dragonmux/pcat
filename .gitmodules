@@ -1,3 +1,4 @@
 [submodule "substrate"]
 	path = substrate
 	url = https://github.com/bad-alloc-heavy-industries/substrate
+	branch = main
