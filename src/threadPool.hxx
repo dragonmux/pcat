@@ -48,7 +48,7 @@ namespace pcat
 		template<std::size_t... indicies> auto invoke(std::tuple<args_t...> &&args,
 			std::index_sequence<indicies...>) { return workerFunction(std::get<indicies>(std::move(args))...); }
 
-		void workerThread(const int32_t processor)
+		void workerThread(const std::size_t processor)
 		{
 			affinity.pinThreadTo(processor);
 			while (!(finished && work.empty()))
@@ -77,8 +77,8 @@ namespace pcat
 	public:
 		threadPool_t(const workFunc_t function) : workerFunction{function}
 		{
-			for (const uint32_t processor : affinity.indexSequence())
-				threads.emplace_back(std::thread{[this](const int32_t processor) -> void
+			for (const auto processor : affinity.indexSequence())
+				threads.emplace_back(std::thread{[this](const auto processor) -> void
 					{ workerThread(processor); }, processor});
 			while (!ready())
 				std::this_thread::sleep_for(1us);
