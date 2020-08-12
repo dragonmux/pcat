@@ -29,7 +29,7 @@ testHelpers = static_library(
 	'testHelpers',
 	[
 		'fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx',
-		'argsParser.cxx', 'threadedQueue.cxx', '@0@/affinity.cxx'.format(host_machine.system()), 'threadPool.cxx'
+		'argsParser.cxx', 'threadedQueue.cxx', '@0@/affinity.cxx'.format(host_machine.system()), 'threadPool.cxx',
 		'mappingOffset.cxx', 'mmap.cxx', 'indexSequence.cxx', 'version.cxx'
 	],
 	pic: true,
