@@ -55,7 +55,7 @@ testObjectMap = {
 	},
 	'testThreadedQueue': {'test': ['threadedQueue.cxx']},
 	'testAffinity': {
-		'test': ['affinity.cxx'],
+		'test': ['@0@/affinity.cxx'.format(host_machine.system())],
 		'pcat': [
 			'src/args.cxx', 'src/args/tokenizer.cxx', 'src/args/types.cxx',
 			'substrate/impl/console.cxx'
