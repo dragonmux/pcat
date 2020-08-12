@@ -58,9 +58,12 @@ namespace affinity
 		suite.assertNotNull(affinity);
 		for (const auto processor : *affinity)
 		{
-			const auto result = std::async(std::launch::async, [](const uint32_t processor) noexcept -> int32_t
+			const auto result = std::async(std::launch::async, [](const auto processor) noexcept -> int32_t
 			{
-				affinity->pinThreadTo(processor);
+				try
+					{ affinity->pinThreadTo(processor); }
+				catch (const std::out_of_range &)
+					{ return -1; }
 				return sched_getcpu();
 			}, processor).get();
 			suite.assertNotEqual(result, -1);
