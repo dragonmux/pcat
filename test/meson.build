@@ -34,7 +34,7 @@ testHelpers = static_library(
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
-	include_directories: [include_directories('../src'), substrate],
+	include_directories: [include_directories('../src'), substrate, platformHeaders],
 	install: false,
 	build_by_default: true
 )
@@ -85,7 +85,8 @@ foreach test : pcatTests
 	custom_target(
 		test,
 		command: [
-			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I../src', '-I@0@/src'.format(buildDir)
+			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I../src', '-I@0@/src'.format(buildDir),
+			'-I@0@/src/@1@'.format(buildDir, host_machine.system())
 		] + commandExtra + testLibs,
 		input: [test + '.cxx'] + pcatObjs + testObjs,
 		output: test + '.so',

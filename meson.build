@@ -25,7 +25,7 @@ if cxx.has_argument('-fPIC')
 	fPIC += ['-fPIC']
 endif
 
-if target_machine.system() == 'windows'
+if host_machine.system() == 'windows'
 	add_project_arguments(
 		'-wd4996',
 		'-wd4848',
@@ -42,13 +42,14 @@ pcatSrcs = [
 	'src/algorithm/blockLinear/chunking.cxx',
 	'src/algorithm/chunkSpans/chunking.cxx'
 ]
+platformHeaders = include_directories('src/@0@'.format(host_machine.system()))
 
 subdir('src')
 pcat = executable(
 	'pcat',
 	pcatSrcs + [versionHeader],
 	cpp_args: ['-D_GNU_SOURCE'] + fPIC,
-	include_directories: [substrate, include_directories('src')],
+	include_directories: [substrate, include_directories('src'), platformHeaders],
 	dependencies: [threading],
 	gnu_symbol_visibility: 'inlineshidden',
 	implicit_include_directories: false,
