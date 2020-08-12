@@ -28,6 +28,7 @@ endif
 if target_machine.system() == 'windows'
 	add_project_arguments(
 		'-wd4996',
+		'-wd4848',
 		'-Zc:__cplusplus',
 		'-D_WINDOWS',
 		'-DSUBSTRATE_BUILD_INTERNAL',
