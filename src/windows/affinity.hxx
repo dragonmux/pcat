@@ -65,6 +65,7 @@ namespace pcat
 			const auto *const pinning{dynamic_cast<args::argPinning_t *>(::args->find(argType_t::pinning))};
 			const auto *const threadCount{dynamic_cast<args::argThreads_t *>(::args->find(argType_t::threads))};
 			const auto processorInfo{retrieveProcessorInfo()};
+			size_t count{};
 
 			for (const auto &processor : processorInfo)
 			{
