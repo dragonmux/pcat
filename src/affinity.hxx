@@ -113,6 +113,8 @@ namespace pcat
 	public:
 		affinity_t() : processors{}
 		{
+			const auto *const pinning{dynamic_cast<args::argPinning_t *>(::args->find(argType_t::pinning))};
+			const auto *const threadCount{dynamic_cast<args::argThreads_t *>(::args->find(argType_t::threads))};
 			const auto processorInfo{retrieveProcessorInfo()};
 
 			for (const auto &processor : processorInfo)
@@ -126,7 +128,12 @@ namespace pcat
 					for (uint8_t i{}; i < sizeof(KAFFINITY) * 8; ++i)
 					{
 						if (mask & 1)
-							processors.emplace_back(groupIndex, i);
+						{
+							if ((!threadCount || processors.size() < threadCount->threads()) &&
+								(!pinning || std::find(pinning->begin(), pinning->end(), count) != pinning->end()))
+								processors.emplace_back(groupIndex, i);
+							++count;
+						}
 						mask >>= 1;
 						if (!mask)
 							break;
