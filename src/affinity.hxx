@@ -10,7 +10,11 @@
 #	include <sched.h>
 #else
 #	include <utility>
-#	include <winbase.h>
+#	define WIND32_LEAN_AND_MEAN
+#	include <windows.h>
+#	undef WIN32_LEAN_AND_MEAN
+#	undef max
+#	undef min
 #	include <substrate/fixed_vector>
 #endif
 #include "args.hxx"
