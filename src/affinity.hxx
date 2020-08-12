@@ -87,8 +87,7 @@ namespace pcat
 			SetThreadGroupAffinity(thread, &affinity, nullptr);
 		}
 
-	public:
-		affinity_t() : processors{}
+		[[nodiscard]] auto retrieveProcessorInfo() const
 		{
 			fixedVector_t<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX> processorInfo{};
 			ulong_t returnLength{};
@@ -108,6 +107,13 @@ namespace pcat
 				else
 					throw std::system_error{static_cast<int>(error), std::system_category()};
 			}
+			return processorInfo;
+		}
+
+	public:
+		affinity_t() : processors{}
+		{
+			const auto processorInfo{retrieveProcessorInfo()};
 
 			for (const auto &processor : processorInfo)
 			{
