@@ -47,7 +47,9 @@ namespace memoryMap
 		suite.assertTrue(map.advise(MADV_DONTNEED));
 		suite.assertTrue(map.advise<MADV_SEQUENTIAL>());
 		suite.assertTrue(map.advise<MADV_RANDOM, MADV_WILLNEED>());
+#ifndef _WINDOWS
 		suite.assertFalse(map.advise<MADV_REMOVE>());
+#endif
 		suite.assertTrue(map.sync());
 
 		random_t result{};
