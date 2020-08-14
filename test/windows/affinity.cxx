@@ -41,7 +41,7 @@ namespace affinity
 		return processorInfo;
 	}
 
-	std::pair<uint16_t, uint8_t> nextProcessor(testsuite &suite, const processorVector_t &processorInfo,
+	void nextProcessor(testsuite &suite, const processorVector_t &processorInfo,
 		processorIterator_t &info, uint16_t &groupIndex, uint8_t &maskOffset)
 	{
 		while (info != processorInfo.end())
@@ -60,14 +60,13 @@ namespace affinity
 				{
 					const auto mask{group.ActiveProcessorMask >> maskOffset};
 					if (mask & 1)
-						return {groupIndex, maskOffset};
+						return;
 				}
 				maskOffset = 0;
 			}
 			++info;
 		}
 		suite.fail("Could not find another valid group:processor combo while there are entries left in affinity_t");
-		return {};
 	}
 
 	void testConstruct(testsuite &suite)
@@ -102,20 +101,20 @@ namespace affinity
 		for (const auto processor : *affinity)
 		{
 			suite.assertTrue(info != processorInfo.end());
-			const auto core{nextProcessor(suite, processorInfo, info, groupIndex, maskOffset)};
-
-			suite.assertEqual(processor.first, core.first);
-			suite.assertEqual(processor.second, core.second);
+			nextProcessor(suite, processorInfo, info, groupIndex, maskOffset);
+			suite.assertEqual(processor.first, groupIndex);
+			suite.assertEqual(processor.second, maskOffset);
 			++maskOffset;
+			++count;
 		}
 		suite.assertEqual(count, affinity->numProcessors());
 	}
 
 	void testPinning(testsuite &suite)
 	{
-		size_t count{};
 		suite.assertNotNull(args);
 		suite.assertNotNull(affinity);
+		std::size_t count{0};
 		for (const auto processor : *affinity)
 		{
 			const auto result = std::async(std::launch::async,
@@ -149,7 +148,8 @@ namespace affinity
 				auto info{processorInfo.begin()};
 				uint16_t groupIndex{};
 				uint8_t maskOffset{};
-				return nextProcessor(suite, processorInfo, info, groupIndex, maskOffset);
+				nextProcessor(suite, processorInfo, info, groupIndex, maskOffset);
+				return {groupIndex, maskOffset};
 			}()
 		};
 
@@ -176,7 +176,8 @@ namespace affinity
 				auto info{processorInfo.begin()};
 				uint16_t groupIndex{};
 				uint8_t maskOffset{};
-				return nextProcessor(suite, processorInfo, info, groupIndex, maskOffset);
+				nextProcessor(suite, processorInfo, info, groupIndex, maskOffset);
+				return {groupIndex, maskOffset};
 			}()
 		};
 
@@ -208,7 +209,9 @@ namespace affinity
 				uint16_t groupIndex{};
 				uint8_t maskOffset{};
 				nextProcessor(suite, processorInfo, info, groupIndex, maskOffset);
-				return nextProcessor(suite, processorInfo, info, groupIndex, maskOffset);
+				++maskOffset;
+				nextProcessor(suite, processorInfo, info, groupIndex, maskOffset);
+				return {groupIndex, maskOffset};
 			}()
 		};
 
