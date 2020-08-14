@@ -3,6 +3,18 @@
 #include "testMMap.hxx"
 
 using pcat::mmap_t;
+#ifdef _WINDOWS
+using pcat::PROT_READ;
+using pcat::PROT_WRITE;
+using pcat::MAP_PRIVATE;
+
+using pcat::MADV_SEQUENTIAL;
+const auto MADV_RANDOM{0};
+using pcat::MADV_WILLNEED;
+const auto MADV_DONTNEED{0};
+using pcat::MADV_DONTDUMP;
+const auto MADV_REMOVE{0};
+#endif
 
 constexpr static auto testString{u8"おはようございます"sv};
 
