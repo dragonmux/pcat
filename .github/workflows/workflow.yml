@@ -167,7 +167,7 @@ jobs:
       - name: Version tools
         shell: bash
         run: |
-          rm /usr/bin/link.exe
+          rm /usr/bin/link.exe /c/msys64/usr/bin/link.exe
           $CC || true
           $LD || true
           meson --version
