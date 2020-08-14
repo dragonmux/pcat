@@ -13,7 +13,6 @@ const auto MADV_RANDOM{0};
 using pcat::MADV_WILLNEED;
 const auto MADV_DONTNEED{0};
 using pcat::MADV_DONTDUMP;
-const auto MADV_REMOVE{0};
 #endif
 
 constexpr static auto testString{u8"おはようございます"sv};
