@@ -7,6 +7,8 @@ using pcat::pageSize;
 
 namespace mappingOffset
 {
+	using pcat::off_t;
+
 	void testDefaultConstruct(testsuite &suite)
 	{
 		const mappingOffset_t offset{};

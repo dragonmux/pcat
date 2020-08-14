@@ -8,6 +8,8 @@ constexpr static auto testString{u8"おはようございます"sv};
 
 namespace memoryMap
 {
+	using pcat::off_t;
+
 	void testDefaultConstruct(testsuite &suite)
 	{
 		auto map{substrate::make_unique_nothrow<mmap_t>()};
