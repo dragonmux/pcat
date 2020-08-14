@@ -138,6 +138,7 @@ jobs:
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %ARCH%
           call ${{ github.workspace }}/.github/exportEnv.bat
+          echo ::set-env name=BUILD_OPTS::--pkg-config-path=$HOME/.local/lib/pkgconfig
         env:
           ARCH: ${{ matrix.arch }}
       - name: Setup Meson + Ninja
@@ -149,6 +150,14 @@ jobs:
           unzip ninja-win.zip -d /c/windows/system32
           rm ninja-win.zip
         working-directory: ${{ runner.temp }}
+      - name: Checkout crunch
+        uses: actions/checkout@v2
+        with:
+          repository: DX-MON/crunch
+          path: crunch
+          ref: v1.1.0
+          lfs: true
+          submodules: true
       - name: Version tools
         shell: bash
         run: |
@@ -157,8 +166,17 @@ jobs:
           $LD || true
           meson --version
           ninja --version
+      - name: Install crunch
+        shell: bash
+        run: |
+          meson build --prefix=$HOME/.local
+          ninja -C build
+          ninja -C build install
+        working-directory: ${{ env.GITHUB_WORKSPACE }}/crunch
       - name: Configure
         shell: bash
+        env:
+          MSYS2_ARG_CONV_EXCL: --pkg-config-path=
         run: meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS
       - name: Build
         shell: bash
