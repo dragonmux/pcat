@@ -75,7 +75,7 @@ jobs:
         with:
           repository: DX-MON/crunch
           path: crunch
-          ref: v1.0.1
+          ref: v1.1.0
           lfs: true
           submodules: true
       - name: Setup Meson + Ninja
@@ -128,7 +128,7 @@ jobs:
       CXX: cl.exe
       LD: link.exe
     steps:
-      - name: Chekcout pcat
+      - name: Checkout pcat
         uses: actions/checkout@v2
         with:
           lfs: true
