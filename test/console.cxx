@@ -4,7 +4,9 @@
 #include <substrate/console>
 #include <substrate/fixed_vector>
 #include <substrate/fd>
-#include <substrate/pty>
+#ifndef _WINDOWS
+#	include <substrate/pty>
+#endif
 #include <substrate/pipe>
 #include "testConsole.hxx"
 
@@ -21,7 +23,9 @@ using substrate::consoleStream_t;
 using substrate::asHex_t;
 using substrate::operator ""_s;
 using substrate::fd_t;
+#ifndef _WINDOWS
 using substrate::pty_t;
+#endif
 using substrate::pipe_t;
 using substrate::readPipe_t;
 using substrate::fixedVector_t;
