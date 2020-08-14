@@ -138,6 +138,15 @@ jobs:
           echo ::set-env name=BUILD_OPTS::--pkg-config-path=$HOME/.local/lib/pkgconfig
         env:
           ARCH: ${{ matrix.arch }}
+      - name: Coverage environment
+        shell: bash
+        env:
+          COVERAGE: ${{ matrix.coverage }}
+        run: |
+          echo "Coverage enabled for build? ${{ matrix.coverage }}"
+          echo ::set-env name=COVERAGE::$([ $COVERAGE == "true" ] && echo -n 1 || echo -n 0)
+          echo ::set-env name=BUILD_OPTS::${BUILD_OPTS}$([ $COVERAGE == "true" ] && \
+            echo " --buildtype=debug -Db_lto=false" || echo "")
       - name: Setup Meson + Ninja
         shell: bash
         run: |
