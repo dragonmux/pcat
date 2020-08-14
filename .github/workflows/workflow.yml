@@ -135,7 +135,6 @@ jobs:
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %ARCH%
           call ${{ github.workspace }}/.github/exportEnv.bat
-          echo ::set-env name=BUILD_OPTS::--pkg-config-path=$HOME/.local/lib/pkgconfig
         env:
           ARCH: ${{ matrix.arch }}
       - name: Coverage environment
@@ -183,7 +182,9 @@ jobs:
         shell: bash
         env:
           MSYS2_ARG_CONV_EXCL: --pkg-config-path=
-        run: meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS
+        run: |
+          meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS \
+            --pkg-config-path=$HOME/.local/lib/pkgconfig
       - name: Build
         shell: bash
         run: ninja -C build
