@@ -25,10 +25,16 @@ pcatTests = [
 	'testMMap', 'testIndexSequence', 'testPcat'
 ]
 
+if host_machine.system() != 'windows'
+	testPTY = ['../substrate/impl/pty.cxx']
+else
+	testPTY = []
+endif
+
 testHelpers = static_library(
 	'testHelpers',
 	[
-		'fd.cxx', 'console.cxx', '../substrate/impl/pty.cxx', 'tokenizer.cxx',
+		'fd.cxx', 'console.cxx', testPTY, 'tokenizer.cxx',
 		'argsParser.cxx', 'threadedQueue.cxx', '@0@/affinity.cxx'.format(host_machine.system()), 'threadPool.cxx',
 		'mappingOffset.cxx', 'mmap.cxx', 'indexSequence.cxx', 'version.cxx'
 	],
@@ -42,7 +48,7 @@ testHelpers = static_library(
 testObjectMap = {
 	'testFD': {'test': ['fd.cxx']},
 	'testConsole': {
-		'test': ['console.cxx', '../substrate/impl/pty.cxx'],
+		'test': ['console.cxx', testPTY],
 		'pcat': ['substrate/impl/console.cxx']
 	},
 	'testArgsTokenizer': {'test': ['tokenizer.cxx'], 'pcat': ['src/args/tokenizer.cxx']},
