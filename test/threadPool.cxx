@@ -18,7 +18,12 @@ std::condition_variable workCond;
 
 namespace threadPool
 {
-	bool dummyWork() { return true; }
+	bool dummyWork()
+	{
+		std::this_thread::sleep_for(100us);
+		return true;
+	}
+
 	bool busyWork(const std::size_t iterations)
 	{
 		volatile std::size_t counter{};
