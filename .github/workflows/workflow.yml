@@ -81,7 +81,7 @@ jobs:
       - name: Setup Meson + Ninja
         shell: bash
         run: |
-          wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip
+          wget https://github.com/ninja-build/ninja/releases/download/v1.10.0/ninja-linux.zip
           sudo pip3 install --upgrade pip setuptools wheel
           pip3 install --user 'meson~=0.54.3'
           unzip ninja-linux.zip -d ~/.local/bin
@@ -114,3 +114,58 @@ jobs:
         if: success() && matrix.coverage
         run: bash <(curl -s https://codecov.io/bash) -x "$GCOV";
         working-directory: ${{ env.GITHUB_WORKSPACE }}/build
+
+  build-windows:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [windows-2019]
+        arch: ['amd64', 'x86']
+        coverage: [false]
+      fail-fast: false
+    env:
+      CC: cl.exe
+      CXX: cl.exe
+      LD: link.exe
+    steps:
+      - name: Chekcout pcat
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+          submodules: true
+      - name: Runtime Environment
+        shell: cmd
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %ARCH%
+          call ${{ github.workspace }}/.github/exportEnv.bat
+        env:
+          ARCH: ${{ matrix.arch }}
+      - name: Setup Meson + Ninja
+        shell: bash
+        run: |
+          curl -L1O https://github.com/ninja-build/ninja/releases/download/v1.10.0/ninja-win.zip
+          python -m pip install --upgrade pip setuptools wheel
+          pip3 install meson
+          unzip ninja-win.zip -d /c/windows/system32
+          rm ninja-win.zip
+        working-directory: ${{ runner.temp }}
+      - name: Version tools
+        shell: bash
+        run: |
+          rm /usr/bin/link.exe
+          $CC || true
+          $LD || true
+          meson --version
+          ninja --version
+      - name: Configure
+        shell: bash
+        run: meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS
+      - name: Build
+        shell: bash
+        run: ninja -C build
+      - name: Test
+        shell: bash
+        run: ninja -C build test
+      - name: Codecov
+        if: success() && matrix.coverage
+        run: bash <(curl -s https://codecov.io/bash) -x "$GCOV";
