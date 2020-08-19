@@ -165,8 +165,10 @@ namespace consoleTests
 		assertPipeRead(suite, pipe, plainTrue);
 		console.info(false);
 		assertPipeRead(suite, pipe, plainFalse);
+#ifndef _WINDOWS
 		console.info("raw string");
 		assertPipeRead(suite, pipe, plainRawString);
+#endif
 		console.info(testCharPtr);
 		assertPipeRead(suite, pipe, plainNullptr);
 		console.info(testArrayPtr);
