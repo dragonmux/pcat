@@ -54,16 +54,22 @@ namespace pcat
 		}
 
 #ifdef _WINDOWS
-		constexpr DWORD protToAccess(const DWORD prot) const noexcept
+		constexpr static DWORD cleanProt(const DWORD prot) noexcept
 		{
-			DWORD access{};
-			if (prot & PAGE_READONLY)
-				access |= FILE_MAP_READ;
 			if (prot & PAGE_READWRITE)
-				access |= FILE_MAP_WRITE;
-			if (prot & PAGE_WRITECOPY)
-				access |= FILE_MAP_WRITE;
-			return access;
+				return prot & ~PAGE_READONLY;
+			return prot;
+		}
+
+		constexpr static DWORD protToAccess(const DWORD prot) noexcept
+		{
+			if (prot & PAGE_READWRITE)
+				return FILE_MAP_WRITE;
+			else if (prot & PAGE_READONLY)
+				return FILE_MAP_READ;
+			else if (prot & PAGE_WRITECOPY)
+				return FILE_MAP_WRITE;
+			return {};
 		}
 #endif
 
@@ -101,7 +107,8 @@ namespace pcat
 			{
 				const auto file = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
 				static_assert(sizeof(DWORD) == 4);
-				return CreateFileMappingA(file, nullptr, prot, DWORD(len >> 32U), DWORD(len), nullptr);
+				return CreateFileMappingA(file, nullptr, cleanProt(prot), DWORD(len >> 32U),
+					DWORD(len), nullptr);
 			}()}, _addr{[&]() noexcept -> void *
 			{
 				if (!_mapping)
@@ -114,12 +121,21 @@ namespace pcat
 			{
 				const auto file = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
 				static_assert(sizeof(DWORD) == 4);
-				return CreateFileMappingA(file, nullptr, prot, DWORD(length >> 32U), DWORD(length), nullptr);
+#if 0
+				return CreateFileMappingA(file, nullptr, cleanProt(prot), DWORD(length >> 32U),
+					DWORD(length), nullptr);
+#else
+				return CreateFileMappingA(file, nullptr, cleanProt(prot), 0, 0, nullptr);
+#endif
 			}()}, _addr{[&]() noexcept -> void *
 			{
 				if (!_mapping)
 					return nullptr;
+#if 0
 				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32U), DWORD(offset), 0);
+#else
+				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32U), DWORD(offset), length);
+#endif
 			}()} { }
 
 		~mmap_t() noexcept
