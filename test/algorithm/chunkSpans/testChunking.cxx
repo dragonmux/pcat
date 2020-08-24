@@ -36,10 +36,6 @@ constexpr static auto chunkFiles{substrate::make_array<std::pair<std::string_vie
 	{"chunk6.test"sv, hugefileSize}
 })};
 
-#ifdef _WINDOWS
-#define O_NOCTTY O_BINARY
-#endif
-
 class testChunking final : public testsuite
 {
 private:
