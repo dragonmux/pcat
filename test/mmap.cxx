@@ -19,6 +19,7 @@ constexpr static auto testString{u8"おはようございます"sv};
 
 namespace memoryMap
 {
+	using substrate::operator ""_KiB;
 	using pcat::off_t;
 
 	void testDefaultConstruct(testsuite &suite)
