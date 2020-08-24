@@ -77,7 +77,8 @@ public:
 	{
 		if (!outputFile.valid())
 			throw std::logic_error{"Failed to create the output test file"};
-		outputFile.resize(0);
+		if (!outputFile.resize(0))
+			throw std::runtime_error{"Unable to reset output file size to 0"};
 		for (const auto &file : chunkFiles)
 			makeFile(file.first, file.second);
 	}
