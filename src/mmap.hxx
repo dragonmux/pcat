@@ -102,8 +102,8 @@ namespace pcat
 
 		[[nodiscard]] constexpr bool valid() const noexcept { return _addr; }
 #else
-		mmap_t(const fd_t &fd, const off_t len, const DWORD prot, const int32_t flags = 0,
-			void *addr = nullptr) noexcept : _len{len}, _mapping{[&]() noexcept -> HANDLE
+		mmap_t(const fd_t &fd, const off_t len, const DWORD prot, const int32_t = 0,
+			void * = nullptr) noexcept : _len{len}, _mapping{[&]() noexcept -> HANDLE
 			{
 				const auto file = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
 				static_assert(sizeof(DWORD) == 4);
@@ -116,7 +116,7 @@ namespace pcat
 				return MapViewOfFile(_mapping, protToAccess(prot), 0, 0, 0);
 			}()} { }
 		mmap_t(const fd_t &fd, const off_t offset, const off_t length, const DWORD prot,
-			const int32_t flags = 0, void *addr = nullptr) noexcept : _len{length},
+			const int32_t = 0, void * = nullptr) noexcept : _len{length},
 			_mapping{[&]() noexcept -> HANDLE
 			{
 				const auto file = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
