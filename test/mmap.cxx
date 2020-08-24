@@ -64,6 +64,16 @@ namespace memoryMap
 		suite.assertTrue(map != *defaultMap);
 	}
 
+#ifdef _WINDOWS
+	void testOffsetGranularity(testsuite &suite)
+	{
+		SYSTEM_INFO systemInfo{};
+		GetSystemInfo(&systemInfo);
+		suite.assertEqual(off_t{systemInfo.dwPageSize}, 4_KiB);
+		suite.assertEqual(off_t{systemInfo.dwAllocationGranularity}, pcat::pageSize);
+	}
+#endif
+
 	void testMapUpper(testsuite &suite, const fd_t &fd, const random_t random)
 	{
 		mmap_t map{fd, pcat::pageSize, off_t(sizeof(random_t)), PROT_READ};
@@ -103,6 +113,9 @@ namespace memoryMap
 
 	void testMapPartials(testsuite &suite, const fd_t &fd, const random_t random)
 	{
+#ifdef _WINDOWS
+		testOffsetGranularity(suite);
+#endif
 		suite.assertEqual(fd.length(), pcat::pageSize + sizeof(random_t));
 		testMapUpper(suite, fd, random);
 		testMapWriteLower(suite, fd, random);
