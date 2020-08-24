@@ -10,7 +10,7 @@ private:
 
 	void prepare()
 	{
-		fd_t file{"mmap.test", O_CREAT | O_WRONLY, substrate::normalMode};
+		fd_t file{"mmap.test", O_CREAT | O_WRONLY | O_NOCTTY, substrate::normalMode};
 		if (!file.valid())
 			return;
 		std::random_device dev{};
@@ -23,7 +23,7 @@ private:
 			!file.write(secondRandom))
 			throw std::system_error{std::error_code{errno, std::system_category()}};
 		file = {};
-		testData = {"mmap.test", O_RDWR};
+		testData = {"mmap.test", O_RDWR | O_NOCTTY};
 	}
 
 	void testDefaultConstruct() { memoryMap::testDefaultConstruct(*this); }
