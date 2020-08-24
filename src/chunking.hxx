@@ -14,7 +14,11 @@ namespace pcat
 	using substrate::operator ""_KiB;
 	using substrate::operator ""_MiB;
 
+#ifndef _WINDOWS
 	constexpr static auto pageSize{off_t(4_KiB)};
+#else
+	constexpr static auto pageSize{off_t(64_KiB)};
+#endif
 	constexpr static auto transferBlockSize{off_t(1_MiB)};
 	extern std::vector<fd_t> inputFiles;
 	extern fd_t outputFile;
