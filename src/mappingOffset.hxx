@@ -3,6 +3,13 @@
 
 #include "chunking.hxx"
 
+#ifndef _WINDOWS
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define PCAT_ITER_CONSTEXPR constexpr
+#else
+#define PCAT_ITER_CONSTEXPR
+#endif
+
 namespace pcat
 {
 	struct mappingOffset_t final

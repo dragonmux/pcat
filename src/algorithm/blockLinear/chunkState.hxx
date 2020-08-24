@@ -14,7 +14,7 @@ namespace pcat::algorithm::blockLinear
 		mappingOffset_t inputOffset_{};
 		mappingOffset_t outputOffset_{};
 
-		constexpr void nextInputBlock(const off_t remainder) noexcept
+		PCAT_ITER_CONSTEXPR void nextInputBlock(const off_t remainder) noexcept
 		{
 			inputOffset_ += inputOffset_.length();
 			if (inputOffset_.offset() == inputLength_)
@@ -29,11 +29,11 @@ namespace pcat::algorithm::blockLinear
 
 	public:
 		chunkState_t() noexcept = default;
-		constexpr chunkState_t(const inputFilesIterator_t &file, const off_t inputLength,
+		PCAT_ITER_CONSTEXPR chunkState_t(const inputFilesIterator_t &file, const off_t inputLength,
 			const mappingOffset_t &inputOffset, const mappingOffset_t &outputOffset) noexcept :
 			file_{file}, inputLength_{inputLength}, inputOffset_{inputOffset}, outputOffset_{outputOffset} { }
-		constexpr chunkState_t(const chunkState_t &) noexcept = default;
-		constexpr chunkState_t(chunkState_t &&) noexcept = default;
+		PCAT_ITER_CONSTEXPR chunkState_t(const chunkState_t &) noexcept = default;
+		PCAT_ITER_CONSTEXPR chunkState_t(chunkState_t &&) noexcept = default;
 		chunkState_t &operator =(const chunkState_t &) noexcept = default;
 		chunkState_t &operator =(chunkState_t &&) noexcept = default;
 		~chunkState_t() noexcept = default;
@@ -54,7 +54,7 @@ namespace pcat::algorithm::blockLinear
 		[[nodiscard]] constexpr bool atEnd() const noexcept
 			{ return !outputOffset_.length(); }
 
-		constexpr void operator ++() noexcept
+		PCAT_ITER_CONSTEXPR void operator ++() noexcept
 		{
 			if (atEnd())
 				return;
