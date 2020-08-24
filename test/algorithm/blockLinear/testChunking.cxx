@@ -126,7 +126,8 @@ public:
 		std::random_device seed{};
 		if (!resultFile.valid())
 			throw std::logic_error{"Failed to create the output test file"};
-		resultFile.resize(0);
+		else if (!resultFile.resize(0))
+			throw std::runtime_error{"Unable to reset output file size to 0"};
 		for (const auto &file : chunkFiles)
 			makeFile(file.first, file.second, seed());
 	}
