@@ -85,6 +85,7 @@ namespace pcat
 				// NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
 				return ptr == MAP_FAILED ? nullptr : ptr;
 			}()} { }
+
 		mmap_t(const fd_t &fd, const off_t offset, const off_t length, const int32_t prot,
 			const int32_t flags = MAP_SHARED, void *addr = nullptr) noexcept : _len{length},
 			_addr{[&]() noexcept -> void *
@@ -115,6 +116,7 @@ namespace pcat
 					return nullptr;
 				return MapViewOfFile(_mapping, protToAccess(prot), 0, 0, 0);
 			}()} { }
+
 		mmap_t(const fd_t &fd, const off_t offset, const off_t length, const DWORD prot,
 			const int32_t = 0, void * = nullptr) noexcept : _len{length},
 			_mapping{[&]() noexcept -> HANDLE
@@ -134,6 +136,8 @@ namespace pcat
 #if 0
 				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32U), DWORD(offset), 0);
 #else
+				if (DWORD(length >> 32U))
+					return nullptr;
 				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32U), DWORD(offset), length);
 #endif
 			}()} { }
