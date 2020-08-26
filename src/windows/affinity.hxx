@@ -24,19 +24,19 @@ namespace pcat
 	struct affinity_t final
 	{
 	private:
-		std::vector<std::pair<uint16_t, uint8_t>> processors;
+		std::vector<std::pair<uint16_t, uint8_t>> processors{};
 
-		void pinTo(const HANDLE thread, const std::size_t index) const
+		static void pinTo(const HANDLE thread, const std::size_t index)
 		{
 			if (index >= processors.size())
 				throw std::out_of_range{"index into thread affinity object too large"};
 			const auto &[group, processor] = processors[index];
-			const auto groupMask = UINT64_C(1) << processor;
+			const auto groupMask = KAFFINITY(UINT64_C(1) << processor);
 			const GROUP_AFFINITY affinity{groupMask, group, {}};
 			SetThreadGroupAffinity(thread, &affinity, nullptr);
 		}
 
-		[[nodiscard]] auto retrieveProcessorInfo() const
+		[[nodiscard]] static auto retrieveProcessorInfo()
 		{
 			fixedVector_t<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX> processorInfo{};
 			ulong_t returnLength{};
@@ -60,7 +60,7 @@ namespace pcat
 		}
 
 	public:
-		affinity_t() : processors{}
+		affinity_t()
 		{
 			const auto *const pinning{dynamic_cast<args::argPinning_t *>(::args->find(argType_t::pinning))};
 			const auto *const threadCount{dynamic_cast<args::argThreads_t *>(::args->find(argType_t::threads))};
