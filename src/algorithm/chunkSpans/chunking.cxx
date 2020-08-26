@@ -38,7 +38,7 @@ namespace pcat::algorithm::chunkSpans
 		}
 
 		const auto chunksPerSpan{outputFile.length() / (transferBlockSize * copyThreads.numProcessors())};
-		fileChunker_t chunker{chunksPerSpan * transferBlockSize};
+		fileChunker_t chunker{std::size_t(chunksPerSpan * transferBlockSize)};
 
 		for (const chunkState_t &chunk : chunker)
 		{
