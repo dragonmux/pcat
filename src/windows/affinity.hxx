@@ -26,7 +26,7 @@ namespace pcat
 	private:
 		std::vector<std::pair<uint16_t, uint8_t>> processors{};
 
-		static void pinTo(const HANDLE thread, const std::size_t index)
+		void pinTo(const HANDLE thread, const std::size_t index) const
 		{
 			if (index >= processors.size())
 				throw std::out_of_range{"index into thread affinity object too large"};
