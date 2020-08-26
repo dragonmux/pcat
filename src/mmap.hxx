@@ -138,7 +138,7 @@ namespace pcat
 #else
 				if (DWORD(length >> 32U))
 					return nullptr;
-				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32U), DWORD(offset), length);
+				return MapViewOfFile(_mapping, protToAccess(prot), DWORD(offset >> 32U), DWORD(offset), SIZE_T(length));
 #endif
 			}()} { }
 
