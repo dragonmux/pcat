@@ -36,7 +36,7 @@ testHelpers = static_library(
 	[
 		'fd.cxx', 'console.cxx', testPTY, 'tokenizer.cxx',
 		'argsParser.cxx', 'threadedQueue.cxx', '@0@/affinity.cxx'.format(host_machine.system()), 'threadPool.cxx',
-		'mappingOffset.cxx', 'mmap.cxx', 'indexSequence.cxx', 'version.cxx'
+		'mappingOffset.cxx', 'mmap.cxx', 'indexSequence.cxx', 'version.cxx', versionHeader
 	],
 	pic: true,
 	dependencies: [libcrunchpp],
