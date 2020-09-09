@@ -15,7 +15,7 @@ namespace pcat
 	struct affinity_t final
 	{
 	private:
-		std::vector<uint32_t> processors;
+		std::vector<uint32_t> processors{};
 
 		void pinTo(const pthread_t thread, const std::size_t index) const
 		{
@@ -27,7 +27,7 @@ namespace pcat
 		}
 
 	public:
-		affinity_t() : processors{}
+		affinity_t()
 		{
 			const auto *const pinning{dynamic_cast<args::argPinning_t *>(::args->find(argType_t::pinning))};
 			const auto *const threadCount{dynamic_cast<args::argThreads_t *>(::args->find(argType_t::threads))};
