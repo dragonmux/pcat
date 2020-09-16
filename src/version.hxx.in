@@ -18,7 +18,7 @@ namespace pcat::versionInfo
 
 	inline int32_t printVersion() noexcept
 	{
-		substrate::console.info("pcat v"sv, version, " ("sv, compiler, ' ',
+		substrate::console.info("pcat "sv, version, " ("sv, compiler, ' ',
 			compilerVersion, ' ', system, '-', arch, ')');
 		return 0;
 	}
