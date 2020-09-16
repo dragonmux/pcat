@@ -33,7 +33,7 @@ foreach test : chunkSpansTests
 	custom_target(
 		test,
 		command: [
-			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I../src'
+			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I@0@/src'.format(srcDir)
 		] + commandExtra + testLibs,
 		input: [test + '.cxx'] + pcatObjs + testObjs,
 		output: test + '.so',

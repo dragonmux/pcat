@@ -91,7 +91,7 @@ foreach test : pcatTests
 	custom_target(
 		test,
 		command: [
-			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I../src', '-I@0@/src'.format(buildDir),
+			crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I@0@/src'.format(srcDir), '-I@0@/src'.format(buildDir),
 			'-I@0@/src/@1@'.format(buildDir, host_machine.system())
 		] + commandExtra + testLibs,
 		input: [test + '.cxx'] + pcatObjs + testObjs,
