@@ -46,5 +46,5 @@ rm -r build
 %{_mandir}/man1/pcat.1.gz
 
 %changelog
-* Mon Sept 21 2020 Rachel Mant <dx-mon@users.sourceforge.net> - 0.1.0-1
+* Mon Sep 21 2020 Rachel Mant <dx-mon@users.sourceforge.net> - 0.1.0-1
 - Initial RPM packaging and release of pcat
