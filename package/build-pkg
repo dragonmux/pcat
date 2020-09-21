@@ -12,5 +12,5 @@ cp pcat-*.tar.xz{,.asc} PKGBUILD /tmp/pcat-build
 pushd /tmp/pcat-build
 makepkg --sign --key 5E30DFF73626CA96F83DDF5E0137BA904EBDB4CD -c
 popd
-cp /tmp/pcat-build/pcat-*-x86_64.pkg.tar.xz{,.sig} .
+cp /tmp/pcat-build/pcat-*-x86_64.pkg.tar.zst{,.sig} .
 rm -rf /tmp/pcat-build
